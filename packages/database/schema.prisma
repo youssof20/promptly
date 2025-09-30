@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String?
+  stripeCustomerId  String?   @unique @map("stripe_customer_id")
+  subscriptionTier  SubscriptionTier @default(FREE) @map("subscription_tier")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  prompts           Prompt[]
+  quotaLogs         QuotaLog[]
+
+  @@map("users")
+}
+
+model Prompt {
+  id              String    @id @default(cuid())
+  userId          String    @map("user_id")
+  originalPrompt  String    @map("original_prompt")
+  optimizedPrompt String    @map("optimized_prompt")
+  tokensIn        Int       @map("tokens_in")
+  tokensOut       Int       @map("tokens_out")
+  modelUsed       String    @map("model_used")
+  tier            SubscriptionTier
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("prompts")
+}
+
+model QuotaLog {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  date        DateTime  @db.Date
+  promptsUsed Int       @map("prompts_used")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("quota_logs")
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}

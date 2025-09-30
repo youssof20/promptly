@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promptly - AI Prompt Optimizer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 350px;
+      min-height: 500px;
+      background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+      color: white;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #9CA3AF;
+      font-size: 12px;
+    }
+
+    .status-card {
+      background: #1F1F1F;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .status-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .status-title {
+      font-weight: 600;
+      color: white;
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .status-badge.free {
+      background: #1F2937;
+      color: #9CA3AF;
+    }
+
+    .status-badge.pro {
+      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      color: white;
+    }
+
+    .quota-bar {
+      background: #374151;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .quota-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      transition: width 0.3s ease;
+    }
+
+    .quota-text {
+      color: #9CA3AF;
+      font-size: 12px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #9CA3AF;
+      border: 1px solid #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #1F1F1F;
+      color: white;
+      border-color: #4B5563;
+    }
+
+    .features {
+      margin-top: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      color: #9CA3AF;
+      font-size: 12px;
+    }
+
+    .feature-icon {
+      width: 16px;
+      height: 16px;
+      color: #3B82F6;
+    }
+
+    .upgrade-banner {
+      background: linear-gradient(135deg, #1F2937 0%, #374151 100%);
+      border: 1px solid #4B5563;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .upgrade-title {
+      font-weight: 600;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .upgrade-text {
+      color: #9CA3AF;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #9CA3AF;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #374151;
+      border-top: 2px solid #3B82F6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      color: #DC2626;
+      background: #1F1F1F;
+      border: 1px solid #DC2626;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 12px 0;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">Promptly</div>
+      <div class="subtitle">AI Prompt Optimizer</div>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      Loading...
+    </div>
+
+    <div id="content" style="display: none;">
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-title">Status</div>
+          <div id="status-badge" class="status-badge free">Free</div>
+        </div>
+        <div class="quota-bar">
+          <div id="quota-fill" class="quota-fill" style="width: 0%"></div>
+        </div>
+        <div id="quota-text" class="quota-text">0 / 50 prompts used</div>
+      </div>
+
+      <div class="actions">
+        <button id="optimize-btn" class="btn btn-primary">
+          Optimize Current Prompt
+        </button>
+        <button id="settings-btn" class="btn btn-secondary">
+          Settings
+        </button>
+        <button id="history-btn" class="btn btn-secondary">
+          View History
+        </button>
+      </div>
+
+      <div class="features">
+        <div class="feature-item">
+          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Automatic optimization
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Privacy-first design
+        </div>
+        <div class="feature-item">
+          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          Fast & efficient
+        </div>
+      </div>
+
+      <div id="upgrade-banner" class="upgrade-banner" style="display: none;">
+        <div class="upgrade-title">Upgrade to Pro</div>
+        <div class="upgrade-text">Get 1,000 optimizations per month and advanced features</div>
+        <button id="upgrade-btn" class="btn btn-primary" style="margin-top: 8px;">
+          Upgrade Now
+        </button>
+      </div>
+    </div>
+
+    <div id="error" class="error" style="display: none;"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
