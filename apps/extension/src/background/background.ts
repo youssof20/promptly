@@ -101,7 +101,7 @@ class PromptlyBackground {
 
   private async handleMessage(
     message: any,
-    sender: chrome.runtime.MessageSender,
+    _sender: chrome.runtime.MessageSender,
     sendResponse: (response?: any) => void
   ) {
     switch (message.type) {
@@ -120,7 +120,7 @@ class PromptlyBackground {
           const result = await this.optimizePrompt(message.prompt, message.tier);
           sendResponse({ success: true, result });
         } catch (error) {
-          sendResponse({ success: false, error: error.message });
+          sendResponse({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
         }
         break;
 

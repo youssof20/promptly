@@ -1,4 +1,12 @@
+'use client';
+
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 export default function Home() {
+  const { data: session } = useSession();
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0D0D0D] to-[#1a1a1a]">
       {/* Navigation */}
@@ -9,12 +17,32 @@ export default function Home() {
               <h1 className="text-2xl font-bold gradient-text">Promptly</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="text-[#9CA3AF] hover:text-white transition-colors">
-                Sign In
-              </button>
-              <button className="gradient-bg text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity">
-                Get Started
-              </button>
+              {session ? (
+                <>
+                  <Link 
+                    href="/dashboard"
+                    className="text-[#9CA3AF] hover:text-white transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <span className="text-[#9CA3AF]">Welcome, {session.user?.name || session.user?.email}</span>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    href="/auth/signin"
+                    className="text-[#9CA3AF] hover:text-white transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link 
+                    href="/auth/signup"
+                    className="gradient-bg text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -36,8 +64,11 @@ export default function Home() {
             <button className="gradient-bg text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity glow-blue">
               Install Extension
             </button>
-            <button className="border border-[#374151] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#1F1F1F] transition-colors">
-              Watch Demo
+            <button 
+              onClick={() => router.push('/pricing')}
+              className="border border-[#374151] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#1F1F1F] transition-colors"
+            >
+              View Pricing
             </button>
           </div>
 
@@ -81,18 +112,18 @@ export default function Home() {
               <div>
                 <h3 className="text-lg font-semibold text-[#9CA3AF] mb-4">Before</h3>
                 <div className="bg-[#0D0D0D] p-4 rounded-lg border border-[#374151]">
-                  <p className="text-[#D1D5DB]">"help me write a blog post about ai"</p>
+                  <p className="text-[#D1D5DB]">&ldquo;help me write a blog post about ai&rdquo;</p>
                 </div>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-[#22C55E] mb-4">After</h3>
                 <div className="bg-[#0D0D0D] p-4 rounded-lg border border-[#22C55E]">
                   <p className="text-[#D1D5DB]">
-                    "Write a comprehensive 1,500-word blog post about artificial intelligence, 
+                    &ldquo;Write a comprehensive 1,500-word blog post about artificial intelligence, 
                     focusing on its current applications in healthcare, business automation, 
                     and creative industries. Include real-world examples, potential challenges, 
                     and future outlook. Target audience: general business professionals. 
-                    Tone: informative yet accessible."
+                    Tone: informative yet accessible.&rdquo;
                   </p>
                 </div>
               </div>

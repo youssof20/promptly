@@ -5,16 +5,20 @@ interface PromptlyConfig {
   apiUrl: string;
   isEnabled: boolean;
   tier: 'free' | 'pro';
+  quotaUsed: number;
+  quotaLimit: number;
 }
 
 class PromptlyContentScript {
   private config: PromptlyConfig = {
     apiUrl: 'https://api.promptly.app',
     isEnabled: true,
-    tier: 'free'
+    tier: 'free',
+    quotaUsed: 0,
+    quotaLimit: 50
   };
 
-  private injectedUI: HTMLElement | null = null;
+  // private injectedUI: HTMLElement | null = null;
   private isOptimizing = false;
 
   constructor() {
@@ -387,7 +391,7 @@ class PromptlyContentScript {
     return data.optimizedPrompt;
   }
 
-  private handleMessage(message: any, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
+  private handleMessage(message: any, _sender: chrome.runtime.MessageSender, _sendResponse: (response?: any) => void) {
     switch (message.type) {
       case 'OPTIMIZE_PROMPT':
         // Handle optimization request

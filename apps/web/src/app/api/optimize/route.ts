@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { aiService } from '@/lib/ai-service';
+import { databaseService } from '@/lib/database-service';
 
 interface OptimizeRequest {
   prompt: string;
@@ -12,63 +16,17 @@ interface OptimizeResponse {
   tier: string;
 }
 
-// Mock AI optimization function
-async function optimizePrompt(prompt: string, tier: 'free' | 'pro'): Promise<OptimizeResponse> {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // Mock optimization logic based on tier
-  const isPro = tier === 'pro';
-  
-  let optimizedPrompt = prompt;
-  let tokensUsed = 0;
-  let model = '';
-
-  if (isPro) {
-    // Pro tier: More sophisticated optimization
-    model = 'gpt-4-mini';
-    tokensUsed = Math.floor(prompt.length * 0.8) + Math.floor(prompt.length * 1.2);
-    
-    optimizedPrompt = `Please provide a comprehensive and detailed response to the following request. 
-
-Context: I'm looking for a thorough, well-structured answer that covers all relevant aspects of this topic.
-
-Request: ${prompt}
-
-Please ensure your response:
-- Is clear, detailed, and actionable
-- Includes specific examples where relevant
-- Addresses potential follow-up questions
-- Is organized in a logical structure
-- Provides practical insights and recommendations
-
-Please proceed with your response.`;
-  } else {
-    // Free tier: Basic optimization
-    model = 'deepseek-chat';
-    tokensUsed = Math.floor(prompt.length * 0.5) + Math.floor(prompt.length * 0.8);
-    
-    optimizedPrompt = `Please provide a helpful and detailed response to: ${prompt}
-
-Please make sure to:
-- Be clear and specific
-- Provide useful information
-- Give practical examples if relevant
-- Structure your response well
-
-Thank you!`;
-  }
-
-  return {
-    optimizedPrompt,
-    tokensUsed,
-    model,
-    tier
-  };
-}
-
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user || !(session.user as any).id) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const body: OptimizeRequest = await request.json();
     
     // Validate request
@@ -94,13 +52,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Optimize the prompt
-    const result = await optimizePrompt(body.prompt, body.tier);
+    // Check quota before optimization
+    const quotaCheck = await databaseService.checkQuota((session.user as any).id);
+    if (!quotaCheck.canOptimize) {
+      return NextResponse.json(
+        { 
+          error: 'Quota exceeded',
+          quotaInfo: {
+            remaining: quotaCheck.remainingQuota,
+            limit: quotaCheck.quotaLimit,
+            tier: quotaCheck.tier
+          }
+        },
+        { status: 429 }
+      );
+    }
 
-    // TODO: Log the optimization for analytics and quota tracking
-    // await logOptimization(body.prompt, result.optimizedPrompt, result.tokensUsed, result.model, body.tier);
+    // Optimize the prompt using AI service
+    const result = await aiService.optimizePrompt(body);
 
-    return NextResponse.json(result);
+    // Log the optimization for analytics and quota tracking
+    await databaseService.logOptimization({
+      userId: (session.user as any).id,
+      originalPrompt: body.prompt,
+      optimizedPrompt: result.optimizedPrompt,
+      tokensUsed: result.tokensUsed,
+      model: result.model,
+      tier: body.tier,
+    });
+
+    // Add quota info to response
+    const updatedQuota = await databaseService.checkQuota((session.user as any).id);
+    
+    return NextResponse.json({
+      ...result,
+      quotaInfo: {
+        remaining: updatedQuota.remainingQuota,
+        limit: updatedQuota.quotaLimit,
+        tier: updatedQuota.tier
+      }
+    });
   } catch (error) {
     console.error('Optimization API error:', error);
     return NextResponse.json(
