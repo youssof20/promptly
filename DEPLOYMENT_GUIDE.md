@@ -24,7 +24,7 @@ This guide will walk you through setting up all the necessary services and deplo
 
 ## 1. 🗄️ Database Setup (Supabase)
 
-### Step 1: Create Supabase Project
+### Step 1: Create Supabase Project & Connect to Vercel
 1. Go to [supabase.com](https://supabase.com)
 2. Click "Start your project"
 3. Sign in with GitHub
@@ -37,22 +37,24 @@ This guide will walk you through setting up all the necessary services and deplo
 6. Click "Create new project"
 7. Wait for setup to complete (2-3 minutes)
 
-### Step 2: Get Database Credentials
-1. Go to **Settings** → **Database**
-2. Copy the **Connection string** (URI)
-3. Go to **Settings** → **API**
-4. Copy:
-   - **Project URL**
-   - **anon public** key
-   - **service_role** key
+### Step 2: Connect Supabase to Vercel (✅ DONE)
+1. In your Vercel project dashboard
+2. Go to **Settings** → **Integrations**
+3. Find **Supabase** and click **Add Integration**
+4. Select your Supabase project
+5. Vercel will automatically add all environment variables
 
 ### Step 3: Run Database Migrations
+Since you have the environment variables in Vercel, you need to run the database setup. You have two options:
+
+**Option A: Run locally (Recommended)**
 ```bash
 # Install dependencies
 npm install
 
-# Set up database URL (temporarily)
-export DATABASE_URL="your-supabase-connection-string"
+# Set up your local .env.local file with the DATABASE_URL from Vercel
+# Copy the POSTGRES_PRISMA_URL from Vercel and add it to .env.local as DATABASE_URL
+echo 'DATABASE_URL="your-postgres-prisma-url-from-vercel"' > apps/web/.env.local
 
 # Generate Prisma client
 cd packages/database
@@ -63,6 +65,26 @@ npx prisma db push
 
 # Verify tables were created
 npx prisma studio
+```
+
+**Option B: Run through Vercel CLI**
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Login to Vercel
+vercel login
+
+# Link to your project
+vercel link
+
+# Pull environment variables
+vercel env pull .env.local
+
+# Run migrations
+cd packages/database
+npx prisma generate
+npx prisma db push
 ```
 
 ---
@@ -134,15 +156,32 @@ npx prisma studio
 5. Configure project:
    - **Framework Preset**: Next.js
    - **Root Directory**: `apps/web`
-   - **Build Command**: `npm run build`
+   - **Build Command**: `turbo run build --filter=promptly-web`
    - **Output Directory**: `.next`
 
 ### Step 2: Configure Environment Variables
-In Vercel dashboard, go to **Settings** → **Environment Variables** and add:
+In Vercel dashboard, go to **Settings** → **Environment Variables** and add the remaining variables:
+
+**✅ Already Added by Supabase Integration:**
+- `POSTGRES_URL`
+- `POSTGRES_PRISMA_URL` 
+- `SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `POSTGRES_URL_NON_POOLING`
+- `SUPABASE_JWT_SECRET`
+- `POSTGRES_USER`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `POSTGRES_PASSWORD`
+- `POSTGRES_DATABASE`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `POSTGRES_HOST`
+- `SUPABASE_ANON_KEY`
+
+**➕ Add These Remaining Variables:**
 
 ```bash
-# Database
-DATABASE_URL=postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
+# Database (use the Prisma URL from Supabase integration)
+DATABASE_URL=your-postgres-prisma-url-from-supabase
 
 # NextAuth
 NEXTAUTH_URL=https://your-domain.vercel.app
@@ -153,11 +192,6 @@ GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 GITHUB_CLIENT_ID=your-github-client-id
 GITHUB_CLIENT_SECRET=your-github-client-secret
-
-# Supabase
-SUPABASE_URL=https://[project-ref].supabase.co
-SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
 # Stripe
 STRIPE_PUBLISHABLE_KEY=pk_live_...
@@ -173,10 +207,6 @@ NEXT_PUBLIC_STRIPE_PRO_PRICE_ID=price_...
 # AI APIs
 OPENAI_API_KEY=sk-...
 DEEPSEEK_API_KEY=sk-...
-
-# Redis (Optional - for caching)
-UPSTASH_REDIS_REST_URL=https://...
-UPSTASH_REDIS_REST_TOKEN=...
 
 # App Configuration
 NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
