@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx turbo@1.10.12 run build --filter=promptly-web...",
-  "outputDirectory": "apps/web/.next",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
   "installCommand": "npm install"
 }
