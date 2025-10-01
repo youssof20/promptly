@@ -1,0 +1,52 @@
+
+> promptly-web@1.0.0 build
+> next build --turbopack
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\youss\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\youss\OneDrive\Documents\Code\promptly\package-lock.json
+
+   ▲ Next.js 15.5.4 (Turbopack)
+
+   Creating an optimized production build ...
+ ✓ Finished writing to disk in 116ms
+ ✓ Compiled successfully in 9.6s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/16) ...
+   Generating static pages (4/16) 
+   Generating static pages (8/16) 
+   Generating static pages (12/16) 
+ ✓ Generating static pages (16/16)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                               Size  First Load JS
+┌ ○ /                                  5.27 kB         129 kB
+├ ○ /_not-found                            0 B         124 kB
+├ ƒ /api/auth/[...nextauth]                0 B            0 B
+├ ƒ /api/optimize                          0 B            0 B
+├ ƒ /api/quota                             0 B            0 B
+├ ƒ /api/subscription/billing-portal       0 B            0 B
+├ ƒ /api/subscription/create-checkout      0 B            0 B
+├ ƒ /api/user/stats                        0 B            0 B
+├ ƒ /api/webhooks/stripe                   0 B            0 B
+├ ○ /auth/error                        4.43 kB         128 kB
+├ ○ /auth/signin                       5.17 kB         129 kB
+├ ○ /auth/signup                       5.17 kB         129 kB
+├ ○ /dashboard                         2.16 kB         126 kB
+└ ○ /pricing                           2.42 kB         126 kB
++ First Load JS shared by all           131 kB
+  ├ chunks/8968d52d9c874b7c.js         59.2 kB
+  ├ chunks/be38f0aeae4e75ab.js           14 kB
+  ├ chunks/e293c000f03983fc.js         17.1 kB
+  └ other shared chunks (total)          41 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

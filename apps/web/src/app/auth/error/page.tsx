@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 const errorMessages: Record<string, string> = {
   Configuration: 'There is a problem with the server configuration.',
@@ -10,7 +11,7 @@ const errorMessages: Record<string, string> = {
   Default: 'An error occurred during authentication.',
 };
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error') || 'Default';
   const errorMessage = errorMessages[error] || errorMessages.Default;
@@ -62,5 +63,13 @@ export default function AuthErrorPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthErrorContent />
+    </Suspense>
   );
 }

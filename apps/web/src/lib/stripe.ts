@@ -1,13 +1,12 @@
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set');
-}
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-12-18.acacia',
-  typescript: true,
-});
+// Initialize Stripe only if the secret key is available
+export const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-12-18.acacia',
+      typescript: true,
+    })
+  : null;
 
 // Stripe product and price IDs
 export const STRIPE_CONFIG = {
@@ -30,6 +29,10 @@ export type SubscriptionTier = typeof SUBSCRIPTION_TIERS[keyof typeof SUBSCRIPTI
 
 // Create or retrieve Stripe customer
 export async function getOrCreateStripeCustomer(userId: string, email: string, name?: string) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   try {
     // First, check if customer already exists in our database
     const { prisma } = await import('@promptly/database');
@@ -79,6 +82,10 @@ export async function createCheckoutSession(
   successUrl: string,
   cancelUrl: string
 ) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   try {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -109,6 +116,10 @@ export async function createCheckoutSession(
 
 // Create billing portal session
 export async function createBillingPortalSession(customerId: string, returnUrl: string) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   try {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
@@ -124,6 +135,10 @@ export async function createBillingPortalSession(customerId: string, returnUrl: 
 
 // Get subscription details
 export async function getSubscription(subscriptionId: string) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
       expand: ['default_payment_method', 'items.data.price'],
@@ -138,6 +153,10 @@ export async function getSubscription(subscriptionId: string) {
 
 // Cancel subscription
 export async function cancelSubscription(subscriptionId: string) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   try {
     const subscription = await stripe.subscriptions.cancel(subscriptionId);
     return subscription;
@@ -149,6 +168,10 @@ export async function cancelSubscription(subscriptionId: string) {
 
 // Update subscription
 export async function updateSubscription(subscriptionId: string, newPriceId: string) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured');
+  }
+
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     
