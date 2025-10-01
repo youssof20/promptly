@@ -104,3 +104,6 @@ Thumbs.db
 # Extension specific
 apps/extension/dist/
 apps/extension/*.zip
+
+# Turborepo cache
+.turbo/
