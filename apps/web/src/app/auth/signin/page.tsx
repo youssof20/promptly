@@ -62,7 +62,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-white mb-2">Welcome to Promptly</h1>
@@ -118,11 +118,11 @@ export default function SignInPage() {
           <div className="mt-6 text-center">
             <p className="text-slate-400 text-sm">
               By signing in, you agree to our{' '}
-              <Link href="/terms" className="text-blue-400 hover:text-blue-300">
+              <Link href="/terms" className="text-electric-blue hover:text-electric-blue/80">
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link href="/privacy" className="text-blue-400 hover:text-blue-300">
+              <Link href="/privacy" className="text-electric-blue hover:text-electric-blue/80">
                 Privacy Policy
               </Link>
             </p>
@@ -132,7 +132,7 @@ export default function SignInPage() {
         <div className="text-center">
           <p className="text-slate-400">
             Don't have an account?{' '}
-            <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+            <Link href="/auth/signup" className="text-electric-blue hover:text-electric-blue/80 font-medium">
               Sign up here
             </Link>
           </p>

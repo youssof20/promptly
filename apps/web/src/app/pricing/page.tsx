@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const plans = [
   {
@@ -89,13 +90,26 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black">
       {/* Navigation */}
-      <nav className="border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="border-b border-slate-800/50 bg-rich-black/95 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold gradient-text">Promptly</h1>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 relative">
+                  <Image
+                    src="/icon-500.png"
+                    alt="Promptly Logo"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
+                  Promptly
+                </h1>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               {session ? (
@@ -115,7 +129,7 @@ export default function PricingPage() {
                   </button>
                   <button
                     onClick={() => router.push('/auth/signup')}
-                    className="gradient-bg text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+                    className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
                   >
                     Get Started
                   </button>
@@ -131,7 +145,7 @@ export default function PricingPage() {
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Simple, Transparent
-            <span className="block gradient-text">Pricing</span>
+            <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">Pricing</span>
           </h1>
           <p className="text-xl text-slate-300 max-w-3xl mx-auto">
             Choose the plan that fits your needs. Upgrade or downgrade at any time.
@@ -151,7 +165,7 @@ export default function PricingPage() {
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-4 py-1 rounded-full text-sm font-medium">
                     Most Popular
                   </span>
                 </div>
@@ -192,7 +206,7 @@ export default function PricingPage() {
                 disabled={isLoading === plan.name}
                 className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
                   plan.popular
-                    ? 'gradient-bg text-white hover:opacity-90'
+                    ? 'bg-gradient-to-r from-electric-blue to-vibrant-purple text-white hover:opacity-90'
                     : 'border border-slate-600 text-white hover:bg-slate-700/50'
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
