@@ -107,3 +107,4 @@ apps/extension/*.zip
 
 # Turborepo cache
 .turbo/
+.vercel

@@ -4,6 +4,7 @@
 interface PromptlyConfig {
   apiUrl: string;
   isEnabled: boolean;
+  userToken: string | null;
   tier: 'free' | 'pro';
   quotaUsed: number;
   quotaLimit: number;
@@ -13,6 +14,7 @@ class PromptlyBackground {
   private config: PromptlyConfig = {
     apiUrl: 'https://promptly-two-ashy.vercel.app',
     isEnabled: true,
+    userToken: null,
     tier: 'free',
     quotaUsed: 0,
     quotaLimit: 50
@@ -31,16 +33,28 @@ class PromptlyBackground {
     
     // Initialize quota tracking
     await this.initializeQuotaTracking();
+    
+    // Check authentication status
+    await this.checkAuthStatus();
   }
 
   private async loadConfig() {
     try {
       const result = await chrome.storage.sync.get(['promptlyConfig']);
-      if (result.promptlyConfig) {
+      if (result.promptlyConfig && typeof result.promptlyConfig === 'object') {
         this.config = { ...this.config, ...result.promptlyConfig };
       }
     } catch (error) {
       console.warn('Failed to load Promptly config:', error);
+      // Reset to default config if corrupted
+      this.config = {
+        apiUrl: 'https://promptly-two-ashy.vercel.app',
+        isEnabled: true,
+        userToken: null,
+        tier: 'free',
+        quotaUsed: 0,
+        quotaLimit: 50
+      };
     }
   }
 
@@ -139,6 +153,21 @@ class PromptlyBackground {
         });
         break;
 
+      case 'SET_USER_TOKEN':
+        this.config.userToken = message.token;
+        await this.saveConfig();
+        sendResponse({ success: true });
+        break;
+
+      case 'REFRESH_AUTH':
+        await this.checkAuthStatus();
+        sendResponse({ 
+          success: true, 
+          authenticated: !!this.config.userToken,
+          tier: this.config.tier 
+        });
+        break;
+
       default:
         sendResponse({ error: 'Unknown message type' });
     }
@@ -198,31 +227,38 @@ class PromptlyBackground {
     }
   }
 
-  private async optimizePrompt(prompt: string, _tier: string = 'free'): Promise<any> {
+  private async optimizePrompt(prompt: string, tier: string = 'free'): Promise<any> {
     // Check quota
     if (this.config.quotaUsed >= this.config.quotaLimit) {
       throw new Error('Quota exceeded. Please upgrade to Pro for more optimizations.');
     }
 
     try {
-      // Call the real API
+      console.log('Calling Promptly API:', `${this.config.apiUrl}/api/optimize/extension`);
+      
+      // Call your existing API
       const response = await fetch(`${this.config.apiUrl}/api/optimize/extension`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(this.config.userToken && { 'Authorization': `Bearer ${this.config.userToken}` })
         },
         body: JSON.stringify({
           prompt,
-          tier: _tier || 'free'
+          tier: tier || this.config.tier
         })
       });
 
+      console.log('API response status:', response.status);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('API error:', errorData);
         throw new Error(errorData.error || `API request failed: ${response.status}`);
       }
 
       const result = await response.json();
+      console.log('API result:', result);
       
       if (!result.success) {
         throw new Error(result.error || 'Optimization failed');
@@ -235,6 +271,7 @@ class PromptlyBackground {
       return { optimizedPrompt: result.optimized };
     } catch (error) {
       console.error('Prompt optimization failed:', error);
+      console.log('Falling back to simple optimization');
       // Fallback to simple optimization if API fails
       const optimizedPrompt = this.simpleOptimize(prompt);
       this.config.quotaUsed++;
@@ -283,6 +320,17 @@ class PromptlyBackground {
       await chrome.storage.local.set({ lastQuotaReset: today });
     }
   }
+
+  private async checkAuthStatus() {
+    // For now, we'll assume user is not authenticated
+    // The popup will handle showing the sign-in state
+    // Authentication will be handled when user clicks sign in
+    this.config.userToken = null;
+    this.config.tier = 'free';
+    await this.saveConfig();
+    console.log('Auth status check completed - user not authenticated');
+  }
+
 }
 
 // Initialize the background script
