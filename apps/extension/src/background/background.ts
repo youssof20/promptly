@@ -11,7 +11,7 @@ interface PromptlyConfig {
 
 class PromptlyBackground {
   private config: PromptlyConfig = {
-    apiUrl: 'https://api.promptly.app',
+    apiUrl: 'https://promptly-two-ashy.vercel.app',
     isEnabled: true,
     tier: 'free',
     quotaUsed: 0,
@@ -118,7 +118,7 @@ class PromptlyBackground {
       case 'OPTIMIZE_PROMPT':
         try {
           const result = await this.optimizePrompt(message.prompt, message.tier);
-          sendResponse({ success: true, result });
+          sendResponse({ success: true, optimized: result.optimizedPrompt });
         } catch (error) {
           sendResponse({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
         }
@@ -178,12 +178,24 @@ class PromptlyBackground {
 
   private isSupportedPlatform(url: string): boolean {
     const supportedDomains = [
-      'chat.openai.com',
-      'claude.ai',
-      'poe.com',
-      'bard.google.com',
-      'chatgpt.com',
-      'deepseek.com'
+      // Major chat AI platforms
+      'openai.com', 'chatgpt.com', 'claude.ai', 'poe.com', 'bard.google.com', 'gemini.google.com', 'deepseek.com',
+      // Microsoft and Bing
+      'copilot.microsoft.com', 'bing.com', 'copilot.azure.com',
+      // Perplexity & You.com
+      'perplexity.ai', 'you.com',
+      // Hugging Face & open LLM demos
+      'huggingface.co', 'together.ai', 'lmsys.org',
+      // Meta & others
+      'meta.ai', 'mistral.ai', 'anthropic.com',
+      // X/Twitter & Grok
+      'x.com', 'twitter.com',
+      // Writing & productivity AI
+      'notion.so', 'docs.google.com', 'word.office.com', 'grammarly.com', 'jasper.ai', 'writesonic.com', 'copy.ai', 'rytr.me',
+      // Developer-oriented AIs
+      'cursor.sh', 'replit.com', 'github.com', 'stackblitz.com', 'codeium.com',
+      // Research & productivity AI
+      'chatpaper.ai', 'consensus.app', 'scite.ai', 'typeset.io'
     ];
 
     try {
@@ -194,39 +206,48 @@ class PromptlyBackground {
     }
   }
 
-  private async optimizePrompt(prompt: string, tier: string = 'free'): Promise<any> {
+  private async optimizePrompt(prompt: string, _tier: string = 'free'): Promise<any> {
     // Check quota
     if (this.config.quotaUsed >= this.config.quotaLimit) {
       throw new Error('Quota exceeded. Please upgrade to Pro for more optimizations.');
     }
 
     try {
-      const response = await fetch(`${this.config.apiUrl}/api/optimize`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt,
-          tier: tier || this.config.tier
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
-      const result = await response.json();
+      // For now, return a simple optimization without API call
+      // This will be replaced with actual API integration later
+      const optimizedPrompt = this.simpleOptimize(prompt);
       
       // Increment quota usage
       this.config.quotaUsed++;
       await this.saveConfig();
 
-      return result;
+      return { optimizedPrompt };
     } catch (error) {
       console.error('Prompt optimization failed:', error);
       throw error;
     }
+  }
+
+  private simpleOptimize(prompt: string): string {
+    // Simple optimization logic for testing
+    let optimized = prompt.trim();
+    
+    // Add structure if missing
+    if (!optimized.includes('Please') && !optimized.includes('Can you') && !optimized.includes('I need')) {
+      optimized = `Please ${optimized.toLowerCase()}`;
+    }
+    
+    // Add specificity if too vague
+    if (optimized.length < 50 && !optimized.includes('specific') && !optimized.includes('detailed')) {
+      optimized += '. Please provide specific and detailed information.';
+    }
+    
+    // Add context if missing
+    if (!optimized.includes('context') && !optimized.includes('background') && !optimized.includes('situation')) {
+      optimized += ' Please provide context and background information.';
+    }
+    
+    return optimized;
   }
 
   private async initializeQuotaTracking() {

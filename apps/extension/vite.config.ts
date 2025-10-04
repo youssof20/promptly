@@ -19,15 +19,25 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
+    minify: 'terser',
+    terserOptions: {
+      mangle: {
+        keep_fnames: true
+      }
+    },
     rollupOptions: {
       input: {
-        popup: resolve(__dirname, 'src/popup/index.html'),
+        'popup.html': resolve(__dirname, 'src/popup/index.html'),
+        'popup.js': resolve(__dirname, 'src/popup/popup.ts'),
         content: resolve(__dirname, 'src/content/content.ts'),
+        'content.css': resolve(__dirname, 'src/content/content.css'),
         background: resolve(__dirname, 'src/background/background.ts'),
         injected: resolve(__dirname, 'src/injected/injected.ts')
       },
       output: {
-        entryFileNames: '[name].js',
+        entryFileNames: (chunkInfo) => {
+          return chunkInfo.name === 'popup.js' ? 'popup.js' : '[name].js';
+        },
         chunkFileNames: '[name].js',
         assetFileNames: '[name].[ext]'
       }

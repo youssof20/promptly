@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run postbuild",
+    "postbuild": "copy \"dist\\src\\popup\\index.html\" \"dist\\popup.html\"",
     "preview": "vite preview",
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.246",
     "@types/node": "^20.8.0",
+    "terser": "^5.44.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vite-plugin-static-copy": "^0.13.0"

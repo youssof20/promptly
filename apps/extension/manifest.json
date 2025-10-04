@@ -14,7 +14,9 @@
     "https://poe.com/*",
     "https://bard.google.com/*",
     "https://chatgpt.com/*",
-    "https://deepseek.com/*"
+    "https://deepseek.com/*",
+    "https://x.com/*",
+    "https://twitter.com/*"
   ],
   "background": {
     "service_worker": "dist/background.js"
@@ -27,7 +29,9 @@
         "https://poe.com/*",
         "https://bard.google.com/*",
         "https://chatgpt.com/*",
-        "https://deepseek.com/*"
+        "https://deepseek.com/*",
+        "https://x.com/*",
+        "https://twitter.com/*"
       ],
       "js": ["dist/content.js"],
       "css": ["dist/content.css"],

@@ -1,407 +1,392 @@
 // Content script for Promptly browser extension
-// This script runs on AI chat pages and injects the optimization UI
+// Detects AI chat platforms and provides minimal hint-based optimization
 
-interface PromptlyConfig {
-  apiUrl: string;
-  isEnabled: boolean;
-  tier: 'free' | 'pro';
-  quotaUsed: number;
-  quotaLimit: number;
-}
+console.log('Promptly content script loaded');
 
-class PromptlyContentScript {
-  private config: PromptlyConfig = {
-    apiUrl: 'https://api.promptly.app',
-    isEnabled: true,
-    tier: 'free',
-    quotaUsed: 0,
-    quotaLimit: 50
+// Platform detection with comprehensive support
+const detectPlatform = (): string | null => {
+  const hostname = window.location.hostname;
+  
+  // Major chat AI platforms
+  if (hostname.includes('openai.com') || hostname.includes('chatgpt.com')) {
+    return 'chatgpt';
+  } else if (hostname.includes('claude.ai')) {
+    return 'claude';
+  } else if (hostname.includes('poe.com')) {
+    return 'poe';
+  } else if (hostname.includes('bard.google.com') || hostname.includes('gemini.google.com')) {
+    return 'bard';
+  } else if (hostname.includes('deepseek.com')) {
+    return 'deepseek';
+  } else if (hostname.includes('perplexity.ai')) {
+    return 'perplexity';
+  } else if (hostname.includes('you.com')) {
+    return 'you';
+  } else if (hostname.includes('huggingface.co')) {
+    return 'huggingface';
+  } else if (hostname.includes('together.ai')) {
+    return 'together';
+  } else if (hostname.includes('lmsys.org')) {
+    return 'lmsys';
+  } else if (hostname.includes('meta.ai')) {
+    return 'meta';
+  } else if (hostname.includes('mistral.ai')) {
+    return 'mistral';
+  } else if (hostname.includes('anthropic.com')) {
+    return 'anthropic';
+  } else if (hostname.includes('copilot.microsoft.com') || hostname.includes('bing.com')) {
+    return 'copilot';
+  } else if (hostname.includes('x.com') || hostname.includes('twitter.com')) {
+    return 'grok';
+  } else if (hostname.includes('notion.so')) {
+    return 'notion';
+  } else if (hostname.includes('docs.google.com')) {
+    return 'google-docs';
+  } else if (hostname.includes('cursor.sh')) {
+    return 'cursor';
+  } else if (hostname.includes('replit.com')) {
+    return 'replit';
+  } else if (hostname.includes('github.com')) {
+    return 'github-copilot';
+  }
+  
+  return 'generic';
+};
+
+// Chatbox detection patterns for different platforms
+const getChatboxSelectors = (platform: string): string[] => {
+  const selectors: Record<string, string[]> = {
+    chatgpt: [
+      'textarea[placeholder*="Message"]',
+      'textarea[data-id="root"]',
+      '#prompt-textarea',
+      'textarea[placeholder*="Send a message"]'
+    ],
+    claude: [
+      'textarea[placeholder*="Talk to Claude"]',
+      'textarea[data-testid="composer-text-input"]',
+      'textarea[placeholder*="Message"]'
+    ],
+    bard: [
+      'textarea[placeholder*="Enter a prompt"]',
+      'textarea[data-testid="composer-text-input"]',
+      'textarea[placeholder*="Message"]'
+    ],
+    poe: [
+      'textarea[placeholder*="Message"]',
+      'textarea[data-testid="composer-text-input"]'
+    ],
+    deepseek: [
+      'textarea[placeholder*="Message"]',
+      'textarea[data-testid="composer-text-input"]'
+    ],
+    perplexity: [
+      'textarea[placeholder*="Ask anything"]',
+      'textarea[data-testid="composer-text-input"]'
+    ],
+    you: [
+      'textarea[placeholder*="Ask anything"]',
+      'textarea[data-testid="composer-text-input"]'
+    ],
+    grok: [
+      'textarea[placeholder*="Ask Grok"]',
+      'textarea[data-testid="composer-text-input"]',
+      'textarea[placeholder*="Message"]',
+      'div[contenteditable="true"][data-testid="tweetTextarea_0"]'
+    ],
+    generic: [
+      'textarea[placeholder*="Message"]',
+      'textarea[placeholder*="Ask"]',
+      'textarea[placeholder*="Type"]',
+      'textarea[placeholder*="Enter"]',
+      'textarea[placeholder*="Write"]',
+      'textarea[placeholder*="Send"]',
+      'textarea[data-testid*="composer"]',
+      'textarea[data-testid*="input"]',
+      'textarea[role="textbox"]',
+      'div[contenteditable="true"]',
+      'div[role="textbox"]'
+    ]
   };
+  
+  return selectors[platform] || selectors.generic;
+};
 
-  // private injectedUI: HTMLElement | null = null;
-  private isOptimizing = false;
-
-  constructor() {
-    this.init();
-  }
-
-  private async init() {
-    // Load configuration from storage
-    await this.loadConfig();
-    
-    // Only proceed if extension is enabled
-    if (!this.config.isEnabled) return;
-
-    // Wait for page to be ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.setup());
-    } else {
-      this.setup();
+// Find chatbox element
+const findChatbox = (platform: string): HTMLTextAreaElement | HTMLDivElement | null => {
+  const selectors = getChatboxSelectors(platform);
+  
+  for (const selector of selectors) {
+    const element = document.querySelector(selector) as HTMLTextAreaElement | HTMLDivElement;
+    if (element && isVisible(element)) {
+      return element;
     }
   }
+  
+  return null;
+};
 
-  private async loadConfig() {
-    try {
-      const result = await chrome.storage.sync.get(['promptlyConfig']);
-      if (result.promptlyConfig) {
-        this.config = { ...this.config, ...result.promptlyConfig };
+// Check if element is visible
+const isVisible = (element: Element): boolean => {
+  const rect = element.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0 && rect.top >= 0 && rect.left >= 0;
+};
+
+// Create minimal optimization hint UI
+const createOptimizationHint = (): HTMLElement => {
+  const hint = document.createElement('div');
+  hint.className = 'promptly-hint';
+  hint.innerHTML = `
+    <div class="promptly-hint-content">
+      <div class="promptly-hint-icon">⚡</div>
+      <div class="promptly-hint-text">
+        <div class="promptly-hint-title">Optimize with Promptly</div>
+        <div class="promptly-hint-subtitle">Click to improve your prompt</div>
+      </div>
+    </div>
+  `;
+  return hint;
+};
+
+// Position hint relative to chatbox
+const positionHint = (hint: HTMLElement, chatbox: Element): void => {
+  const rect = chatbox.getBoundingClientRect();
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+  
+  hint.style.position = 'absolute';
+  hint.style.top = `${rect.bottom + scrollTop + 8}px`;
+  hint.style.left = `${rect.left + scrollLeft}px`;
+  hint.style.zIndex = '10000';
+};
+
+// Show optimization hint
+const showHint = (chatbox: Element): void => {
+  // Remove existing hint
+  const existingHint = document.querySelector('.promptly-hint');
+  if (existingHint) {
+    existingHint.remove();
+  }
+  
+  const hint = createOptimizationHint();
+  positionHint(hint, chatbox);
+  
+  // Add click handler
+  hint.addEventListener('click', () => {
+    optimizePrompt(chatbox);
+  });
+  
+  document.body.appendChild(hint);
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    if (hint.parentNode) {
+      hint.remove();
+    }
+  }, 5000);
+};
+
+// Optimize prompt
+const optimizePrompt = async (chatbox: Element): Promise<void> => {
+  const text = chatbox.textContent || (chatbox as HTMLTextAreaElement).value || '';
+  
+  if (!text.trim()) {
+    return;
+  }
+  
+  try {
+    // Send message to background script for optimization
+    const response = await chrome.runtime.sendMessage({
+      type: 'OPTIMIZE_PROMPT',
+      prompt: text
+    });
+    
+    if (response && response.optimized) {
+      // Replace text in chatbox
+      if (chatbox instanceof HTMLTextAreaElement) {
+        chatbox.value = response.optimized;
+        chatbox.dispatchEvent(new Event('input', { bubbles: true }));
+      } else {
+        chatbox.textContent = response.optimized;
+        chatbox.dispatchEvent(new Event('input', { bubbles: true }));
       }
-    } catch (error) {
-      console.warn('Failed to load Promptly config:', error);
+      
+      // Show success feedback
+      showSuccessFeedback();
     }
+  } catch (error) {
+    console.error('Optimization failed:', error);
+    showErrorFeedback();
   }
+};
 
-  private setup() {
-    // Find text areas and input fields on the page
-    this.observeTextInputs();
+// Show success feedback
+const showSuccessFeedback = (): void => {
+  const feedback = document.createElement('div');
+  feedback.className = 'promptly-feedback promptly-success';
+  feedback.textContent = '✓ Prompt optimized!';
+  feedback.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #22C55E;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10001;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    animation: promptly-slide-in 0.3s ease-out;
+  `;
+  
+  document.body.appendChild(feedback);
+  
+  setTimeout(() => {
+    feedback.remove();
+  }, 3000);
+};
+
+// Show error feedback
+const showErrorFeedback = (): void => {
+  const feedback = document.createElement('div');
+  feedback.className = 'promptly-feedback promptly-error';
+  feedback.textContent = '✗ Optimization failed';
+  feedback.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #DC2626;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10001;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    animation: promptly-slide-in 0.3s ease-out;
+  `;
+  
+  document.body.appendChild(feedback);
+  
+  setTimeout(() => {
+    feedback.remove();
+  }, 3000);
+};
+
+// Monitor chatbox for changes
+const monitorChatbox = (chatbox: Element): void => {
+  let lastValue = '';
+  let hintTimeout: number | null = null;
+  
+  const checkForChanges = () => {
+    const currentValue = chatbox.textContent || (chatbox as HTMLTextAreaElement).value || '';
     
-    // Listen for messages from the extension
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      this.handleMessage(message, sender, sendResponse);
-    });
-  }
+    if (currentValue !== lastValue && currentValue.length > 10) {
+      lastValue = currentValue;
+      
+      // Clear existing timeout
+      if (hintTimeout) {
+        clearTimeout(hintTimeout);
+      }
+      
+      // Show hint after a short delay to avoid flickering
+      hintTimeout = window.setTimeout(() => {
+        showHint(chatbox);
+      }, 300);
+    }
+  };
+  
+  // Listen for input events
+  chatbox.addEventListener('input', checkForChanges);
+  chatbox.addEventListener('keyup', checkForChanges);
+  chatbox.addEventListener('paste', () => {
+    setTimeout(checkForChanges, 100);
+  });
+  
+  // Also listen for focus events to catch programmatic changes
+  chatbox.addEventListener('focus', checkForChanges);
+};
 
-  private observeTextInputs() {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            const element = node as Element;
-            this.checkForTextInputs(element);
-          }
-        });
-      });
+// Initialize extension
+const init = () => {
+  const platform = detectPlatform();
+  
+  if (platform) {
+    console.log(`Promptly detected platform: ${platform}`);
+    
+    let chatboxFound = false;
+    let retryCount = 0;
+    const maxRetries = 10;
+    
+    // Wait for page to fully load
+    const checkForChatbox = () => {
+      if (chatboxFound) return;
+      
+      const chatbox = findChatbox(platform);
+      
+      if (chatbox) {
+        console.log('Chatbox found, setting up monitoring');
+        chatbox.setAttribute('data-promptly-monitored', 'true');
+        monitorChatbox(chatbox);
+        chatboxFound = true;
+      } else if (retryCount < maxRetries) {
+        retryCount++;
+        // Retry with exponential backoff
+        setTimeout(checkForChatbox, Math.min(1000 * retryCount, 5000));
+      }
+    };
+    
+    // Start checking for chatbox immediately
+    checkForChatbox();
+    
+    // Also check when DOM changes (for SPA navigation)
+    const observer = new MutationObserver(() => {
+      if (!chatboxFound) {
+        const chatbox = findChatbox(platform);
+        if (chatbox && !chatbox.hasAttribute('data-promptly-monitored')) {
+          console.log('Chatbox found via DOM mutation, setting up monitoring');
+          chatbox.setAttribute('data-promptly-monitored', 'true');
+          monitorChatbox(chatbox);
+          chatboxFound = true;
+        }
+      }
     });
-
+    
     observer.observe(document.body, {
       childList: true,
       subtree: true
     });
-
-    // Check existing inputs
-    this.checkForTextInputs(document.body);
   }
+};
 
-  private checkForTextInputs(container: Element) {
-    const selectors = [
-      'textarea',
-      'input[type="text"]',
-      '[contenteditable="true"]',
-      '[role="textbox"]'
-    ];
-
-    selectors.forEach(selector => {
-      const inputs = container.querySelectorAll(selector);
-      inputs.forEach(input => this.attachPromptlyUI(input as HTMLElement));
-    });
-  }
-
-  private attachPromptlyUI(input: HTMLElement) {
-    // Skip if already has Promptly UI
-    if (input.closest('.promptly-container')) return;
-
-    // Create container
-    const container = document.createElement('div');
-    container.className = 'promptly-container';
-    container.style.cssText = `
-      position: relative;
-      margin-top: 8px;
-    `;
-
-    // Wrap the input
-    input.parentNode?.insertBefore(container, input);
-    container.appendChild(input);
-
-    // Add optimize button
-    this.addOptimizeButton(container, input);
-  }
-
-  private addOptimizeButton(container: HTMLElement, input: HTMLElement) {
-    const button = document.createElement('button');
-    button.className = 'promptly-optimize-btn';
-    button.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
-      </svg>
-      Optimize
-    `;
-    
-    button.style.cssText = `
-      position: absolute;
-      top: -40px;
-      right: 0;
-      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.2s ease;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    `;
-
-    // Show button on focus
-    input.addEventListener('focus', () => {
-      button.style.opacity = '1';
-      button.style.transform = 'translateY(0)';
-    });
-
-    // Hide button on blur (with delay)
-    input.addEventListener('blur', () => {
-      setTimeout(() => {
-        if (document.activeElement !== input) {
-          button.style.opacity = '0';
-          button.style.transform = 'translateY(10px)';
-        }
-      }, 200);
-    });
-
-    // Handle click
-    button.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this.optimizePrompt(input);
-    });
-
-    container.appendChild(button);
-  }
-
-  private async optimizePrompt(input: HTMLElement) {
-    if (this.isOptimizing) return;
-
-    const originalText = this.getInputValue(input);
-    if (!originalText.trim()) return;
-
-    this.isOptimizing = true;
-    this.showOptimizingState(input);
-
-    try {
-      const optimizedText = await this.callOptimizationAPI(originalText);
-      this.showOptimizationResult(input, originalText, optimizedText);
-    } catch (error) {
-      console.error('Prompt optimization failed:', error);
-      this.showError(input, 'Optimization failed. Please try again.');
-    } finally {
-      this.isOptimizing = false;
-    }
-  }
-
-  private getInputValue(input: HTMLElement): string {
-    if (input.tagName === 'TEXTAREA' || input.tagName === 'INPUT') {
-      return (input as HTMLInputElement | HTMLTextAreaElement).value;
-    } else if (input.contentEditable === 'true') {
-      return input.textContent || '';
-    }
-    return '';
-  }
-
-  private setInputValue(input: HTMLElement, value: string) {
-    if (input.tagName === 'TEXTAREA' || input.tagName === 'INPUT') {
-      (input as HTMLInputElement | HTMLTextAreaElement).value = value;
-    } else if (input.contentEditable === 'true') {
-      input.textContent = value;
-    }
-  }
-
-  private showOptimizingState(input: HTMLElement) {
-    const button = input.parentElement?.querySelector('.promptly-optimize-btn') as HTMLButtonElement;
-    if (button) {
-      button.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="animate-spin">
-          <path d="M21 12a9 9 0 11-6.219-8.56"/>
-        </svg>
-        Optimizing...
-      `;
-      button.disabled = true;
-    }
-  }
-
-  private showOptimizationResult(input: HTMLElement, original: string, optimized: string) {
-    // Create result modal
-    const modal = this.createResultModal(original, optimized, (useOptimized) => {
-      if (useOptimized) {
-        this.setInputValue(input, optimized);
+// Add CSS animations
+const addStyles = () => {
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes promptly-slide-in {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
       }
-      modal.remove();
-    });
-
-    document.body.appendChild(modal);
-  }
-
-  private createResultModal(original: string, optimized: string, onAction: (useOptimized: boolean) => void) {
-    const modal = document.createElement('div');
-    modal.className = 'promptly-modal';
-    modal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      padding: 20px;
-    `;
-
-    modal.innerHTML = `
-      <div style="
-        background: #1F1F1F;
-        border: 1px solid #374151;
-        border-radius: 12px;
-        max-width: 800px;
-        width: 100%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-      ">
-        <div style="padding: 24px; border-bottom: 1px solid #374151;">
-          <h3 style="color: white; font-size: 20px; font-weight: 600; margin: 0 0 16px 0;">
-            ✨ Prompt Optimized
-          </h3>
-          <p style="color: #9CA3AF; margin: 0; font-size: 14px;">
-            Here's how we improved your prompt for better AI results:
-          </p>
-        </div>
-        
-        <div style="padding: 24px;">
-          <div style="margin-bottom: 24px;">
-            <h4 style="color: #9CA3AF; font-size: 14px; font-weight: 500; margin: 0 0 8px 0;">Original</h4>
-            <div style="
-              background: #0D0D0D;
-              border: 1px solid #374151;
-              border-radius: 8px;
-              padding: 16px;
-              color: #D1D5DB;
-              font-size: 14px;
-              line-height: 1.5;
-            ">${original}</div>
-          </div>
-          
-          <div style="margin-bottom: 24px;">
-            <h4 style="color: #22C55E; font-size: 14px; font-weight: 500; margin: 0 0 8px 0;">Optimized</h4>
-            <div style="
-              background: #0D0D0D;
-              border: 1px solid #22C55E;
-              border-radius: 8px;
-              padding: 16px;
-              color: #D1D5DB;
-              font-size: 14px;
-              line-height: 1.5;
-            ">${optimized}</div>
-          </div>
-          
-          <div style="display: flex; gap: 12px; justify-content: flex-end;">
-            <button class="promptly-btn-secondary" style="
-              background: transparent;
-              color: #9CA3AF;
-              border: 1px solid #374151;
-              border-radius: 6px;
-              padding: 10px 20px;
-              font-size: 14px;
-              font-weight: 500;
-              cursor: pointer;
-              transition: all 0.2s ease;
-            ">Cancel</button>
-            <button class="promptly-btn-primary" style="
-              background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-              color: white;
-              border: none;
-              border-radius: 6px;
-              padding: 10px 20px;
-              font-size: 14px;
-              font-weight: 500;
-              cursor: pointer;
-              transition: all 0.2s ease;
-            ">Use Optimized</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Add event listeners
-    modal.querySelector('.promptly-btn-secondary')?.addEventListener('click', () => onAction(false));
-    modal.querySelector('.promptly-btn-primary')?.addEventListener('click', () => onAction(true));
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) onAction(false);
-    });
-
-    return modal;
-  }
-
-  private showError(input: HTMLElement, message: string) {
-    // Reset button
-    const button = input.parentElement?.querySelector('.promptly-optimize-btn') as HTMLButtonElement;
-    if (button) {
-      button.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        Optimize
-      `;
-      button.disabled = false;
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
+  `;
+  document.head.appendChild(style);
+};
 
-    // Show error toast
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #DC2626;
-      color: white;
-      padding: 12px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      z-index: 10001;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-    `;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.remove(), 3000);
-  }
-
-  private async callOptimizationAPI(prompt: string): Promise<string> {
-    const response = await fetch(`${this.config.apiUrl}/api/optimize`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt,
-        tier: this.config.tier
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.optimizedPrompt;
-  }
-
-  private handleMessage(message: any, _sender: chrome.runtime.MessageSender, _sendResponse: (response?: any) => void) {
-    switch (message.type) {
-      case 'OPTIMIZE_PROMPT':
-        // Handle optimization request
-        break;
-      case 'UPDATE_CONFIG':
-        this.config = { ...this.config, ...message.config };
-        break;
-    }
-  }
+// Run when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    addStyles();
+    init();
+  });
+} else {
+  addStyles();
+  init();
 }
-
-// Initialize the content script
-new PromptlyContentScript();
