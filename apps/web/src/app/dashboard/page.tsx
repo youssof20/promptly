@@ -3,6 +3,7 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface UserStats {
   totalPrompts: number;
@@ -119,19 +120,61 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-            <p className="text-slate-300">Welcome back, {session.user?.name || session.user?.email}</p>
+      {/* Navigation Header */}
+      <nav className="border-b border-slate-800/30 bg-rich-black/80 backdrop-blur-xl sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-xl flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
+                  Promptly
+                </h1>
+              </div>
+            </div>
+            <div className="flex items-center space-x-6">
+              <Link 
+                href="/"
+                className="text-slate-300 hover:text-white transition-colors duration-200 font-medium"
+              >
+                Home
+              </Link>
+              <Link 
+                href="/pricing"
+                className="text-slate-300 hover:text-white transition-colors duration-200 font-medium"
+              >
+                Pricing
+              </Link>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">
+                    {(session.user?.name || session.user?.email || 'U').charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-slate-300 text-sm">
+                  {session.user?.name || session.user?.email}
+                </span>
+                <button
+                  onClick={handleSignOut}
+                  className="text-slate-400 hover:text-white transition-colors duration-200 text-sm"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
-          >
-            Sign Out
-          </button>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome back!</h1>
+          <p className="text-slate-300">Here's your prompt optimization overview</p>
         </div>
 
         {/* Stats Cards */}
@@ -175,32 +218,50 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
-          <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button className="p-4 bg-gradient-to-r from-electric-blue to-vibrant-purple hover:from-electric-blue/80 hover:to-vibrant-purple/80 text-white rounded-lg transition-all duration-200">
-              <h3 className="font-semibold mb-1">Install Extension</h3>
-              <p className="text-sm opacity-90">Get the browser extension to optimize prompts automatically</p>
-            </button>
-            
-            <button 
-              onClick={() => router.push('/pricing')}
-              className="p-4 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all duration-200"
-            >
-              <h3 className="font-semibold mb-1">Upgrade to Pro</h3>
-              <p className="text-sm opacity-90">Get unlimited prompts and advanced features</p>
-            </button>
-            
-            <button 
-              onClick={handleBillingPortal}
-              disabled={billingLoading}
-              className="p-4 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all duration-200 disabled:opacity-50"
-            >
-              <h3 className="font-semibold mb-1">
-                {billingLoading ? 'Loading...' : 'Manage Billing'}
-              </h3>
-              <p className="text-sm opacity-90">Update payment method and view invoices</p>
+        {/* Plan Status */}
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">Current Plan</h2>
+              <div className="flex items-center space-x-3">
+                <span className="text-2xl font-bold text-vibrant-purple capitalize">
+                  {quotaInfo?.tier || (session.user as any)?.subscriptionTier || 'Free'}
+                </span>
+                <span className="text-slate-400 text-sm">
+                  {quotaInfo?.remainingQuota || 0} of {quotaInfo?.quotaLimit || 50} prompts remaining
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              {(quotaInfo?.tier || (session.user as any)?.subscriptionTier || 'Free') === 'FREE' ? (
+                <button 
+                  onClick={() => router.push('/pricing')}
+                  className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-3 rounded-lg font-semibold hover:shadow-glow transition-all duration-200 transform hover:scale-105"
+                >
+                  Upgrade to Pro
+                </button>
+              ) : (
+                <button 
+                  onClick={handleBillingPortal}
+                  disabled={billingLoading}
+                  className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 disabled:opacity-50"
+                >
+                  {billingLoading ? 'Loading...' : 'Manage Billing'}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Extension Installation */}
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">Browser Extension</h2>
+              <p className="text-slate-400">Install the extension to start optimizing prompts automatically</p>
+            </div>
+            <button className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-3 rounded-lg font-semibold hover:shadow-glow transition-all duration-200 transform hover:scale-105">
+              Install Extension
             </button>
           </div>
         </div>

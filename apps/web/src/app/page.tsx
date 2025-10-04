@@ -88,25 +88,25 @@ export default function Home() {
             </div>
             
             {/* Main Heading */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
               <span className="block">AI Prompt</span>
               <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">
                 Optimization
               </span>
-              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-300 mt-6">
+              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-300 mt-6" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 Made Simple
               </span>
             </h1>
             
             {/* Subheading */}
-            <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-4xl mx-auto leading-relaxed px-4">
+            <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-4xl mx-auto leading-relaxed px-4" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
               Automatically improve your prompts before sending to ChatGPT, Claude, and other AI systems. 
-              <span className="text-white font-medium block mt-3">Get better results without learning prompt engineering.</span>
+              <span className="text-white font-medium block mt-3" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Get better results without learning prompt engineering.</span>
             </p>
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20 px-4">
-              <button className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-xl font-medium text-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1">
+              <button className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-xl font-medium text-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 <span className="relative z-10 flex items-center justify-center">
                   <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -119,6 +119,7 @@ export default function Home() {
               <button 
                 onClick={() => router.push('/pricing')}
                 className="group border-2 border-slate-600 text-white px-8 py-4 rounded-xl font-medium text-lg hover:border-slate-500 hover:bg-slate-800/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
               >
                 <span className="flex items-center justify-center">
                   <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,10 +149,10 @@ export default function Home() {
       <section className="py-24 bg-slate-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
               Why Choose Promptly?
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
               Built for modern AI workflows with enterprise-grade security and performance
             </p>
           </div>
