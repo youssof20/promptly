@@ -147,9 +147,13 @@ export default function PricingPage() {
             Simple, Transparent
             <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">Pricing</span>
           </h1>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+          <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-8">
             Choose the plan that fits your needs. Upgrade or downgrade at any time.
           </p>
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-800/40 border border-slate-700/40 backdrop-blur-sm">
+            <div className="w-2 h-2 bg-lime-green rounded-full mr-3 animate-pulse"></div>
+            <span className="text-slate-300 text-sm font-medium">30-day money-back guarantee</span>
+          </div>
         </div>
 
         {/* Pricing Cards */}
