@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Header from '@/components/Header';
 
 export default function Home() {
   const { data: session } = useSession();
@@ -11,66 +12,7 @@ export default function Home() {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black">
-      {/* Navigation */}
-      <nav className="border-b border-slate-800/30 bg-rich-black/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
-                <div className="w-8 h-8 relative">
-                  <Image
-                    src="/icon-500.png"
-                    alt="Promptly Logo"
-                    width={32}
-                    height={32}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <h1 className="text-xl font-semibold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
-                  Promptly
-                </h1>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-6">
-              {session ? (
-                <>
-                  <Link 
-                    href="/dashboard"
-                    className="text-slate-300 hover:text-white transition-colors duration-200 font-medium"
-                  >
-                    Dashboard
-                  </Link>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {(session.user?.name || session.user?.email || 'U').charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <span className="text-slate-300 text-sm">
-                      {session.user?.name || session.user?.email}
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <Link 
-                    href="/auth/signin"
-                    className="text-slate-300 hover:text-white transition-colors duration-200 font-medium"
-                  >
-                    Sign In
-                  </Link>
-                  <Link 
-                    href="/auth/signup"
-                    className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-2.5 rounded-xl font-medium hover:shadow-glow transition-all duration-200 transform hover:scale-105"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Hero Section */}
       <main className="relative overflow-hidden">

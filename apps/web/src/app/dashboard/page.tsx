@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Header from '@/components/Header';
 
 interface UserStats {
   totalPrompts: number;
@@ -120,55 +121,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black">
-      {/* Navigation Header */}
-      <nav className="border-b border-slate-800/30 bg-rich-black/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
-                <div className="w-8 h-8 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-xl flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
-                  Promptly
-                </h1>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-6">
-              <Link 
-                href="/"
-                className="text-slate-300 hover:text-white transition-colors duration-200 font-medium"
-              >
-                Home
-              </Link>
-              <Link 
-                href="/pricing"
-                className="text-slate-300 hover:text-white transition-colors duration-200 font-medium"
-              >
-                Pricing
-              </Link>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">
-                    {(session.user?.name || session.user?.email || 'U').charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <span className="text-slate-300 text-sm">
-                  {session.user?.name || session.user?.email}
-                </span>
-                <button
-                  onClick={handleSignOut}
-                  className="text-slate-400 hover:text-white transition-colors duration-200 text-sm"
-                >
-                  Sign Out
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
@@ -178,7 +131,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
             <h3 className="text-lg font-semibold text-white mb-2">Prompts Optimized</h3>
             {statsLoading ? (
@@ -193,13 +146,6 @@ export default function DashboardPage() {
             )}
           </div>
           
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
-            <h3 className="text-lg font-semibold text-white mb-2">Subscription</h3>
-            <p className="text-2xl font-bold text-vibrant-purple capitalize">
-              {quotaInfo?.tier || (session.user as any)?.subscriptionTier || 'Free'}
-            </p>
-            <p className="text-slate-400 text-sm">Current plan</p>
-          </div>
           
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
             <h3 className="text-lg font-semibold text-white mb-2">Quota Remaining</h3>

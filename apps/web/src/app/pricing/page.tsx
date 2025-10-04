@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Header from '@/components/Header';
 
 const plans = [
   {
@@ -91,54 +92,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black">
-      {/* Navigation */}
-      <nav className="border-b border-slate-800/50 bg-rich-black/95 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 relative">
-                  <Image
-                    src="/icon-500.png"
-                    alt="Promptly Logo"
-                    width={32}
-                    height={32}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
-                  Promptly
-                </h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {session ? (
-                <button
-                  onClick={() => router.push('/dashboard')}
-                  className="text-slate-300 hover:text-white transition-colors"
-                >
-                  Dashboard
-                </button>
-              ) : (
-                <>
-                  <button
-                    onClick={() => router.push('/auth/signin')}
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Sign In
-                  </button>
-                  <button
-                    onClick={() => router.push('/auth/signup')}
-                    className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
-                  >
-                    Get Started
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
