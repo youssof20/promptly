@@ -17,8 +17,11 @@ export async function POST(req: NextRequest) {
 
   const { priceId, successUrl, cancelUrl } = await req.json();
 
-  if (!priceId) {
-    return new NextResponse('Missing priceId', { status: 400 });
+  // Use the actual Stripe price ID from environment variables
+  const actualPriceId = process.env.STRIPE_PRO_PRICE_ID;
+  
+  if (!actualPriceId) {
+    return new NextResponse('Stripe price ID not configured', { status: 500 });
   }
 
   try {
@@ -47,7 +50,7 @@ export async function POST(req: NextRequest) {
       mode: 'subscription',
       line_items: [
         {
-          price: priceId,
+          price: actualPriceId,
           quantity: 1,
         },
       ],

@@ -42,7 +42,18 @@ export default function Header() {
                   width={32}
                   height={32}
                   className="w-full h-full object-contain"
+                  priority
+                  onError={(e) => {
+                    // Fallback to gradient icon if image fails to load
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }}
                 />
+                <div className="w-full h-full bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-xl flex items-center justify-center hidden">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
               </div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
                 Promptly

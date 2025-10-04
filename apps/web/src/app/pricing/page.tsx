@@ -39,7 +39,7 @@ const plans = [
     ],
     cta: 'Upgrade to Pro',
     popular: true,
-    priceId: 'price_1QJ8Xx2eZvKYlo2C1234567890', // Replace with your actual Stripe price ID
+    priceId: 'pro_plan', // We'll handle this in the API
   },
 ];
 

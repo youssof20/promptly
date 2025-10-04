@@ -37,14 +37,14 @@ export default function Home() {
               <span className="text-slate-300 text-sm font-medium">Now Available for Chrome & Edge</span>
             </div>
             
-            {/* Main Heading - Inspired by winning SaaS sites */}
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white mb-8 leading-tight tracking-tight" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-              <span className="block">AI PROMPT</span>
+            {/* Main Heading - Clean and modern */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight tracking-tight" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+              <span className="block">AI Prompt</span>
               <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">
-                OPTIMIZATION
+                Optimization
               </span>
-              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-300 mt-8 tracking-wide" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-                MADE SIMPLE
+              <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-300 mt-6 tracking-wide" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+                Made Simple
               </span>
             </h1>
             
@@ -54,25 +54,24 @@ export default function Home() {
               <span className="text-white font-medium block mt-3" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Get better results without learning prompt engineering.</span>
             </p>
             
-            {/* CTA Buttons - Inspired by winning SaaS sites */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20 px-4">
-              <button className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-10 py-5 rounded-2xl font-bold text-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-                <span className="relative z-10 flex items-center justify-center">
-                  <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* CTA Buttons - Clean extension-style */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20 px-4">
+              <button className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+                <span className="flex items-center justify-center">
+                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                   Install Extension
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-electric-blue/80 to-vibrant-purple/80 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
               
               <button 
                 onClick={() => router.push('/pricing')}
-                className="group border-2 border-white/20 text-white px-10 py-5 rounded-2xl font-bold text-xl hover:border-white/40 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 backdrop-blur-sm"
+                className="border-2 border-white/30 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:border-white/50 hover:bg-white/10 transition-all duration-200 transform hover:-translate-y-1"
                 style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
               >
                 <span className="flex items-center justify-center">
-                  <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                   </svg>
                   View Pricing
