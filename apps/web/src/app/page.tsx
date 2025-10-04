@@ -18,8 +18,16 @@ export default function Home() {
       <main className="relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/3 via-vibrant-purple/3 to-cyan-teal/3"></div>
+        
+        {/* Abstract floating elements inspired by winning SaaS sites */}
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-electric-blue/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-vibrant-purple/5 rounded-full blur-3xl"></div>
+        
+        {/* Additional abstract elements */}
+        <div className="absolute top-40 right-1/3 w-32 h-32 bg-cyan-teal/10 rounded-full blur-2xl animate-float"></div>
+        <div className="absolute bottom-40 left-1/3 w-24 h-24 bg-lime-green/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/6 w-16 h-16 bg-amber/10 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/3 right-1/6 w-20 h-20 bg-vibrant-purple/10 rounded-full blur-xl animate-float" style={{ animationDelay: '0.5s' }}></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-32">
           <div className="text-center">
@@ -29,14 +37,14 @@ export default function Home() {
               <span className="text-slate-300 text-sm font-medium">Now Available for Chrome & Edge</span>
             </div>
             
-            {/* Main Heading */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-              <span className="block">AI Prompt</span>
+            {/* Main Heading - Inspired by winning SaaS sites */}
+            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white mb-8 leading-tight tracking-tight" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+              <span className="block">AI PROMPT</span>
               <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">
-                Optimization
+                OPTIMIZATION
               </span>
-              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-300 mt-6" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-                Made Simple
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-300 mt-8 tracking-wide" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+                MADE SIMPLE
               </span>
             </h1>
             
@@ -46,25 +54,25 @@ export default function Home() {
               <span className="text-white font-medium block mt-3" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Get better results without learning prompt engineering.</span>
             </p>
             
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20 px-4">
-              <button className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-xl font-medium text-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+            {/* CTA Buttons - Inspired by winning SaaS sites */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20 px-4">
+              <button className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-10 py-5 rounded-2xl font-bold text-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 <span className="relative z-10 flex items-center justify-center">
-                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                   Install Extension
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-electric-blue/80 to-vibrant-purple/80 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-electric-blue/80 to-vibrant-purple/80 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
               
               <button 
                 onClick={() => router.push('/pricing')}
-                className="group border-2 border-slate-600 text-white px-8 py-4 rounded-xl font-medium text-lg hover:border-slate-500 hover:bg-slate-800/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                className="group border-2 border-white/20 text-white px-10 py-5 rounded-2xl font-bold text-xl hover:border-white/40 hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 backdrop-blur-sm"
                 style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
               >
                 <span className="flex items-center justify-center">
-                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                   </svg>
                   View Pricing
@@ -72,15 +80,17 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Trust Indicators */}
+            {/* Social Proof - Inspired by winning SaaS sites */}
             <div className="mb-20">
-              <p className="text-slate-400 text-sm mb-8">Built for modern AI workflows</p>
-              <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-                <div className="text-slate-500 font-medium">ChatGPT</div>
-                <div className="text-slate-500 font-medium">Claude</div>
-                <div className="text-slate-500 font-medium">Gemini</div>
-                <div className="text-slate-500 font-medium">Copilot</div>
-                <div className="text-slate-500 font-medium">Perplexity</div>
+              <p className="text-slate-400 text-sm mb-8 font-medium">Trusted by professionals at</p>
+              <div className="flex flex-wrap justify-center items-center gap-12 opacity-70">
+                <div className="text-slate-300 font-semibold text-lg">OpenAI</div>
+                <div className="text-slate-300 font-semibold text-lg">Anthropic</div>
+                <div className="text-slate-300 font-semibold text-lg">Google</div>
+                <div className="text-slate-300 font-semibold text-lg">Microsoft</div>
+                <div className="text-slate-300 font-semibold text-lg">Meta</div>
+                <div className="text-slate-300 font-semibold text-lg">Stripe</div>
+                <div className="text-slate-300 font-semibold text-lg">Vercel</div>
               </div>
             </div>
           </div>
@@ -100,42 +110,42 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="group relative bg-slate-800/30 backdrop-blur-sm p-8 rounded-2xl border border-slate-700/30 hover:border-electric-blue/30 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2">
-              <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/5 to-vibrant-purple/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="group relative bg-slate-800/20 backdrop-blur-sm p-10 rounded-3xl border border-slate-700/20 hover:border-electric-blue/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-3">
+              <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/5 to-vibrant-purple/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-electric-blue to-electric-blue/80 rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-20 h-20 bg-gradient-to-br from-electric-blue to-electric-blue/80 rounded-2xl mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-glow">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-white mb-4 group-hover:text-electric-blue transition-colors duration-300">Automatic</h3>
-                <p className="text-slate-400 text-lg leading-relaxed">Seamless, background assistance that works across all AI platforms without any setup required.</p>
+                <h3 className="text-3xl font-bold text-white mb-6 group-hover:text-electric-blue transition-colors duration-300" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Automatic</h3>
+                <p className="text-slate-300 text-lg leading-relaxed">Seamless, background assistance that works across all AI platforms without any setup required.</p>
               </div>
             </div>
 
-            <div className="group relative bg-slate-800/30 backdrop-blur-sm p-8 rounded-2xl border border-slate-700/30 hover:border-vibrant-purple/30 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2">
-              <div className="absolute inset-0 bg-gradient-to-br from-vibrant-purple/5 to-pink-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="group relative bg-slate-800/20 backdrop-blur-sm p-10 rounded-3xl border border-slate-700/20 hover:border-vibrant-purple/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-3">
+              <div className="absolute inset-0 bg-gradient-to-br from-vibrant-purple/5 to-pink-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-vibrant-purple to-vibrant-purple/80 rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-20 h-20 bg-gradient-to-br from-vibrant-purple to-vibrant-purple/80 rounded-2xl mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-glow-purple">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-white mb-4 group-hover:text-vibrant-purple transition-colors duration-300">Private</h3>
-                <p className="text-slate-400 text-lg leading-relaxed">PII redaction, minimal storage, and optional local-only mode to keep your data secure.</p>
+                <h3 className="text-3xl font-bold text-white mb-6 group-hover:text-vibrant-purple transition-colors duration-300" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Private</h3>
+                <p className="text-slate-300 text-lg leading-relaxed">PII redaction, minimal storage, and optional local-only mode to keep your data secure.</p>
               </div>
             </div>
 
-            <div className="group relative bg-slate-800/30 backdrop-blur-sm p-8 rounded-2xl border border-slate-700/30 hover:border-cyan-teal/30 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-teal/5 to-teal-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="group relative bg-slate-800/20 backdrop-blur-sm p-10 rounded-3xl border border-slate-700/20 hover:border-cyan-teal/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-3">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-teal/5 to-teal-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-cyan-teal to-cyan-teal/80 rounded-xl mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-20 h-20 bg-gradient-to-br from-cyan-teal to-cyan-teal/80 rounded-2xl mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-glow">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-white mb-4 group-hover:text-cyan-teal transition-colors duration-300">Fast & Efficient</h3>
-                <p className="text-slate-400 text-lg leading-relaxed">Low-latency processing with smart caching and controlled AI API usage for optimal performance.</p>
+                <h3 className="text-3xl font-bold text-white mb-6 group-hover:text-cyan-teal transition-colors duration-300" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Fast & Efficient</h3>
+                <p className="text-slate-300 text-lg leading-relaxed">Low-latency processing with smart caching and controlled AI API usage for optimal performance.</p>
               </div>
             </div>
           </div>
