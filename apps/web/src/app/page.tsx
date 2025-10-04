@@ -88,12 +88,12 @@ export default function Home() {
             </div>
             
             {/* Main Heading */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight">
               <span className="block">AI Prompt</span>
               <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">
                 Optimization
               </span>
-              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-slate-300 mt-6">
+              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-slate-300 mt-6">
                 Made Simple
               </span>
             </h1>
@@ -129,35 +129,15 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Social Proof */}
+            {/* Trust Indicators */}
             <div className="mb-20">
-              <p className="text-slate-400 text-sm mb-8">Trusted by thousands of AI users</p>
+              <p className="text-slate-400 text-sm mb-8">Built for modern AI workflows</p>
               <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-                <div className="text-slate-500 font-medium">OpenAI</div>
-                <div className="text-slate-500 font-medium">Anthropic</div>
-                <div className="text-slate-500 font-medium">Google</div>
-                <div className="text-slate-500 font-medium">Microsoft</div>
-                <div className="text-slate-500 font-medium">Meta</div>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-24">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-electric-blue mb-2">50K+</div>
-                <div className="text-slate-400 text-sm">Prompts Optimized</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-vibrant-purple mb-2">10K+</div>
-                <div className="text-slate-400 text-sm">Active Users</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-cyan-teal mb-2">99.9%</div>
-                <div className="text-slate-400 text-sm">Uptime</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-lime-green mb-2">4.9★</div>
-                <div className="text-slate-400 text-sm">User Rating</div>
+                <div className="text-slate-500 font-medium">ChatGPT</div>
+                <div className="text-slate-500 font-medium">Claude</div>
+                <div className="text-slate-500 font-medium">Gemini</div>
+                <div className="text-slate-500 font-medium">Copilot</div>
+                <div className="text-slate-500 font-medium">Perplexity</div>
               </div>
             </div>
           </div>
@@ -291,71 +271,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Why Choose Promptly */}
       <section className="py-24 bg-slate-900/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              What Our Users Say
+              Why Choose Promptly?
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Join thousands of professionals who've transformed their AI workflow
+              Simple, powerful, and designed for the modern AI user
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-slate-800/30 backdrop-blur-sm p-8 rounded-2xl border border-slate-700/30">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-medium">SM</span>
-                </div>
-                <div>
-                  <div className="font-semibold text-white">Sarah Martinez</div>
-                  <div className="text-slate-400 text-sm">Content Creator</div>
-                </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-electric-blue to-electric-blue/80 rounded-xl mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
-              <p className="text-slate-300 leading-relaxed">
-                "Promptly has revolutionized how I interact with AI. My content quality improved by 300% and I save hours every week. The extension is seamless and just works."
+              <h3 className="text-xl font-semibold text-white mb-4">Instant Setup</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Install the extension and start optimizing prompts immediately. No configuration required.
               </p>
-              <div className="flex text-yellow-400 mt-4">
-                ★★★★★
-              </div>
             </div>
 
-            <div className="bg-slate-800/30 backdrop-blur-sm p-8 rounded-2xl border border-slate-700/30">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-vibrant-purple to-cyan-teal rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-medium">DJ</span>
-                </div>
-                <div>
-                  <div className="font-semibold text-white">David Johnson</div>
-                  <div className="text-slate-400 text-sm">Software Engineer</div>
-                </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-vibrant-purple to-vibrant-purple/80 rounded-xl mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
               </div>
-              <p className="text-slate-300 leading-relaxed">
-                "As a developer, I need precise AI outputs. Promptly's optimization makes my prompts crystal clear, resulting in better code suggestions and faster development."
+              <h3 className="text-xl font-semibold text-white mb-4">Privacy First</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Your prompts are processed securely with PII redaction and minimal data storage.
               </p>
-              <div className="flex text-yellow-400 mt-4">
-                ★★★★★
-              </div>
             </div>
 
-            <div className="bg-slate-800/30 backdrop-blur-sm p-8 rounded-2xl border border-slate-700/30">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-teal to-lime-green rounded-full flex items-center justify-center mr-4">
-                  <span className="text-white font-medium">EL</span>
-                </div>
-                <div>
-                  <div className="font-semibold text-white">Emily Liu</div>
-                  <div className="text-slate-400 text-sm">Marketing Manager</div>
-                </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-cyan-teal to-cyan-teal/80 rounded-xl mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
-              <p className="text-slate-300 leading-relaxed">
-                "The privacy features sold me immediately. I can optimize prompts for sensitive marketing campaigns without worrying about data leaks. Game changer!"
+              <h3 className="text-xl font-semibold text-white mb-4">Smart & Fast</h3>
+              <p className="text-slate-400 leading-relaxed">
+                Advanced AI models with smart caching for lightning-fast prompt optimization.
               </p>
-              <div className="flex text-yellow-400 mt-4">
-                ★★★★★
-              </div>
             </div>
           </div>
         </div>
