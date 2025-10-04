@@ -125,7 +125,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="flex items-center space-x-3">
+              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
                 <div className="w-8 h-8 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-xl flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -134,7 +134,7 @@ export default function DashboardPage() {
                 <h1 className="text-xl font-bold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
                   Promptly
                 </h1>
-              </div>
+              </Link>
             </div>
             <div className="flex items-center space-x-6">
               <Link 

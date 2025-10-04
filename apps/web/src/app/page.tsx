@@ -16,7 +16,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="flex items-center space-x-3">
+              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200">
                 <div className="w-8 h-8 relative">
                   <Image
                     src="/icon-500.png"
@@ -29,7 +29,7 @@ export default function Home() {
                 <h1 className="text-xl font-semibold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
                   Promptly
                 </h1>
-              </div>
+              </Link>
             </div>
             <div className="flex items-center space-x-6">
               {session ? (
@@ -207,10 +207,10 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/5 via-vibrant-purple/5 to-cyan-teal/5"></div>
             <div className="relative z-10">
               <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                   See Promptly in Action
                 </h2>
-                <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+                <p className="text-xl text-slate-300 max-w-2xl mx-auto" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                   Watch how we transform your simple prompts into powerful, detailed instructions
                 </p>
               </div>
@@ -272,71 +272,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Choose Promptly */}
-      <section className="py-24 bg-slate-900/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Why Choose Promptly?
-            </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Simple, powerful, and designed for the modern AI user
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-electric-blue to-electric-blue/80 rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Instant Setup</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Install the extension and start optimizing prompts immediately. No configuration required.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-vibrant-purple to-vibrant-purple/80 rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Privacy First</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Your prompts are processed securely with PII redaction and minimal data storage.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-cyan-teal to-cyan-teal/80 rounded-xl mx-auto mb-6 flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Smart & Fast</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Advanced AI models with smart caching for lightning-fast prompt optimization.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
             Ready to Transform Your AI Workflow?
           </h2>
-          <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
             Join thousands of professionals who've already optimized their AI interactions. 
             Start free, upgrade anytime.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-xl font-medium text-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1">
+            <button className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-xl font-medium text-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
               <span className="relative z-10 flex items-center justify-center">
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -349,6 +298,7 @@ export default function Home() {
             <button 
               onClick={() => router.push('/pricing')}
               className="group border-2 border-slate-600 text-white px-8 py-4 rounded-xl font-medium text-lg hover:border-slate-500 hover:bg-slate-800/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+              style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
             >
               <span className="flex items-center justify-center">
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
