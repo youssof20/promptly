@@ -1,7 +1,15 @@
 // Content script for Promptly browser extension
 // Detects AI chat platforms and provides minimal hint-based optimization
 
-console.log('Promptly content script loaded');
+(function() {
+  // Prevent multiple injections
+  if ((window as any).promptlyLoaded) {
+    console.log('Promptly already loaded, skipping');
+    return;
+  }
+  (window as any).promptlyLoaded = true;
+
+  console.log('Promptly content script loaded');
 
 // Platform detection with comprehensive support
 const detectPlatform = (): string | null => {
@@ -194,6 +202,8 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
     return;
   }
   
+  console.log('Optimizing prompt:', text);
+  
   try {
     // Send message to background script for optimization
     const response = await chrome.runtime.sendMessage({
@@ -201,7 +211,11 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
       prompt: text
     });
     
-    if (response && response.optimized) {
+    console.log('Background response:', response);
+    
+    if (response && response.success && response.optimized) {
+      console.log('Optimized prompt:', response.optimized);
+      
       // Replace text in chatbox
       if (chatbox instanceof HTMLTextAreaElement) {
         chatbox.value = response.optimized;
@@ -213,6 +227,9 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
       
       // Show success feedback
       showSuccessFeedback();
+    } else {
+      console.error('Optimization failed:', response);
+      showErrorFeedback();
     }
   } catch (error) {
     console.error('Optimization failed:', error);
@@ -220,32 +237,44 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
   }
 };
 
-// Show success feedback
+// Show success feedback with dopamine boost
 const showSuccessFeedback = (): void => {
   const feedback = document.createElement('div');
   feedback.className = 'promptly-feedback promptly-success';
-  feedback.textContent = '✓ Prompt optimized!';
+  feedback.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 18px;">✨</span>
+      <div>
+        <div style="font-weight: 600; margin-bottom: 2px;">Prompt optimized!</div>
+        <div style="font-size: 12px; opacity: 0.9;">Clearer, more specific. You'll get a sharper response.</div>
+      </div>
+    </div>
+  `;
   feedback.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
-    background: #22C55E;
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
     color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 16px 20px;
+    border-radius: 12px;
     font-family: system-ui, -apple-system, sans-serif;
     font-size: 14px;
     font-weight: 500;
     z-index: 10001;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-    animation: promptly-slide-in 0.3s ease-out;
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+    animation: promptly-bounce-in 0.4s ease-out;
+    border: 1px solid rgba(255, 255, 255, 0.2);
   `;
   
   document.body.appendChild(feedback);
   
   setTimeout(() => {
-    feedback.remove();
-  }, 3000);
+    feedback.style.animation = 'promptly-fade-out 0.3s ease-in';
+    setTimeout(() => {
+      feedback.remove();
+    }, 300);
+  }, 4000);
 };
 
 // Show error feedback
@@ -280,6 +309,7 @@ const showErrorFeedback = (): void => {
 const monitorChatbox = (chatbox: Element): void => {
   let lastValue = '';
   let hintTimeout: number | null = null;
+  let hintShown = false;
   
   const checkForChanges = () => {
     const currentValue = chatbox.textContent || (chatbox as HTMLTextAreaElement).value || '';
@@ -287,15 +317,24 @@ const monitorChatbox = (chatbox: Element): void => {
     if (currentValue !== lastValue && currentValue.length > 10) {
       lastValue = currentValue;
       
-      // Clear existing timeout
-      if (hintTimeout) {
-        clearTimeout(hintTimeout);
+      // Only show hint once per prompt
+      if (!hintShown) {
+        // Clear existing timeout
+        if (hintTimeout) {
+          clearTimeout(hintTimeout);
+        }
+        
+        // Show hint after a short delay to avoid flickering
+        hintTimeout = window.setTimeout(() => {
+          showHint(chatbox);
+          hintShown = true;
+        }, 500);
       }
-      
-      // Show hint after a short delay to avoid flickering
-      hintTimeout = window.setTimeout(() => {
-        showHint(chatbox);
-      }, 300);
+    }
+    
+    // Reset hint flag when prompt is cleared
+    if (currentValue.length === 0) {
+      hintShown = false;
     }
   };
   
@@ -376,7 +415,33 @@ const addStyles = () => {
         opacity: 1;
       }
     }
-  `;
+    
+    @keyframes promptly-bounce-in {
+      0% {
+        transform: translateX(100%) scale(0.8);
+        opacity: 0;
+      }
+      50% {
+        transform: translateX(-10px) scale(1.05);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes promptly-fade-out {
+      from {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%) scale(0.8);
+        opacity: 0;
+      }
+    }
+   `;
   document.head.appendChild(style);
 };
 
@@ -390,3 +455,5 @@ if (document.readyState === 'loading') {
   addStyles();
   init();
 }
+
+})(); // End of IIFE

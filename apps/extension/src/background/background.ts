@@ -82,21 +82,13 @@ class PromptlyBackground {
   }
 
   private showWelcomeNotification() {
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon-48.png',
-      title: 'Welcome to Promptly!',
-      message: 'Your AI prompt optimizer is now active. Start typing in any AI chat to see the magic!'
-    });
+    // Use console log instead of notifications to avoid permission issues
+    console.log('🎉 Welcome to Promptly! Your AI prompt optimizer is now active.');
   }
 
   private showUpdateNotification(previousVersion?: string) {
-    chrome.notifications.create({
-      type: 'basic',
-      iconUrl: 'icons/icon-48.png',
-      title: 'Promptly Updated!',
-      message: `Updated from ${previousVersion} to ${chrome.runtime.getManifest().version}`
-    });
+    // Use console log instead of notifications to avoid permission issues
+    console.log(`🔄 Promptly Updated from ${previousVersion} to ${chrome.runtime.getManifest().version}`);
   }
 
   private async handleMessage(
@@ -213,37 +205,67 @@ class PromptlyBackground {
     }
 
     try {
-      // For now, return a simple optimization without API call
-      // This will be replaced with actual API integration later
-      const optimizedPrompt = this.simpleOptimize(prompt);
+      // Call the real API
+      const response = await fetch(`${this.config.apiUrl}/api/optimize/extension`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          tier: _tier || 'free'
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `API request failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Optimization failed');
+      }
       
       // Increment quota usage
       this.config.quotaUsed++;
       await this.saveConfig();
 
-      return { optimizedPrompt };
+      return { optimizedPrompt: result.optimized };
     } catch (error) {
       console.error('Prompt optimization failed:', error);
-      throw error;
+      // Fallback to simple optimization if API fails
+      const optimizedPrompt = this.simpleOptimize(prompt);
+      this.config.quotaUsed++;
+      await this.saveConfig();
+      return { optimizedPrompt };
     }
   }
 
   private simpleOptimize(prompt: string): string {
-    // Simple optimization logic for testing
+    // Smart optimization logic for testing
     let optimized = prompt.trim();
+    
+    // Don't optimize if already well-structured
+    if (optimized.length > 100 && 
+        (optimized.includes('Please') || optimized.includes('Can you') || optimized.includes('I need')) &&
+        (optimized.includes('specific') || optimized.includes('detailed') || optimized.includes('context'))) {
+      return optimized; // Already well-structured
+    }
     
     // Add structure if missing
     if (!optimized.includes('Please') && !optimized.includes('Can you') && !optimized.includes('I need')) {
       optimized = `Please ${optimized.toLowerCase()}`;
     }
     
-    // Add specificity if too vague
-    if (optimized.length < 50 && !optimized.includes('specific') && !optimized.includes('detailed')) {
+    // Add specificity only if really vague
+    if (optimized.length < 30 && !optimized.includes('specific') && !optimized.includes('detailed')) {
       optimized += '. Please provide specific and detailed information.';
     }
     
-    // Add context if missing
-    if (!optimized.includes('context') && !optimized.includes('background') && !optimized.includes('situation')) {
+    // Add context only if missing and prompt is short
+    if (optimized.length < 60 && !optimized.includes('context') && !optimized.includes('background') && !optimized.includes('situation')) {
       optimized += ' Please provide context and background information.';
     }
     
