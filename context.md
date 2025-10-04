@@ -109,7 +109,7 @@ Fits relational models (users, prompts, quotas).
 
 Caching & Cost Control:
 
-Upstash Redis → deduplicate prompts, reduce redundant API calls.
+Database caching → deduplicate prompts, reduce redundant API calls.
 
 Quota enforcement prevents free-tier overuse.
 

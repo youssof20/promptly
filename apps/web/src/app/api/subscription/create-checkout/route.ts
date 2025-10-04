@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 import { prisma } from '@promptly/database';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2023-10-16',
 });
 
 export async function POST(req: NextRequest) {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       success_url: successUrl || `${req.nextUrl.origin}/dashboard?upgraded=true`,
       cancel_url: cancelUrl || `${req.nextUrl.origin}/pricing`,
       metadata: {
-        userId: session.user.id || session.user.email,
+        userId: session.user.email,
         email: session.user.email,
       },
     });

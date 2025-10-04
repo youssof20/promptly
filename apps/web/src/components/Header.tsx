@@ -46,7 +46,10 @@ export default function Header() {
                   onError={(e) => {
                     // Fallback to gradient icon if image fails to load
                     e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallback) {
+                      fallback.style.display = 'flex';
+                    }
                   }}
                 />
                 <div className="w-full h-full bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-xl flex items-center justify-center hidden">

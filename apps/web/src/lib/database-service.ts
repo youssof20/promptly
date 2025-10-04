@@ -81,12 +81,13 @@ export class DatabaseService {
       const tier = user.subscriptionTier;
       
       // Define quota limits based on tier
-      const quotaLimits = {
+      const quotaLimits: Record<SubscriptionTier, number> = {
         [SubscriptionTier.FREE]: 50,
         [SubscriptionTier.PRO]: 1000,
+        [SubscriptionTier.ENTERPRISE]: 10000,
       };
 
-      const quotaLimit = quotaLimits[tier];
+      const quotaLimit = quotaLimits[tier] || 50;
 
       // Get today's usage
       const today = new Date();

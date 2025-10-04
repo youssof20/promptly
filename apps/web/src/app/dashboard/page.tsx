@@ -131,7 +131,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-6 mb-8">
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
             <h3 className="text-lg font-semibold text-white mb-2">Prompts Optimized</h3>
             {statsLoading ? (
@@ -147,21 +147,6 @@ export default function DashboardPage() {
           </div>
           
           
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50">
-            <h3 className="text-lg font-semibold text-white mb-2">Quota Remaining</h3>
-            {statsLoading ? (
-              <div className="w-8 h-8 border-2 border-lime-green border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <>
-                <p className="text-3xl font-bold text-lime-green">
-                  {quotaInfo?.remainingQuota || 0}
-                </p>
-                <p className="text-slate-400 text-sm">
-                  of {quotaInfo?.quotaLimit || 0} prompts left
-                </p>
-              </>
-            )}
-          </div>
         </div>
 
         {/* Plan Status */}

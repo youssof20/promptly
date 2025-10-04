@@ -14,6 +14,10 @@ export async function POST(request: NextRequest) {
 
   let event: Stripe.Event;
 
+  if (!stripe) {
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
+  }
+
   try {
     event = stripe.webhooks.constructEvent(body, signature, STRIPE_CONFIG.webhookSecret);
   } catch (error) {
@@ -90,6 +94,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   // Get subscription details
+  if (!stripe) {
+    throw new Error('Stripe not configured');
+  }
+  
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
   const tier = getTierFromPriceId(subscription.items.data[0].price.id);
 
