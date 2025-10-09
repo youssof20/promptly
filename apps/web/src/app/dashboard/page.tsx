@@ -126,7 +126,7 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {session?.user?.name || 'there'}!</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {session?.user?.name || 'there'}! ✨</h1>
           <p className="text-slate-300">Your AI optimization hub. Track usage, manage your plan, and get the most out of Promptly.</p>
         </div>
 

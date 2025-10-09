@@ -146,10 +146,10 @@ const createOptimizationHint = (): HTMLElement => {
   hint.className = 'promptly-hint';
   hint.innerHTML = `
     <div class="promptly-hint-content">
-      <div class="promptly-hint-icon">⚡</div>
+      <div class="promptly-hint-icon">✨</div>
       <div class="promptly-hint-text">
-        <div class="promptly-hint-title">Optimize with Promptly</div>
-        <div class="promptly-hint-subtitle">Click to improve your prompt</div>
+        <div class="promptly-hint-title">Optimize</div>
+        <div class="promptly-hint-subtitle">Click to enhance</div>
       </div>
     </div>
   `;

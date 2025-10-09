@@ -11,64 +11,6 @@ export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
   
-  useEffect(() => {
-    // Demo functionality
-    const demoBtn = document.getElementById('demo-optimize-btn');
-    const demoPrompt = document.getElementById('demo-prompt') as HTMLTextAreaElement;
-    const demoResult = document.getElementById('demo-result');
-    const demoOptimizedText = document.getElementById('demo-optimized-text');
-
-    if (demoBtn && demoPrompt && demoResult && demoOptimizedText) {
-      demoBtn.addEventListener('click', async () => {
-        const prompt = demoPrompt.value.trim();
-        if (!prompt) {
-          demoPrompt.value = 'help me write a blog post about ai';
-          return;
-        }
-
-        (demoBtn as HTMLButtonElement).disabled = true;
-        demoBtn.innerHTML = `
-          <span class="flex items-center justify-center">
-            <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-            Optimizing...
-          </span>
-        `;
-
-        try {
-          // Simulate API call with mock optimization
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
-          const optimizedPrompt = `Write a comprehensive, well-structured ${prompt.includes('blog') ? 'blog post' : 'piece of content'} about ${prompt.includes('ai') ? 'artificial intelligence' : 'the topic'}. 
-
-Please ensure your response:
-- Is clear, detailed, and actionable
-- Includes specific examples where relevant
-- Addresses potential follow-up questions
-- Is organized in a logical structure
-- Provides practical insights and recommendations
-- Uses an engaging, professional tone
-
-Please proceed with your response.`;
-
-          demoOptimizedText.textContent = optimizedPrompt;
-          demoResult.classList.remove('hidden');
-          demoResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        } catch (error) {
-          console.error('Demo optimization failed:', error);
-        } finally {
-          (demoBtn as HTMLButtonElement).disabled = false;
-          demoBtn.innerHTML = `
-            <span class="flex items-center justify-center">
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Optimize with AI
-            </span>
-          `;
-        }
-      });
-    }
-  }, []);
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black">
@@ -143,9 +85,9 @@ Please proceed with your response.`;
             <div className="mb-20">
               <p className="text-slate-400 text-sm mb-8 font-medium">What users are saying</p>
               <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30">
+                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30 hover:border-electric-blue/30 transition-all duration-300 group">
                   <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-full flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
                       <span className="text-white font-semibold text-sm">SJ</span>
                     </div>
                     <div>
@@ -156,11 +98,14 @@ Please proceed with your response.`;
                   <p className="text-slate-300 text-sm leading-relaxed">
                     "Promptly has completely transformed how I interact with AI. My prompts are now 10x more effective, and I get exactly what I need every time."
                   </p>
+                  <div className="mt-3 flex text-electric-blue">
+                    ⭐⭐⭐⭐⭐
+                  </div>
                 </div>
                 
-                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30">
+                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30 hover:border-vibrant-purple/30 transition-all duration-300 group">
                   <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-vibrant-purple to-cyan-teal rounded-full flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-vibrant-purple to-cyan-teal rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
                       <span className="text-white font-semibold text-sm">MR</span>
                     </div>
                     <div>
@@ -171,11 +116,14 @@ Please proceed with your response.`;
                   <p className="text-slate-300 text-sm leading-relaxed">
                     "As someone who uses AI daily for work, Promptly saves me hours every week. The optimization suggestions are spot-on."
                   </p>
+                  <div className="mt-3 flex text-electric-blue">
+                    ⭐⭐⭐⭐⭐
+                  </div>
                 </div>
                 
-                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30">
+                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30 hover:border-cyan-teal/30 transition-all duration-300 group">
                   <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-cyan-teal to-lime-green rounded-full flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-cyan-teal to-lime-green rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
                       <span className="text-white font-semibold text-sm">AL</span>
                     </div>
                     <div>
@@ -186,6 +134,9 @@ Please proceed with your response.`;
                   <p className="text-slate-300 text-sm leading-relaxed">
                     "Finally, a tool that makes AI actually useful for complex tasks. Promptly turns my rough ideas into precise, actionable prompts."
                   </p>
+                  <div className="mt-3 flex text-electric-blue">
+                    ⭐⭐⭐⭐⭐
+                  </div>
                 </div>
               </div>
             </div>
@@ -263,69 +214,8 @@ Please proceed with your response.`;
                 </p>
               </div>
               
-              {/* Interactive Demo */}
+              {/* Static Example */}
               <div className="max-w-4xl mx-auto">
-                <div className="bg-slate-900/50 rounded-2xl p-8 border border-slate-700/30 mb-8">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-white mb-2">Try It Yourself</h3>
-                    <p className="text-slate-400">Type a simple prompt below and see how Promptly improves it</p>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Your Prompt</label>
-                      <textarea
-                        id="demo-prompt"
-                        className="w-full bg-slate-800/50 border border-slate-600/50 rounded-lg p-4 text-white placeholder-slate-400 focus:border-electric-blue/50 focus:ring-1 focus:ring-electric-blue/20 transition-all duration-200"
-                        placeholder="e.g., help me write a blog post about ai"
-                        rows={3}
-                      ></textarea>
-                    </div>
-                    
-                    <div className="text-center">
-                      <button
-                        id="demo-optimize-btn"
-                        className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-3 rounded-lg font-semibold hover:shadow-glow transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <span className="flex items-center justify-center">
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                          Optimize with AI
-                        </span>
-                      </button>
-                    </div>
-                    
-                    <div id="demo-result" className="hidden">
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Optimized Prompt</label>
-                      <div className="bg-slate-800/50 border border-lime-green/30 rounded-lg p-4">
-                        <p id="demo-optimized-text" className="text-slate-200 leading-relaxed"></p>
-                      </div>
-                      <div className="mt-3 flex items-center justify-center space-x-4 text-sm text-slate-400">
-                        <span className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-lime-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          More specific
-                        </span>
-                        <span className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-lime-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Better structure
-                        </span>
-                        <span className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-lime-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Clearer context
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Static Example */}
                 <div className="grid lg:grid-cols-2 gap-8 items-start">
                   {/* Before */}
                   <div className="space-y-4">
@@ -386,16 +276,6 @@ Please proceed with your response.`;
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/install" className="group relative bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-xl font-medium text-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105 hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-              <span className="relative z-10 flex items-center justify-center">
-                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                Install Extension
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-electric-blue/80 to-vibrant-purple/80 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </Link>
-            
             <button 
               onClick={() => router.push('/pricing')}
               className="group border-2 border-slate-600 text-white px-8 py-4 rounded-xl font-medium text-lg hover:border-slate-500 hover:bg-slate-800/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"

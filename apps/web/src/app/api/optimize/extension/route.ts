@@ -7,6 +7,17 @@ interface ExtensionOptimizeRequest {
   tier?: 'free' | 'pro';
 }
 
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
@@ -14,7 +25,14 @@ export async function POST(request: NextRequest) {
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Authentication required' },
-        { status: 401 }
+        { 
+          status: 401,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        }
       );
     }
 
@@ -103,6 +121,12 @@ export async function POST(request: NextRequest) {
         limit: updatedQuota.quotaLimit,
         tier: updatedQuota.tier
       }
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
     });
   } catch (error) {
     console.error('Extension optimization API error:', error);
@@ -111,7 +135,14 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Optimization failed. Please try again.' 
       },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      }
     );
   }
 }

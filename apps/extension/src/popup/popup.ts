@@ -63,10 +63,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/auth/signup' });
     });
 
-    // Already logged in button
-    document.getElementById('already-logged-btn')!.addEventListener('click', async () => {
-      await authenticateUser();
-    });
   }
 
   function showLoggedInState(config: any) {

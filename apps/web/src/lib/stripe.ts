@@ -11,10 +11,10 @@ export const stripe = process.env.STRIPE_SECRET_KEY
 // Stripe product and price IDs
 export const STRIPE_CONFIG = {
   products: {
-    pro: process.env.STRIPE_PRO_PRODUCT_ID || 'prod_pro_placeholder',
+    pro: process.env.STRIPE_PRO_PRODUCT_ID || 'prod_promptly_pro',
   },
   prices: {
-    pro: process.env.STRIPE_PRO_PRICE_ID || 'price_pro_placeholder',
+    pro: process.env.STRIPE_PRO_PRICE_ID || 'price_promptly_pro_monthly',
   },
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
 };
