@@ -126,8 +126,8 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome back!</h1>
-          <p className="text-slate-300">Here's your prompt optimization overview</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {session?.user?.name || 'there'}!</h1>
+          <p className="text-slate-300">Your AI optimization hub. Track usage, manage your plan, and get the most out of Promptly.</p>
         </div>
 
         {/* Stats Cards */}
@@ -191,9 +191,12 @@ export default function DashboardPage() {
               <h2 className="text-xl font-semibold text-white mb-2">Browser Extension</h2>
               <p className="text-slate-400">Install the extension to start optimizing prompts automatically</p>
             </div>
-            <button className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-3 rounded-lg font-semibold hover:shadow-glow transition-all duration-200 transform hover:scale-105">
+            <Link 
+              href="/install"
+              className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-3 rounded-lg font-semibold hover:shadow-glow transition-all duration-200 transform hover:scale-105"
+            >
               Install Extension
-            </button>
+            </Link>
           </div>
         </div>
 

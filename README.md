@@ -1,56 +1,71 @@
-# Promptly - AI Prompt Optimizer
+# Promptly - AI Prompt Optimization Platform
 
-Promptly is an always-on AI prompt optimizer delivered via a browser extension companion. It automatically improves user-written prompts before they are sent to AI systems like ChatGPT, Claude, and other LLM chats, ensuring clearer, more structured, and more effective inputs.
+> **Transform your simple prompts into powerful, detailed instructions that get you better results from AI.**
+
+Promptly is a browser extension and web platform that automatically optimizes your prompts before sending them to ChatGPT, Claude, Bard, and other AI systems. Get better results without learning prompt engineering.
 
 ## 🚀 Features
 
-- **Automatic Optimization**: Seamless, background assistance across all AI platforms
-- **Fast & Cost-Efficient**: Low-latency, controlled AI API usage with smart caching
-- **Clear & Emotional**: Confidence-boosting improvements that feel good
-- **Private**: PII redaction, minimal storage, optional local-only mode
-- **Scalable**: Supports millions of users without runaway costs
-- **Differentiated**: Lightweight, inline-first, market-ready
+### Core Functionality
+- **Automatic Prompt Optimization**: Transform simple prompts into detailed, effective instructions
+- **Multi-Platform Support**: Works on ChatGPT, Claude, Bard, and 20+ other AI platforms
+- **Browser Extension**: Seamless integration with your existing workflow
+- **Smart Detection**: Automatically detects when you're typing prompts
+- **Privacy-First**: Minimal data storage, secure processing
+
+### User Experience
+- **Invisible Integration**: Works in the background without disrupting your flow
+- **Contextual Hints**: Smart suggestions that appear when you need them
+- **One-Click Optimization**: Click to optimize, see results instantly
+- **Real-Time Feedback**: Visual confirmation of successful optimizations
+
+### Plans & Pricing
+- **Free Tier**: 50 optimizations/month, DeepSeek AI model
+- **Pro Tier**: 1,000 optimizations/month, GPT-4o-mini model, advanced features
+- **Transparent Pricing**: $8/month for Pro, no hidden fees
+- **30-Day Money-Back Guarantee**: Try risk-free
 
 ## 🏗️ Architecture
 
-### Frontend
-- **Next.js 14** + TypeScript, deployed on Vercel
-- Server components for performance
-- Dark-first design with electric blue/purple gradient theme
+### Frontend (Web App)
+- **Framework**: Next.js 14 with App Router
+- **Styling**: Tailwind CSS with custom design system
+- **Authentication**: NextAuth.js with OAuth providers
+- **Deployment**: Vercel
 
 ### Browser Extension
-- **Chrome/Edge MV3** extension (TypeScript + Vite)
-- Lightweight injected UI to avoid latency/memory issues
-- Content script injection for seamless integration
+- **Platform**: Chrome/Edge MV3 extension
+- **Content Scripts**: AI platform detection and UI injection
+- **Background Scripts**: Lifecycle management and communication
+- **Popup Interface**: Quota tracking and settings
 
 ### Backend
-- **Next.js API routes** (serverless, Node.js)
-- Pay-per-use scaling → no idle costs
+- **API**: Next.js API routes (serverless)
+- **Database**: PostgreSQL (Supabase) with Prisma ORM
+- **AI Integration**: OpenAI (GPT-4o-mini) and DeepSeek
+- **Caching**: In-memory caching for performance
+- **Authentication**: Secure token-based system
 
-### Database
-- **PostgreSQL** (Supabase) + Prisma ORM
-- Fits relational models (users, prompts, quotas)
-
-### Caching & Cost Control
-- **Upstash Redis** → deduplicate prompts, reduce redundant API calls
-- Quota enforcement prevents free-tier overuse
-
-### Models & APIs
-- **Free**: DeepSeek (cost-effective)
-- **Pro**: GPT-4 mini (stronger but still cost-efficient)
+### Design System
+- **Theme**: Dark-first with electric blue/vibrant purple gradients
+- **Typography**: Helvetica Bold for headings, system fonts for body
+- **Colors**: Rich black, charcoal gray, electric blue, vibrant purple
+- **Components**: Consistent, accessible UI components
 
 ## 🛠️ Development Setup
 
 ### Prerequisites
-- Node.js 18+
-- PostgreSQL database
-- Chrome/Edge browser for extension testing
+- Node.js 18+ 
+- npm or yarn
+- PostgreSQL database (Supabase recommended)
+- OpenAI API key
+- DeepSeek API key (optional)
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/your-username/promptly.git
    cd promptly
    ```
 
@@ -62,138 +77,199 @@ Promptly is an always-on AI prompt optimizer delivered via a browser extension c
 3. **Set up environment variables**
    ```bash
    cp env.example .env.local
-   # Edit .env.local with your actual values
+   ```
+   
+   Fill in your environment variables:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://..."
+   SUPABASE_URL="https://..."
+   SUPABASE_ANON_KEY="..."
+   SUPABASE_SERVICE_ROLE_KEY="..."
+   
+   # AI APIs
+   OPENAI_API_KEY="sk-..."
+   DEEPSEEK_API_KEY="sk-..."
+   
+   # Authentication
+   NEXTAUTH_SECRET="your-secret"
+   NEXTAUTH_URL="http://localhost:3000"
+   
+   # OAuth Providers
+   GOOGLE_CLIENT_ID="..."
+   GOOGLE_CLIENT_SECRET="..."
+   GITHUB_CLIENT_ID="..."
+   GITHUB_CLIENT_SECRET="..."
+   
+   # Stripe
+   STRIPE_SECRET_KEY="sk_..."
+   STRIPE_PUBLISHABLE_KEY="pk_..."
+   STRIPE_WEBHOOK_SECRET="whsec_..."
    ```
 
 4. **Set up the database**
    ```bash
-   cd packages/database
-   npm run db:generate
-   npm run db:push
+   npx prisma generate
+   npx prisma db push
    ```
 
 5. **Start development servers**
    ```bash
-   # Terminal 1: Next.js app
-   cd apps/web
-   npm run dev
-
-   # Terminal 2: Browser extension
-   cd apps/extension
    npm run dev
    ```
 
-### Browser Extension Setup
-
-1. Build the extension:
-   ```bash
-   cd apps/extension
-   npm run build
-   ```
-
-2. Load the extension in Chrome:
-   - Open Chrome and go to `chrome://extensions/`
+6. **Load the extension** (for development)
+   - Open Chrome/Edge
+   - Go to `chrome://extensions/` or `edge://extensions/`
    - Enable "Developer mode"
-   - Click "Load unpacked" and select the `apps/extension/dist` folder
+   - Click "Load unpacked" and select `apps/extension`
 
 ## 📁 Project Structure
 
 ```
 promptly/
 ├── apps/
-│   ├── web/                 # Next.js application
+│   ├── web/                 # Next.js web application
 │   │   ├── src/
-│   │   │   ├── app/         # App router pages
-│   │   │   └── components/  # React components
-│   │   └── package.json
+│   │   │   ├── app/         # App Router pages
+│   │   │   ├── components/  # React components
+│   │   │   ├── lib/         # Utilities and services
+│   │   │   └── styles/      # Global styles
+│   │   └── public/          # Static assets
 │   └── extension/           # Browser extension
 │       ├── src/
-│       │   ├── content/     # Content scripts
 │       │   ├── background/  # Background scripts
-│       │   └── popup/       # Extension popup
-│       └── manifest.json
+│       │   ├── content/     # Content scripts
+│       │   ├── popup/       # Extension popup
+│       │   └── injected/    # Page context scripts
+│       └── public/          # Extension assets
 ├── packages/
-│   └── database/            # Prisma schema and client
-│       ├── schema.prisma
-│       └── src/
-└── turbo.json              # Turborepo configuration
+│   └── database/            # Shared database package
+├── docs/                    # Documentation
+└── scripts/                 # Build and deployment scripts
 ```
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary**: Electric Blue (#3B82F6) + Vibrant Purple (#8B5CF6)
-- **Background**: Rich Black (#0D0D0D) + Charcoal Gray (#1F1F1F)
-- **Text**: White (#FFFFFF) + Light Gray (#D1D5DB)
-- **Accents**: Cyan/Teal (#06B6D4), Lime Green (#22C55E)
-
-### Typography
-- **Primary**: System UI fonts
-- **Monospace**: Fira Code, JetBrains Mono
 
 ## 🔧 API Endpoints
 
-### POST /api/optimize
-Optimize a prompt using AI.
+### Web App APIs
+- `POST /api/optimize` - Optimize prompt (authenticated)
+- `GET /api/user/stats` - Get user statistics
+- `GET /api/quota` - Get quota information
+- `POST /api/subscription/create-checkout` - Create Stripe checkout
+- `POST /api/subscription/billing-portal` - Open billing portal
 
-**Request:**
-```json
-{
-  "prompt": "help me write a blog post about ai",
-  "tier": "free"
-}
-```
+### Extension APIs
+- `POST /api/auth/extension` - Get extension auth token
+- `GET /api/auth/extension` - Validate extension token
+- `POST /api/optimize/extension` - Optimize prompt (extension)
 
-**Response:**
-```json
-{
-  "optimizedPrompt": "Write a comprehensive 1,500-word blog post...",
-  "tokensUsed": 150,
-  "model": "deepseek-chat",
-  "tier": "free"
-}
-```
+## 🎨 Design System
 
-## 📊 Data Models
+### Colors
+- **Primary**: Electric Blue (`#00D4FF`)
+- **Secondary**: Vibrant Purple (`#8B5CF6`)
+- **Accent**: Cyan Teal (`#14B8A6`)
+- **Success**: Lime Green (`#84CC16`)
+- **Error**: Crimson (`#DC2626`)
+- **Background**: Rich Black (`#0D0D0D`)
+- **Surface**: Charcoal Gray (`#1F1F1F`)
 
-### User
-- `id`: Unique identifier
-- `email`: User email
-- `subscriptionTier`: FREE/PRO/ENTERPRISE
-- `stripeCustomerId`: Stripe customer ID
+### Typography
+- **Headings**: Helvetica Bold
+- **Body**: System font stack
+- **Code**: JetBrains Mono
 
-### Prompt
-- `id`: Unique identifier
-- `userId`: User reference
-- `originalPrompt`: User's input
-- `optimizedPrompt`: AI-optimized output
-- `tokensIn/Out`: Token usage tracking
-- `modelUsed`: AI model used
-
-### QuotaLog
-- `userId`: User reference
-- `date`: Daily quota tracking
-- `promptsUsed`: Number of prompts used
+### Components
+- **Buttons**: Gradient backgrounds with hover effects
+- **Cards**: Glassmorphism with backdrop blur
+- **Forms**: Clean inputs with focus states
+- **Navigation**: Minimal, accessible design
 
 ## 🚀 Deployment
 
 ### Web App (Vercel)
 1. Connect your GitHub repository to Vercel
 2. Set environment variables in Vercel dashboard
-3. Deploy automatically on push to main
+3. Deploy automatically on push to main branch
 
-### Browser Extension
-1. Build the extension: `npm run build`
-2. Create a ZIP file of the `dist` folder
-3. Submit to Chrome Web Store
+### Extension (Chrome Web Store)
+1. Build the extension: `npm run build:extension`
+2. Create a developer account on Chrome Web Store
+3. Upload the built extension package
+4. Submit for review
+
+### Database (Supabase)
+1. Create a new Supabase project
+2. Run migrations: `npx prisma db push`
+3. Set up Row Level Security policies
+4. Configure API keys
+
+## 🧪 Testing
+
+### Run Tests
+```bash
+# Unit tests
+npm run test
+
+# End-to-end tests
+npm run test:e2e
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+```
+
+### Test Coverage
+- Unit tests for core functionality
+- Integration tests for API endpoints
+- E2E tests for user workflows
+- Extension functionality tests
+
+## 📊 Performance
+
+### Optimizations
+- **Caching**: In-memory cache for prompt optimizations
+- **CDN**: Static assets served from Vercel CDN
+- **Database**: Optimized queries with Prisma
+- **Bundle**: Code splitting and tree shaking
+- **Images**: Optimized with Next.js Image component
+
+### Metrics
+- **Page Load**: < 2 seconds
+- **Optimization**: < 3 seconds average
+- **Extension**: < 100ms response time
+- **Uptime**: 99.9% target
+
+## 🔒 Security
+
+### Data Protection
+- **Encryption**: All data encrypted in transit and at rest
+- **Authentication**: Secure OAuth flows
+- **Authorization**: Role-based access control
+- **Privacy**: Minimal data collection and storage
+
+### API Security
+- **Rate Limiting**: Prevent abuse and overuse
+- **Input Validation**: Sanitize all user inputs
+- **CORS**: Proper cross-origin resource sharing
+- **Headers**: Security headers on all responses
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
+
+### Development Guidelines
+- Follow TypeScript best practices
+- Write tests for new features
+- Update documentation
+- Follow the existing code style
+- Ensure accessibility compliance
 
 ## 📄 License
 
@@ -201,10 +277,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- **Documentation**: [docs.promptly.app](https://docs.promptly.app)
-- **Issues**: [GitHub Issues](https://github.com/promptly/issues)
-- **Email**: support@promptly.app
+- **Documentation**: [docs.promptly.ai](https://docs.promptly.ai)
+- **Issues**: [GitHub Issues](https://github.com/your-username/promptly/issues)
+- **Discord**: [Join our community](https://discord.gg/promptly)
+- **Email**: support@promptly.ai
+
+## 🙏 Acknowledgments
+
+- OpenAI for GPT models
+- DeepSeek for cost-effective AI
+- Supabase for database infrastructure
+- Vercel for hosting and deployment
+- The open-source community for inspiration
 
 ---
 
-**Promptly** - Making AI prompts better, one optimization at a time. ✨
+**Made with ❤️ by the Promptly team**

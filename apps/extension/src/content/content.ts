@@ -156,16 +156,37 @@ const createOptimizationHint = (): HTMLElement => {
   return hint;
 };
 
-// Position hint relative to chatbox
+// Position hint relative to chatbox with better positioning
 const positionHint = (hint: HTMLElement, chatbox: Element): void => {
   const rect = chatbox.getBoundingClientRect();
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
   const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
   
+  // Check if there's space below the chatbox
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const spaceAbove = rect.top;
+  
   hint.style.position = 'absolute';
-  hint.style.top = `${rect.bottom + scrollTop + 8}px`;
-  hint.style.left = `${rect.left + scrollLeft}px`;
   hint.style.zIndex = '10000';
+  
+  if (spaceBelow > 60 || spaceBelow > spaceAbove) {
+    // Position below chatbox
+    hint.style.top = `${rect.bottom + scrollTop + 8}px`;
+    hint.style.left = `${rect.left + scrollLeft}px`;
+  } else {
+    // Position above chatbox
+    hint.style.top = `${rect.top + scrollTop - 60}px`;
+    hint.style.left = `${rect.left + scrollLeft}px`;
+  }
+  
+  // Ensure hint doesn't go off-screen horizontally
+  const hintRect = hint.getBoundingClientRect();
+  if (hintRect.right > window.innerWidth) {
+    hint.style.left = `${window.innerWidth - hintRect.width - 20}px`;
+  }
+  if (hintRect.left < 0) {
+    hint.style.left = '20px';
+  }
 };
 
 // Show optimization hint
@@ -186,12 +207,17 @@ const showHint = (chatbox: Element): void => {
   
   document.body.appendChild(hint);
   
-  // Auto-hide after 5 seconds
+  // Auto-hide after 8 seconds (increased from 5)
   setTimeout(() => {
     if (hint.parentNode) {
-      hint.remove();
+      hint.style.animation = 'promptly-fade-out 0.3s ease-in';
+      setTimeout(() => {
+        if (hint.parentNode) {
+          hint.remove();
+        }
+      }, 300);
     }
-  }, 5000);
+  }, 8000);
 };
 
 // Optimize prompt
@@ -305,48 +331,86 @@ const showErrorFeedback = (): void => {
   }, 3000);
 };
 
-// Monitor chatbox for changes
+// Monitor chatbox for changes with improved logic
 const monitorChatbox = (chatbox: Element): void => {
   let lastValue = '';
   let hintTimeout: number | null = null;
   let hintShown = false;
+  let lastActivityTime = 0;
   
   const checkForChanges = () => {
     const currentValue = chatbox.textContent || (chatbox as HTMLTextAreaElement).value || '';
+    const now = Date.now();
     
-    if (currentValue !== lastValue && currentValue.length > 10) {
+    // Only check if enough time has passed since last activity (debounce)
+    if (now - lastActivityTime < 1000) {
+      return;
+    }
+    
+    if (currentValue !== lastValue && currentValue.length > 15) {
       lastValue = currentValue;
+      lastActivityTime = now;
       
-      // Only show hint once per prompt
-      if (!hintShown) {
+      // Only show hint once per prompt and only for substantial content
+      if (!hintShown && currentValue.length > 15 && !isAlreadyOptimized(currentValue)) {
         // Clear existing timeout
         if (hintTimeout) {
           clearTimeout(hintTimeout);
         }
         
-        // Show hint after a short delay to avoid flickering
+        // Show hint after user stops typing (longer delay)
         hintTimeout = window.setTimeout(() => {
           showHint(chatbox);
           hintShown = true;
-        }, 500);
+        }, 2000);
       }
     }
     
     // Reset hint flag when prompt is cleared
     if (currentValue.length === 0) {
       hintShown = false;
+      lastValue = '';
     }
   };
   
-  // Listen for input events
-  chatbox.addEventListener('input', checkForChanges);
-  chatbox.addEventListener('keyup', checkForChanges);
-  chatbox.addEventListener('paste', () => {
-    setTimeout(checkForChanges, 100);
+  // Check if prompt is already well-optimized
+  const isAlreadyOptimized = (text: string): boolean => {
+    const optimizedIndicators = [
+      'please provide',
+      'please ensure',
+      'please include',
+      'please make sure',
+      'specific examples',
+      'detailed information',
+      'comprehensive',
+      'structured',
+      'step-by-step',
+      'context',
+      'background'
+    ];
+    
+    return optimizedIndicators.some(indicator => 
+      text.toLowerCase().includes(indicator)
+    );
+  };
+  
+  // Listen for input events with debouncing
+  let inputTimeout: number | null = null;
+  chatbox.addEventListener('input', () => {
+    if (inputTimeout) {
+      clearTimeout(inputTimeout);
+    }
+    inputTimeout = window.setTimeout(checkForChanges, 500);
   });
   
-  // Also listen for focus events to catch programmatic changes
-  chatbox.addEventListener('focus', checkForChanges);
+  chatbox.addEventListener('paste', () => {
+    setTimeout(checkForChanges, 1000);
+  });
+  
+  // Listen for focus events to catch programmatic changes
+  chatbox.addEventListener('focus', () => {
+    setTimeout(checkForChanges, 1000);
+  });
 };
 
 // Initialize extension

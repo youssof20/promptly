@@ -226,6 +226,8 @@ Thank you!`;
 
 export class AIService {
   private providers: Map<string, AIProvider> = new Map();
+  private cache: Map<string, { result: AIOptimizationResponse; timestamp: number }> = new Map();
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
   constructor() {
     // Initialize providers based on available API keys
@@ -242,7 +244,15 @@ export class AIService {
   }
 
   async optimizePrompt(request: AIOptimizationRequest): Promise<AIOptimizationResponse> {
-    const { tier } = request;
+    const { prompt, tier } = request;
+    
+    // Check cache first
+    const cacheKey = `${prompt}-${tier}`;
+    const cached = this.cache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
+      console.log('Using cached optimization result');
+      return cached.result;
+    }
     
     // Select provider based on tier and availability
     let provider: AIProvider;
@@ -256,14 +266,33 @@ export class AIService {
     }
 
     try {
-      return await provider.optimizePrompt(request);
+      const result = await provider.optimizePrompt(request);
+      
+      // Cache the result
+      this.cache.set(cacheKey, {
+        result,
+        timestamp: Date.now(),
+      });
+      
+      // Clean up old cache entries
+      this.cleanupCache();
+      
+      return result;
     } catch (error) {
       console.error('AI optimization failed:', error);
       
       // Fallback to mock provider if real API fails
       if (provider !== this.providers.get('mock')) {
         console.log('Falling back to mock provider');
-        return await this.providers.get('mock')!.optimizePrompt(request);
+        const result = await this.providers.get('mock')!.optimizePrompt(request);
+        
+        // Cache the fallback result
+        this.cache.set(cacheKey, {
+          result,
+          timestamp: Date.now(),
+        });
+        
+        return result;
       }
       
       throw error;
@@ -276,6 +305,15 @@ export class AIService {
 
   isProviderAvailable(provider: string): boolean {
     return this.providers.has(provider);
+  }
+
+  private cleanupCache(): void {
+    const now = Date.now();
+    for (const [key, value] of this.cache.entries()) {
+      if (now - value.timestamp > this.CACHE_TTL) {
+        this.cache.delete(key);
+      }
+    }
   }
 }
 

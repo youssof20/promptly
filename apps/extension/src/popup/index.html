@@ -14,8 +14,8 @@
     body {
       width: 320px;
       min-height: 400px;
-      background: #ffffff;
-      color: #1f2937;
+      background: linear-gradient(135deg, #0D0D0D 0%, #1F1F1F 100%);
+      color: #FFFFFF;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       font-size: 14px;
       line-height: 1.5;
@@ -49,11 +49,12 @@
     }
 
     .card {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(71, 85, 105, 0.3);
       border-radius: 12px;
       padding: 20px;
       margin-bottom: 16px;
+      backdrop-filter: blur(10px);
     }
 
     .card-header {
@@ -65,7 +66,7 @@
 
     .card-title {
       font-weight: 600;
-      color: #111827;
+      color: #FFFFFF;
       font-size: 15px;
     }
 
@@ -78,9 +79,9 @@
     }
 
     .badge-free {
-      background: #f3f4f6;
-      color: #6b7280;
-      border: 1px solid #d1d5db;
+      background: rgba(71, 85, 105, 0.3);
+      color: #9CA3AF;
+      border: 1px solid rgba(71, 85, 105, 0.5);
     }
 
     .badge-pro {
@@ -93,7 +94,7 @@
     }
 
     .quota-bar {
-      background: #e5e7eb;
+      background: rgba(71, 85, 105, 0.3);
       height: 4px;
       border-radius: 2px;
       overflow: hidden;
@@ -107,7 +108,7 @@
     }
 
     .quota-text {
-      color: #6b7280;
+      color: #9CA3AF;
       font-size: 12px;
       text-align: center;
     }
@@ -143,13 +144,13 @@
     }
 
     .btn-secondary {
-      background: #f3f4f6;
-      color: #374151;
-      border: 1px solid #d1d5db;
+      background: rgba(71, 85, 105, 0.3);
+      color: #D1D5DB;
+      border: 1px solid rgba(71, 85, 105, 0.5);
     }
 
     .btn-secondary:hover {
-      background: #e5e7eb;
+      background: rgba(71, 85, 105, 0.5);
     }
 
     .features {
@@ -161,7 +162,7 @@
       align-items: center;
       gap: 8px;
       padding: 8px 0;
-      color: #6b7280;
+      color: #9CA3AF;
       font-size: 13px;
     }
 
@@ -227,7 +228,7 @@
     }
 
     .welcome-text {
-      color: #6b7280;
+      color: #9CA3AF;
       font-size: 13px;
       text-align: center;
       margin-bottom: 20px;

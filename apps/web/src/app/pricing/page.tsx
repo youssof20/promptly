@@ -11,12 +11,12 @@ const plans = [
     name: 'Free',
     price: '$0',
     period: 'forever',
-    description: 'Perfect for trying out Promptly',
+    description: 'Perfect for getting started with AI optimization',
     features: [
-      '50 prompts per month',
-      'Basic optimization',
+      '50 optimizations per month',
+      'Smart prompt enhancement',
       'DeepSeek AI model',
-      'Browser extension access',
+      'Works on all platforms',
       'Community support',
     ],
     cta: 'Current Plan',
@@ -27,10 +27,10 @@ const plans = [
     name: 'Pro',
     price: '$8',
     period: 'per month',
-    description: 'For power users and professionals',
+    description: 'For professionals who use AI daily',
     features: [
-      '1,000 prompts per month',
-      'Advanced optimization',
+      '1,000 optimizations per month',
+      'Advanced AI optimization',
       'GPT-4o-mini model',
       'Priority support',
       'Usage analytics',
@@ -102,7 +102,7 @@ export default function PricingPage() {
             <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">Pricing</span>
           </h1>
           <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-8">
-            Choose the plan that fits your needs. Upgrade or downgrade at any time.
+            Start free, upgrade when you're ready. No hidden fees, no surprises.
           </p>
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-800/40 border border-slate-700/40 backdrop-blur-sm">
             <div className="w-2 h-2 bg-lime-green rounded-full mr-3 animate-pulse"></div>
@@ -192,8 +192,8 @@ export default function PricingPage() {
                 Can I change my plan at any time?
               </h3>
               <p className="text-slate-300">
-                Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately,
-                and we'll prorate any billing differences.
+                Absolutely! You can upgrade or downgrade your plan at any time. Changes take effect immediately,
+                and we'll prorate any billing differences. No questions asked.
               </p>
             </div>
 
@@ -202,8 +202,8 @@ export default function PricingPage() {
                 What happens if I exceed my quota?
               </h3>
               <p className="text-slate-300">
-                If you exceed your monthly quota, you'll need to wait until the next month or upgrade
-                your plan. We'll notify you when you're approaching your limit.
+                We'll notify you when you're approaching your limit. If you exceed your monthly quota, 
+                you can either wait until the next month or upgrade your plan for immediate access.
               </p>
             </div>
 
@@ -212,8 +212,8 @@ export default function PricingPage() {
                 Do you offer refunds?
               </h3>
               <p className="text-slate-300">
-                We offer a 30-day money-back guarantee for all paid plans. If you're not satisfied,
-                contact us for a full refund.
+                Yes! We offer a 30-day money-back guarantee for all paid plans. If Promptly doesn't 
+                work for you, we'll refund every penny. No questions asked.
               </p>
             </div>
           </div>

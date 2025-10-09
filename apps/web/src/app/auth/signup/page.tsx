@@ -14,7 +14,7 @@ export default function SignUpPage() {
     // Check if user is already signed in
     getSession().then((session) => {
       if (session) {
-        router.push('/dashboard');
+        router.push('/onboarding');
       }
     });
   }, [router]);
@@ -24,14 +24,14 @@ export default function SignUpPage() {
     setError('');
     try {
       const result = await signIn('google', { 
-        callbackUrl: '/dashboard',
+        callbackUrl: '/onboarding',
         redirect: false 
       });
       
       if (result?.error) {
         setError('Failed to sign up with Google. Please try again.');
       } else if (result?.ok) {
-        router.push('/dashboard');
+        router.push('/onboarding');
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
@@ -45,14 +45,14 @@ export default function SignUpPage() {
     setError('');
     try {
       const result = await signIn('github', { 
-        callbackUrl: '/dashboard',
+        callbackUrl: '/onboarding',
         redirect: false 
       });
       
       if (result?.error) {
         setError('Failed to sign up with GitHub. Please try again.');
       } else if (result?.ok) {
-        router.push('/dashboard');
+        router.push('/onboarding');
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');

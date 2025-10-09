@@ -155,6 +155,11 @@ class PromptlyBackground {
 
       case 'SET_USER_TOKEN':
         this.config.userToken = message.token;
+        if (message.user) {
+          this.config.tier = message.user.tier.toLowerCase();
+          this.config.quotaUsed = message.user.quotaUsed || 0;
+          this.config.quotaLimit = message.user.quotaLimit || 50;
+        }
         await this.saveConfig();
         sendResponse({ success: true });
         break;
@@ -228,6 +233,11 @@ class PromptlyBackground {
   }
 
   private async optimizePrompt(prompt: string, tier: string = 'free'): Promise<any> {
+    // Check if user is authenticated
+    if (!this.config.userToken) {
+      throw new Error('Please sign in to use Promptly. Click the extension icon to authenticate.');
+    }
+
     // Check quota
     if (this.config.quotaUsed >= this.config.quotaLimit) {
       throw new Error('Quota exceeded. Please upgrade to Pro for more optimizations.');
@@ -236,12 +246,12 @@ class PromptlyBackground {
     try {
       console.log('Calling Promptly API:', `${this.config.apiUrl}/api/optimize/extension`);
       
-      // Call your existing API
+      // Call the authenticated API
       const response = await fetch(`${this.config.apiUrl}/api/optimize/extension`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(this.config.userToken && { 'Authorization': `Bearer ${this.config.userToken}` })
+          'Authorization': `Bearer ${this.config.userToken}`
         },
         body: JSON.stringify({
           prompt,
@@ -254,6 +264,14 @@ class PromptlyBackground {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         console.error('API error:', errorData);
+        
+        if (response.status === 401) {
+          // Token expired or invalid, clear auth
+          this.config.userToken = null;
+          await this.saveConfig();
+          throw new Error('Authentication expired. Please sign in again.');
+        }
+        
         throw new Error(errorData.error || `API request failed: ${response.status}`);
       }
 
@@ -264,19 +282,28 @@ class PromptlyBackground {
         throw new Error(result.error || 'Optimization failed');
       }
       
-      // Increment quota usage
-      this.config.quotaUsed++;
-      await this.saveConfig();
+      // Update quota info from response
+      if (result.quotaInfo) {
+        this.config.quotaUsed = result.quotaInfo.limit - result.quotaInfo.remaining;
+        this.config.quotaLimit = result.quotaInfo.limit;
+        this.config.tier = result.quotaInfo.tier.toLowerCase();
+        await this.saveConfig();
+      }
 
       return { optimizedPrompt: result.optimized };
     } catch (error) {
       console.error('Prompt optimization failed:', error);
-      console.log('Falling back to simple optimization');
-      // Fallback to simple optimization if API fails
-      const optimizedPrompt = this.simpleOptimize(prompt);
-      this.config.quotaUsed++;
-      await this.saveConfig();
-      return { optimizedPrompt };
+      
+      // Only fallback to simple optimization if it's not an auth error
+      if (!error.message.includes('Authentication')) {
+        console.log('Falling back to simple optimization');
+        const optimizedPrompt = this.simpleOptimize(prompt);
+        this.config.quotaUsed++;
+        await this.saveConfig();
+        return { optimizedPrompt };
+      }
+      
+      throw error;
     }
   }
 
@@ -322,13 +349,50 @@ class PromptlyBackground {
   }
 
   private async checkAuthStatus() {
-    // For now, we'll assume user is not authenticated
-    // The popup will handle showing the sign-in state
-    // Authentication will be handled when user clicks sign in
-    this.config.userToken = null;
-    this.config.tier = 'free';
-    await this.saveConfig();
-    console.log('Auth status check completed - user not authenticated');
+    try {
+      // Check if we have a stored token
+      const storedConfig = await chrome.storage.sync.get(['promptlyConfig']);
+      const token = storedConfig.promptlyConfig?.userToken;
+      
+      if (token) {
+        // Validate token with backend
+        const response = await fetch(`${this.config.apiUrl}/api/auth/extension`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            this.config.userToken = token;
+            this.config.tier = data.user.tier.toLowerCase();
+            this.config.quotaUsed = data.user.quotaUsed;
+            this.config.quotaLimit = data.user.quotaLimit;
+            await this.saveConfig();
+            console.log('Auth status check completed - user authenticated');
+            return;
+          }
+        }
+      }
+      
+      // If we get here, user is not authenticated
+      this.config.userToken = null;
+      this.config.tier = 'free';
+      this.config.quotaUsed = 0;
+      this.config.quotaLimit = 50;
+      await this.saveConfig();
+      console.log('Auth status check completed - user not authenticated');
+    } catch (error) {
+      console.error('Auth status check failed:', error);
+      this.config.userToken = null;
+      this.config.tier = 'free';
+      this.config.quotaUsed = 0;
+      this.config.quotaLimit = 50;
+      await this.saveConfig();
+    }
   }
 
 }
