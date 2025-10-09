@@ -215,7 +215,7 @@ class PromptlyBackground {
       // Meta & others
       'meta.ai', 'mistral.ai', 'anthropic.com',
       // X/Twitter & Grok
-      'x.com', 'twitter.com',
+      'x.com', 'twitter.com', 'grok.x.ai',
       // Writing & productivity AI
       'notion.so', 'docs.google.com', 'word.office.com', 'grammarly.com', 'jasper.ai', 'writesonic.com', 'copy.ai', 'rytr.me',
       // Developer-oriented AIs

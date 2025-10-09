@@ -34,15 +34,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('signin-btn')!.addEventListener('click', async () => {
       try {
         // Open sign in page
-        const tab = await chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/auth/signin' });
+        const tab = await chrome.tabs.create({ 
+          url: 'https://promptly-two-ashy.vercel.app/auth/signin?extension=true',
+          active: true 
+        });
         
         // Listen for the tab to complete authentication
         const listener = async (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
           if (tabId === tab.id && changeInfo.status === 'complete') {
             const tabInfo = await chrome.tabs.get(tabId);
             if (tabInfo.url?.includes('/dashboard')) {
-              // User successfully signed in, get auth token
-              await authenticateUser();
+              // User successfully signed in, wait a moment then get auth token
+              setTimeout(async () => {
+                try {
+                  // Get auth token from web app
+                  const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                  });
+
+                  if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.token) {
+                      // Store the token in extension
+                      await chrome.runtime.sendMessage({
+                        type: 'SET_USER_TOKEN',
+                        token: data.token,
+                        user: data.user
+                      });
+                      
+                      console.log('Extension authenticated successfully');
+                    } else {
+                      console.error('Authentication failed:', data);
+                    }
+                  } else {
+                    console.error('Failed to get auth token:', response.status);
+                  }
+                } catch (error) {
+                  console.error('Authentication error:', error);
+                }
+              }, 1000);
+              
               chrome.tabs.onUpdated.removeListener(listener);
             }
           }
@@ -118,45 +152,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  async function authenticateUser() {
-    try {
-      // Get auth token from web app
-      const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.token) {
-          // Store the token in extension
-          await chrome.runtime.sendMessage({
-            type: 'SET_USER_TOKEN',
-            token: data.token,
-            user: data.user
-          });
-          
-          // Reload the popup state
-          const result = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
-          const config = result.config;
-          
-          if (config.userToken) {
-            showLoggedInState(config);
-          }
-        } else {
-          showError('Authentication failed. Please try signing in again.');
-        }
-      } else {
-        showError('Please sign in to your account first, then try again.');
-      }
-    } catch (error) {
-      console.error('Authentication error:', error);
-      showError('Authentication failed. Please try again.');
-    }
-  }
 
   function showError(message: string) {
     error!.textContent = message;
