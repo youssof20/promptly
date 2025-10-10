@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       tier: subscriptionTier,
       quotaUsed: quotaInfo.quotaLimit - quotaInfo.remainingQuota,
       quotaLimit: quotaInfo.quotaLimit,
-      exp: Date.now() + (7 chrome-extension://* 24 chrome-extension://* 60 chrome-extension://* 60 chrome-extension://* 1000) // 7 days
+      exp: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days
     })).toString('base64');
 
     return NextResponse.json({

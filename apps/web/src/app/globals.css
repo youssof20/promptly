@@ -2,63 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Promptly Brand Colors - Dark First */
+/* Import Design System */
+@import '../styles/design-system.css';
+
+/* Promptly Brand Colors - Professional & Modern */
 :root {
-  /* Primary Palette */
-  --electric-blue: #3B82F6;
-  --vibrant-purple: #8B5CF6;
+  /* Primary Palette - Based on winning design patterns */
+  --electric-blue: #6366f1;        /* Indigo - Professional, trustworthy */
+  --vibrant-purple: #8b5cf6;       /* Purple - Creative, innovative */
+  --cyan-accent: #06b6d4;          /* Cyan - Fresh, modern */
   
-  /* Background & Neutrals (Dark Mode First) */
-  --rich-black: #0D0D0D;
-  --charcoal-gray: #1F1F1F;
-  --slate-gray: #374151;
-  --cool-gray: #9CA3AF;
+  /* Background & Neutrals - Clean, spacious */
+  --rich-black: #0f172a;           /* Slate 900 - Deep, professional */
+  --charcoal-gray: #1e293b;        /* Slate 800 - Surface color */
+  --slate-gray: #334155;           /* Slate 700 - Border color */
+  --cool-gray: #64748b;           /* Slate 500 - Muted text */
   
-  /* Support Colors */
-  --cyan-teal: #06B6D4;
-  --lime-green: #22C55E;
-  --amber: #F59E0B;
-  --crimson: #DC2626;
+  /* Support Colors - Clear hierarchy */
+  --success-green: #10b981;        /* Emerald - Success states */
+  --warning-amber: #f59e0b;        /* Amber - Warning states */
+  --error-red: #ef4444;           /* Red - Error states */
   
-  /* Text Colors */
-  --text-primary: #FFFFFF;
-  --text-secondary: #D1D5DB;
-  --text-muted: #9CA3AF;
+  /* Text Colors - Excellent readability */
+  --text-primary: #f8fafc;        /* Slate 50 - Primary text */
+  --text-secondary: #cbd5e1;      /* Slate 300 - Secondary text */
+  --text-muted: #94a3b8;          /* Slate 400 - Muted text */
   
-  /* Gradients */
+  /* Gradients - Subtle, professional */
   --gradient-primary: linear-gradient(135deg, var(--electric-blue) 0%, var(--vibrant-purple) 100%);
   --gradient-bg: linear-gradient(135deg, var(--rich-black) 0%, #1a1a1a 100%);
+  --gradient-surface: linear-gradient(135deg, var(--charcoal-gray) 0%, #2a2a2a 100%);
 }
 
-@theme inline {
-  /* Background Colors */
-  --color-bg-primary: var(--rich-black);
-  --color-bg-secondary: var(--charcoal-gray);
-  --color-bg-tertiary: var(--slate-gray);
-  
-  /* Text Colors */
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  
-  /* Brand Colors */
-  --color-electric-blue: var(--electric-blue);
-  --color-vibrant-purple: var(--vibrant-purple);
-  --color-cyan-teal: var(--cyan-teal);
-  --color-lime-green: var(--lime-green);
-  --color-amber: var(--amber);
-  --color-crimson: var(--crimson);
-  
-  /* Gradients */
-  --gradient-primary: var(--gradient-primary);
-  --gradient-bg: var(--gradient-bg);
-  
-  /* Fonts */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
-}
-
-/* Base Styles */
+/* Base Styles - Clean, modern foundation */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -67,19 +43,20 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
   background: var(--gradient-bg);
   color: var(--text-primary);
-  font-family: var(--font-sans);
-  line-height: 1.6;
+  font-family: var(--font-family-primary);
+  line-height: var(--line-height-normal);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Consistent with design system */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -90,26 +67,27 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--slate-gray);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--cool-gray);
 }
 
-/* Selection */
+/* Selection - Brand consistent */
 ::selection {
   background: var(--electric-blue);
   color: var(--text-primary);
 }
 
-/* Focus Styles */
+/* Focus Styles - Accessible, clear */
 :focus-visible {
   outline: 2px solid var(--electric-blue);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
-/* Utility Classes */
+/* Utility Classes - Brand consistent */
 .gradient-text {
   background: var(--gradient-primary);
   -webkit-background-clip: text;
@@ -121,18 +99,23 @@ body {
   background: var(--gradient-primary);
 }
 
-.glow-blue {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
 }
 
-.glow-purple {
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-}
-
-/* Animation Classes */
+/* Animation Classes - Smooth, professional */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
 
 @keyframes slideIn {
@@ -146,13 +129,13 @@ body {
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); }
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
 }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.7; }
 }
 
 .animate-fade-in {
@@ -175,24 +158,28 @@ body {
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* Custom hover effects */
+/* Hover Effects - Subtle, professional */
 .hover-lift {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-normal);
 }
 
 .hover-lift:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Gradient text animation */
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* Gradient text animation - Subtle, not distracting */
 .gradient-text-animated {
-  background: linear-gradient(-45deg, #3B82F6, #8B5CF6, #06B6D4, #10B981);
+  background: linear-gradient(-45deg, #6366f1, #8b5cf6, #06b6d4, #10b981);
   background-size: 400% 400%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradientShift 3s ease infinite;
+  animation: gradientShift 6s ease infinite;
 }
 
 @keyframes gradientShift {
@@ -201,32 +188,27 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* Glass morphism effect */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Responsive Design - Mobile first */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    line-height: var(--line-height-relaxed);
+  }
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1e293b;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3B82F6, #8B5CF6);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #2563eb, #7c3aed);
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .gradient-text {
+    color: black;
+    background: none;
+    -webkit-text-fill-color: initial;
+  }
 }

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Promptly</title>
   <style>
+    /* Reset and Base Styles */
     * {
       margin: 0;
       padding: 0;
@@ -12,107 +13,186 @@
     }
 
     body {
-      width: 280px;
-      min-height: 320px;
-      background: linear-gradient(135deg, #0D0D0D 0%, #1F1F1F 100%);
-      color: #FFFFFF;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      font-size: 12px;
-      line-height: 1.3;
+      width: 320px;
+      min-height: 400px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      line-height: 1.5;
+      overflow-x: hidden;
     }
 
-    .container {
-      padding: 16px;
-    }
-
+    /* Header */
     .header {
-      text-align: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .logo {
-      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .logo-text {
+      font-size: 20px;
       font-weight: 700;
-      background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 2px;
     }
 
-    .subtitle {
-      color: #9CA3AF;
-      font-size: 11px;
-      font-weight: 400;
+    .tagline {
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 500;
     }
 
-    .card {
-      background: rgba(30, 41, 59, 0.4);
-      border: 1px solid rgba(71, 85, 105, 0.2);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
-      backdrop-filter: blur(8px);
+    /* Main Content */
+    .content {
+      padding: 20px 24px;
     }
 
-    .card-header {
+    /* Status Section */
+    .status-section {
+      margin-bottom: 24px;
+    }
+
+    .status-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .status-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.connected {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge.disconnected {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
       margin-bottom: 16px;
     }
 
-    .card-title {
-      font-weight: 600;
-      color: #FFFFFF;
-      font-size: 15px;
-    }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .badge-free {
-      background: rgba(71, 85, 105, 0.3);
-      color: #9CA3AF;
-      border: 1px solid rgba(71, 85, 105, 0.5);
-    }
-
-    .badge-pro {
+    .user-avatar {
+      width: 36px;
+      height: 36px;
       background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
       color: white;
     }
 
+    .user-details h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 2px;
+    }
+
+    .user-details p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    /* Quota Section */
     .quota-section {
-      margin-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    .quota-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .quota-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .quota-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      background: rgba(99, 102, 241, 0.15);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.3);
     }
 
     .quota-bar {
-      background: rgba(71, 85, 105, 0.3);
-      height: 4px;
-      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      height: 8px;
       overflow: hidden;
       margin-bottom: 8px;
     }
 
     .quota-fill {
       height: 100%;
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+      border-radius: 8px;
       transition: width 0.3s ease;
     }
 
     .quota-text {
-      color: #9CA3AF;
       font-size: 12px;
+      color: #94a3b8;
       text-align: center;
     }
 
+    /* Actions */
     .actions {
       display: flex;
       flex-direction: column;
@@ -120,96 +200,123 @@
     }
 
     .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       padding: 12px 16px;
-      border-radius: 8px;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 500;
+      text-decoration: none;
+      border: none;
       cursor: pointer;
       transition: all 0.2s ease;
-      border: none;
-      font-size: 14px;
-      text-align: center;
-      text-decoration: none;
-      display: block;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
       color: white;
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-      transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
 
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+
     .btn-secondary {
-      background: rgba(71, 85, 105, 0.3);
-      color: #D1D5DB;
-      border: 1px solid rgba(71, 85, 105, 0.5);
+      background: rgba(255, 255, 255, 0.05);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .btn-secondary:hover {
-      background: rgba(71, 85, 105, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-1px);
     }
 
-    .features {
-      margin-top: 16px;
+    .btn-icon {
+      font-size: 16px;
     }
 
-    .feature-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 0;
-      color: #9CA3AF;
-      font-size: 13px;
-    }
-
-    .feature-icon {
-      width: 16px;
-      height: 16px;
-      color: #6366f1;
-    }
-
+    /* Upgrade Banner */
     .upgrade-banner {
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-      color: white;
-      padding: 16px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.2);
       border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
       text-align: center;
-      margin-bottom: 16px;
     }
 
     .upgrade-title {
-      font-weight: 600;
       font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
       margin-bottom: 4px;
     }
 
     .upgrade-text {
       font-size: 12px;
-      opacity: 0.9;
+      color: #94a3b8;
       margin-bottom: 12px;
     }
 
+    .upgrade-btn {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .upgrade-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    /* Error State */
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .error-text {
+      font-size: 13px;
+      color: #ef4444;
+      font-weight: 500;
+    }
+
+    /* Loading State */
     .loading {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 200px;
-      color: #6b7280;
+      gap: 8px;
+      padding: 20px;
+      color: #94a3b8;
+      font-size: 14px;
     }
 
     .spinner {
-      width: 24px;
-      height: 24px;
-      border: 2px solid #e5e7eb;
-      border-top: 2px solid #3b82f6;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-top: 2px solid #6366f1;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-bottom: 12px;
     }
 
     @keyframes spin {
@@ -217,142 +324,125 @@
       100% { transform: rotate(360deg); }
     }
 
-    .error {
-      background: #fef2f2;
-      color: #dc2626;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      text-align: center;
-      border: 1px solid #fecaca;
+    /* Footer */
+    .footer {
+      padding: 16px 24px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
     }
 
-    .welcome-text {
-      color: #9CA3AF;
-      font-size: 13px;
+    .footer-text {
+      font-size: 11px;
+      color: #64748b;
       text-align: center;
-      margin-bottom: 20px;
+      line-height: 1.4;
     }
 
-    .signup-link {
-      color: #6366f1;
-      font-size: 12px;
-      text-decoration: none;
-      text-align: center;
-      display: block;
-      margin-top: 12px;
-    }
-
-    .signup-link:hover {
-      text-decoration: underline;
+    /* Responsive */
+    @media (max-width: 320px) {
+      body {
+        width: 280px;
+      }
+      
+      .content {
+        padding: 16px 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">Promptly</div>
-      <div class="subtitle">AI Prompt Optimizer</div>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">P</div>
+      <div class="logo-text">Promptly</div>
     </div>
+    <div class="tagline">AI Prompt Optimizer</div>
+  </div>
 
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Loading State -->
     <div id="loading" class="loading">
       <div class="spinner"></div>
-      Loading...
+      <span>Loading...</span>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="error" style="display: none;">
+      <div class="error-text" id="error-text">Something went wrong</div>
     </div>
 
     <!-- Not Logged In State -->
     <div id="not-logged-in" style="display: none;">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Welcome to Promptly</div>
+      <div class="status-section">
+        <div class="status-header">
+          <div class="status-title">Connection Status</div>
+          <div class="status-badge disconnected">Disconnected</div>
         </div>
-        <div class="welcome-text">
-          Sign in to start optimizing your prompts with AI
-        </div>
-        <div class="actions">
-          <button id="signin-btn" class="btn btn-primary">
-            Sign In
-          </button>
-          <a href="#" id="signup-link" class="signup-link">
-            Don't have an account? Sign up
-          </a>
-        </div>
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px;">
+          Sign in to start optimizing your AI prompts across all platforms.
+        </p>
       </div>
 
-      <div class="features">
-        <div class="feature-item">
-          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          AI-powered prompt optimization
-        </div>
-        <div class="feature-item">
-          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          Works on all AI platforms
-        </div>
-        <div class="feature-item">
-          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          Free tier available
-        </div>
+      <div class="actions">
+        <button id="signin-btn" class="btn btn-primary">
+          <span class="btn-icon">🔑</span>
+          <span>Sign In</span>
+        </button>
+        <button id="signup-btn" class="btn btn-secondary">
+          <span class="btn-icon">✨</span>
+          <span>Sign Up</span>
+        </button>
       </div>
     </div>
 
     <!-- Logged In State -->
     <div id="logged-in" style="display: none;">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Account Status</div>
-          <div id="status-badge" class="badge badge-free">Free</div>
-        </div>
-        <div class="quota-section">
-          <div class="quota-bar">
-            <div id="quota-fill" class="quota-fill" style="width: 0%"></div>
-          </div>
-          <div id="quota-text" class="quota-text">0 / 50 prompts used</div>
+      <!-- User Info -->
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <div class="user-details">
+          <h3 id="user-name">User</h3>
+          <p id="user-email">user@example.com</p>
         </div>
       </div>
 
-      <div class="actions">
-        <button id="settings-btn" class="btn btn-secondary">
-          Dashboard
-        </button>
+      <!-- Quota Section -->
+      <div class="quota-section">
+        <div class="quota-header">
+          <div class="quota-title">Usage</div>
+          <div class="quota-badge" id="quota-badge">Free</div>
+        </div>
+        <div class="quota-bar">
+          <div class="quota-fill" id="quota-fill" style="width: 0%"></div>
+        </div>
+        <div class="quota-text" id="quota-text">0 / 50 prompts used</div>
       </div>
 
+      <!-- Upgrade Banner (shown when approaching limit) -->
       <div id="upgrade-banner" class="upgrade-banner" style="display: none;">
         <div class="upgrade-title">Upgrade to Pro</div>
         <div class="upgrade-text">Get 1,000 optimizations per month and advanced features</div>
-        <button id="upgrade-btn" class="btn btn-primary" style="background: white; color: #6366f1; margin-top: 8px;">
-          Upgrade Now
+        <button id="upgrade-btn" class="upgrade-btn">Upgrade Now</button>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button id="settings-btn" class="btn btn-secondary">
+          <span class="btn-icon">⚙️</span>
+          <span>Dashboard</span>
         </button>
       </div>
-
-      <div class="features">
-        <div class="feature-item">
-          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          Automatic optimization
-        </div>
-        <div class="feature-item">
-          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          Privacy-first design
-        </div>
-        <div class="feature-item">
-          <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          Fast & efficient
-        </div>
-      </div>
     </div>
+  </div>
 
-    <div id="error" class="error" style="display: none;"></div>
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-text">
+      Optimize your AI prompts instantly<br>
+      <span style="color: #6366f1;">✨ Powered by AI</span>
+    </div>
   </div>
 
   <script src="popup.js"></script>

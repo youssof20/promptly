@@ -173,12 +173,32 @@ const isVisible = (element: Element): boolean => {
 const createOptimizationHint = (): HTMLElement => {
   const hint = document.createElement('div');
   hint.className = 'promptly-hint';
-  hint.innerHTML = `
-    <div class="promptly-hint-content">
-      <div class="promptly-hint-icon">✨</div>
-      <div class="promptly-hint-text">Optimize</div>
-    </div>
-  `;
+  
+  const hintContent = document.createElement('div');
+  hintContent.className = 'promptly-hint-content';
+  hintContent.setAttribute('data-platform', detectPlatform() || 'generic');
+  
+  const icon = document.createElement('span');
+  icon.className = 'promptly-hint-icon';
+  icon.textContent = '⚡';
+  
+  const text = document.createElement('div');
+  text.className = 'promptly-hint-text';
+  
+  const title = document.createElement('div');
+  title.className = 'promptly-hint-title';
+  title.textContent = 'Optimize';
+  
+  const subtitle = document.createElement('div');
+  subtitle.className = 'promptly-hint-subtitle';
+  subtitle.textContent = 'with AI';
+  
+  text.appendChild(title);
+  text.appendChild(subtitle);
+  hintContent.appendChild(icon);
+  hintContent.appendChild(text);
+  hint.appendChild(hintContent);
+  
   return hint;
 };
 
