@@ -10,20 +10,20 @@
 .promptly-hint-content {
   display: flex;
   align-items: center;
-  gap: 3px;
-  background: rgba(30, 41, 59, 0.85);
+  gap: 4px;
+  background: rgba(30, 41, 59, 0.9);
   color: #E2E8F0;
-  padding: 3px 6px;
-  border-radius: 3px;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 400;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   transition: all 0.1s ease;
-  min-width: 60px;
-  border: 1px solid rgba(71, 85, 105, 0.3);
-  backdrop-filter: blur(4px);
+  min-width: 70px;
+  border: 1px solid rgba(71, 85, 105, 0.4);
+  backdrop-filter: blur(6px);
 }
 
 .promptly-hint:hover {
@@ -33,9 +33,9 @@
 }
 
 .promptly-hint-icon {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .promptly-hint-text {

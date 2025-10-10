@@ -95,23 +95,27 @@ const getChatboxSelectors = (platform: string): string[] => {
       'textarea[placeholder*="Send a message"]'
     ],
     claude: [
-      'textarea[placeholder*="Talk to Claude"]',
-      'textarea[data-testid="composer-text-input"]',
-      'textarea[placeholder*="Message"]'
+      'div[contenteditable="true"]',
+      'textarea',
+      'div[role="textbox"]',
+      '[contenteditable="true"]'
     ],
     gemini: [
-      'textarea[placeholder*="Enter a prompt"]',
-      'textarea[data-testid="composer-text-input"]',
-      'textarea[placeholder*="Message"]',
-      'textarea[placeholder*="Ask"]'
+      'div[contenteditable="true"]',
+      '.ql-editor[contenteditable="true"]',
+      'textarea',
+      'div[role="textbox"]',
+      '[contenteditable="true"]'
     ],
     poe: [
       'textarea[placeholder*="Message"]',
       'textarea[data-testid="composer-text-input"]'
     ],
     deepseek: [
-      'textarea[placeholder*="Message"]',
-      'textarea[data-testid="composer-text-input"]'
+      'textarea',
+      'div[contenteditable="true"]',
+      'div[role="textbox"]',
+      '[contenteditable="true"]'
     ],
     perplexity: [
       'textarea[placeholder*="Ask anything"]',
@@ -122,10 +126,10 @@ const getChatboxSelectors = (platform: string): string[] => {
       'textarea[data-testid="composer-text-input"]'
     ],
     grok: [
-      'textarea[placeholder*="Ask Grok"]',
-      'textarea[data-testid="composer-text-input"]',
-      'textarea[placeholder*="Message"]',
-      'div[contenteditable="true"][data-testid="tweetTextarea_0"]'
+      'textarea',
+      'div[contenteditable="true"]',
+      'div[role="textbox"]',
+      '[contenteditable="true"]'
     ],
     generic: [
       'textarea[placeholder*="Message"]',

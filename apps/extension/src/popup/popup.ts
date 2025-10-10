@@ -164,19 +164,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       upgradeBanner!.style.display = 'block';
     }
 
-    // Optimize current prompt button
-    document.getElementById('optimize-btn')!.addEventListener('click', async () => {
-      try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (tab.id) {
-          await chrome.tabs.sendMessage(tab.id, { type: 'OPTIMIZE_CURRENT_PROMPT' });
-          window.close();
-        }
-      } catch (error) {
-        showError('No prompt found on this page');
-      }
-    });
-
     // Settings button
     document.getElementById('settings-btn')!.addEventListener('click', () => {
       chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/dashboard' });
