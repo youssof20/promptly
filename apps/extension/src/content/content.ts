@@ -11,11 +11,11 @@
 
   console.log('Promptly content script loaded');
 
-// Platform detection with comprehensive support
+// Enhanced platform detection with better error handling
 const detectPlatform = (): string | null => {
   const hostname = window.location.hostname;
   
-  // Major chat AI platforms
+  // Major chat AI platforms with comprehensive detection
   if (hostname.includes('openai.com') || hostname.includes('chatgpt.com')) {
     return 'chatgpt';
   } else if (hostname.includes('claude.ai')) {
@@ -23,7 +23,7 @@ const detectPlatform = (): string | null => {
   } else if (hostname.includes('poe.com')) {
     return 'poe';
   } else if (hostname.includes('bard.google.com') || hostname.includes('gemini.google.com')) {
-    return 'bard';
+    return 'gemini';
   } else if (hostname.includes('deepseek.com')) {
     return 'deepseek';
   } else if (hostname.includes('perplexity.ai')) {
@@ -44,18 +44,42 @@ const detectPlatform = (): string | null => {
     return 'anthropic';
   } else if (hostname.includes('copilot.microsoft.com') || hostname.includes('bing.com')) {
     return 'copilot';
-  } else if (hostname.includes('x.com') || hostname.includes('twitter.com')) {
+  } else if (hostname.includes('x.com') || hostname.includes('twitter.com') || hostname.includes('grok.x.ai') || hostname.includes('grok.com')) {
     return 'grok';
   } else if (hostname.includes('notion.so')) {
     return 'notion';
   } else if (hostname.includes('docs.google.com')) {
     return 'google-docs';
+  } else if (hostname.includes('word.office.com')) {
+    return 'word';
+  } else if (hostname.includes('grammarly.com')) {
+    return 'grammarly';
+  } else if (hostname.includes('jasper.ai')) {
+    return 'jasper';
+  } else if (hostname.includes('writesonic.com')) {
+    return 'writesonic';
+  } else if (hostname.includes('copy.ai')) {
+    return 'copy-ai';
+  } else if (hostname.includes('rytr.me')) {
+    return 'rytr';
   } else if (hostname.includes('cursor.sh')) {
     return 'cursor';
   } else if (hostname.includes('replit.com')) {
     return 'replit';
   } else if (hostname.includes('github.com')) {
     return 'github-copilot';
+  } else if (hostname.includes('stackblitz.com')) {
+    return 'stackblitz';
+  } else if (hostname.includes('codeium.com')) {
+    return 'codeium';
+  } else if (hostname.includes('chatpaper.ai')) {
+    return 'chatpaper';
+  } else if (hostname.includes('consensus.app')) {
+    return 'consensus';
+  } else if (hostname.includes('scite.ai')) {
+    return 'scite';
+  } else if (hostname.includes('typeset.io')) {
+    return 'typeset';
   }
   
   return 'generic';
@@ -75,10 +99,11 @@ const getChatboxSelectors = (platform: string): string[] => {
       'textarea[data-testid="composer-text-input"]',
       'textarea[placeholder*="Message"]'
     ],
-    bard: [
+    gemini: [
       'textarea[placeholder*="Enter a prompt"]',
       'textarea[data-testid="composer-text-input"]',
-      'textarea[placeholder*="Message"]'
+      'textarea[placeholder*="Message"]',
+      'textarea[placeholder*="Ask"]'
     ],
     poe: [
       'textarea[placeholder*="Message"]',
@@ -147,10 +172,7 @@ const createOptimizationHint = (): HTMLElement => {
   hint.innerHTML = `
     <div class="promptly-hint-content">
       <div class="promptly-hint-icon">✨</div>
-      <div class="promptly-hint-text">
-        <div class="promptly-hint-title">Optimize</div>
-        <div class="promptly-hint-subtitle">Click to enhance</div>
-      </div>
+      <div class="promptly-hint-text">Optimize</div>
     </div>
   `;
   return hint;
@@ -169,14 +191,17 @@ const positionHint = (hint: HTMLElement, chatbox: Element): void => {
   hint.style.position = 'absolute';
   hint.style.zIndex = '10000';
   
-  if (spaceBelow > 60 || spaceBelow > spaceAbove) {
-    // Position below chatbox
-    hint.style.top = `${rect.bottom + scrollTop + 8}px`;
-    hint.style.left = `${rect.left + scrollLeft}px`;
+  // Center horizontally relative to chatbox
+  const centerX = rect.left + (rect.width / 2);
+  
+  if (spaceBelow > 50 || spaceBelow > spaceAbove) {
+    // Position below chatbox, centered
+    hint.style.top = `${rect.bottom + scrollTop + 6}px`;
+    hint.style.left = `${centerX + scrollLeft - 40}px`; // Center the hint
   } else {
-    // Position above chatbox
-    hint.style.top = `${rect.top + scrollTop - 60}px`;
-    hint.style.left = `${rect.left + scrollLeft}px`;
+    // Position above chatbox, centered
+    hint.style.top = `${rect.top + scrollTop - 45}px`;
+    hint.style.left = `${centerX + scrollLeft - 40}px`; // Center the hint
   }
   
   // Ensure hint doesn't go off-screen horizontally
@@ -415,53 +440,70 @@ const monitorChatbox = (chatbox: Element): void => {
 
 // Initialize extension
 const init = () => {
-  const platform = detectPlatform();
-  
-  if (platform) {
-    console.log(`Promptly detected platform: ${platform}`);
+  try {
+    const platform = detectPlatform();
     
-    let chatboxFound = false;
-    let retryCount = 0;
-    const maxRetries = 10;
-    
-    // Wait for page to fully load
-    const checkForChatbox = () => {
-      if (chatboxFound) return;
+    if (platform) {
+      console.log(`Promptly detected platform: ${platform}`);
       
-      const chatbox = findChatbox(platform);
+      let chatboxFound = false;
+      let retryCount = 0;
+      const maxRetries = 10;
       
-      if (chatbox) {
-        console.log('Chatbox found, setting up monitoring');
-        chatbox.setAttribute('data-promptly-monitored', 'true');
-        monitorChatbox(chatbox);
-        chatboxFound = true;
-      } else if (retryCount < maxRetries) {
-        retryCount++;
-        // Retry with exponential backoff
-        setTimeout(checkForChatbox, Math.min(1000 * retryCount, 5000));
-      }
-    };
-    
-    // Start checking for chatbox immediately
-    checkForChatbox();
-    
-    // Also check when DOM changes (for SPA navigation)
-    const observer = new MutationObserver(() => {
-      if (!chatboxFound) {
-        const chatbox = findChatbox(platform);
-        if (chatbox && !chatbox.hasAttribute('data-promptly-monitored')) {
-          console.log('Chatbox found via DOM mutation, setting up monitoring');
-          chatbox.setAttribute('data-promptly-monitored', 'true');
-          monitorChatbox(chatbox);
-          chatboxFound = true;
+      // Wait for page to fully load
+      const checkForChatbox = () => {
+        try {
+          if (chatboxFound) return;
+          
+          const chatbox = findChatbox(platform);
+          
+          if (chatbox) {
+            console.log('Chatbox found, setting up monitoring');
+            chatbox.setAttribute('data-promptly-monitored', 'true');
+            monitorChatbox(chatbox);
+            chatboxFound = true;
+          } else if (retryCount < maxRetries) {
+            retryCount++;
+            console.log(`Promptly: Chatbox not found, retrying... (${retryCount}/${maxRetries})`);
+            // Retry with exponential backoff
+            setTimeout(checkForChatbox, Math.min(1000 * retryCount, 5000));
+          } else {
+            console.log('Promptly: Chatbox not found after maximum retries');
+          }
+        } catch (error) {
+          console.error('Promptly: Error in checkForChatbox:', error);
         }
-      }
-    });
-    
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+      };
+      
+      // Start checking for chatbox immediately
+      checkForChatbox();
+      
+      // Also check when DOM changes (for SPA navigation)
+      const observer = new MutationObserver(() => {
+        try {
+          if (!chatboxFound) {
+            const chatbox = findChatbox(platform);
+            if (chatbox && !chatbox.hasAttribute('data-promptly-monitored')) {
+              console.log('Chatbox found via DOM mutation, setting up monitoring');
+              chatbox.setAttribute('data-promptly-monitored', 'true');
+              monitorChatbox(chatbox);
+              chatboxFound = true;
+            }
+          }
+        } catch (error) {
+          console.error('Promptly: Error in mutation observer:', error);
+        }
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    } else {
+      console.log('Promptly: Platform not supported');
+    }
+  } catch (error) {
+    console.error('Promptly initialization error:', error);
   }
 };
 

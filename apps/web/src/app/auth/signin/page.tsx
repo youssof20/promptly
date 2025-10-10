@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn, getSession } from 'next-auth/react';
+import { signIn, getSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -11,10 +11,26 @@ export default function SignInPage() {
   const router = useRouter();
 
   useEffect(() => {
+    // Check URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const isExtension = urlParams.get('extension') === 'true';
+    const shouldLogout = urlParams.get('logout') === 'true';
+    
+    if (shouldLogout) {
+      // Force logout to allow account switching
+      signOut({ callbackUrl: '/auth/signin?extension=true' });
+      return;
+    }
+    
     // Check if user is already signed in
     getSession().then((session) => {
-      if (session) {
-        router.push('/dashboard');
+      if (session && !shouldLogout) {
+        if (isExtension) {
+          // If coming from extension, redirect to dashboard
+          router.push('/dashboard');
+        } else {
+          router.push('/dashboard');
+        }
       }
     });
   }, [router]);

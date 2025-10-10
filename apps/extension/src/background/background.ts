@@ -215,7 +215,7 @@ class PromptlyBackground {
       // Meta & others
       'meta.ai', 'mistral.ai', 'anthropic.com',
       // X/Twitter & Grok
-      'x.com', 'twitter.com', 'grok.x.ai',
+      'x.com', 'twitter.com', 'grok.x.ai', 'grok.com',
       // Writing & productivity AI
       'notion.so', 'docs.google.com', 'word.office.com', 'grammarly.com', 'jasper.ai', 'writesonic.com', 'copy.ai', 'rytr.me',
       // Developer-oriented AIs
@@ -295,7 +295,7 @@ class PromptlyBackground {
       console.error('Prompt optimization failed:', error);
       
       // Only fallback to simple optimization if it's not an auth error
-      if (!error.message.includes('Authentication')) {
+      if (!(error instanceof Error && error.message.includes('Authentication'))) {
         console.log('Falling back to simple optimization');
         const optimizedPrompt = this.simpleOptimize(prompt);
         this.config.quotaUsed++;

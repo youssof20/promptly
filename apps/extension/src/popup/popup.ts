@@ -17,7 +17,36 @@ document.addEventListener('DOMContentLoaded', async () => {
       // User is logged in
       showLoggedInState(config);
     } else {
-      // User is not logged in
+      // Check if user is signed in on the website
+      try {
+        const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.token) {
+            // User is signed in on website, store token
+            await chrome.runtime.sendMessage({
+              type: 'SET_USER_TOKEN',
+              token: data.token,
+              user: data.user
+            });
+            
+            // Reload config and show logged in state
+            const newResult = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
+            showLoggedInState(newResult.config);
+            return;
+          }
+        }
+      } catch (error) {
+        console.log('Not signed in on website');
+      }
+      
+      // User is not authenticated anywhere
       showNotLoggedInState();
     }
   } catch (error) {
@@ -33,9 +62,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Sign in button
     document.getElementById('signin-btn')!.addEventListener('click', async () => {
       try {
-        // Open sign in page
+        // Clear any existing token first
+        await chrome.runtime.sendMessage({
+          type: 'SET_USER_TOKEN',
+          token: null,
+          user: null
+        });
+        
+        // Open sign in page with logout parameter to force account selection
         const tab = await chrome.tabs.create({ 
-          url: 'https://promptly-two-ashy.vercel.app/auth/signin?extension=true',
+          url: 'https://promptly-two-ashy.vercel.app/auth/signin?extension=true&logout=true',
           active: true 
         });
         
