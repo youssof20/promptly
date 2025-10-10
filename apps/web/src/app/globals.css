@@ -2,36 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Design System */
-@import '../styles/design-system.css';
-
-/* Promptly Brand Colors - Professional & Modern */
+/* Design System Variables */
 :root {
-  /* Primary Palette - Based on winning design patterns */
-  --electric-blue: #6366f1;        /* Indigo - Professional, trustworthy */
-  --vibrant-purple: #8b5cf6;       /* Purple - Creative, innovative */
-  --cyan-accent: #06b6d4;          /* Cyan - Fresh, modern */
+  /* Color Palette - Professional, Modern, Trustworthy */
+  --color-primary: #6366f1;        /* Indigo - Primary brand color */
+  --color-secondary: #8b5cf6;       /* Purple - Secondary brand color */
+  --color-accent: #06b6d4;         /* Cyan - Accent color */
+  --color-success: #10b981;        /* Emerald - Success states */
+  --color-warning: #f59e0b;        /* Amber - Warning states */
+  --color-error: #ef4444;          /* Red - Error states */
   
-  /* Background & Neutrals - Clean, spacious */
-  --rich-black: #0f172a;           /* Slate 900 - Deep, professional */
-  --charcoal-gray: #1e293b;        /* Slate 800 - Surface color */
-  --slate-gray: #334155;           /* Slate 700 - Border color */
-  --cool-gray: #64748b;           /* Slate 500 - Muted text */
+  /* Background Colors */
+  --color-bg-primary: #0f172a;      /* Slate 900 - Deep, professional */
+  --color-bg-secondary: #1e293b;     /* Slate 800 - Surface color */
+  --color-bg-tertiary: #334155;     /* Slate 700 - Border color */
   
-  /* Support Colors - Clear hierarchy */
-  --success-green: #10b981;        /* Emerald - Success states */
-  --warning-amber: #f59e0b;        /* Amber - Warning states */
-  --error-red: #ef4444;           /* Red - Error states */
+  /* Text Colors */
+  --color-text-primary: #f8fafc;   /* Slate 50 - Primary text */
+  --color-text-secondary: #cbd5e1; /* Slate 300 - Secondary text */
+  --color-text-muted: #94a3b8;     /* Slate 400 - Muted text */
   
-  /* Text Colors - Excellent readability */
-  --text-primary: #f8fafc;        /* Slate 50 - Primary text */
-  --text-secondary: #cbd5e1;      /* Slate 300 - Secondary text */
-  --text-muted: #94a3b8;          /* Slate 400 - Muted text */
+  /* RGB values for rgba usage */
+  --color-primary-rgb: 99, 102, 241;
+  --color-bg-secondary-rgb: 30, 41, 59;
+  --color-slate-gray-rgb: 71, 85, 105;
+  --error-red-rgb: 239, 68, 68;
   
-  /* Gradients - Subtle, professional */
-  --gradient-primary: linear-gradient(135deg, var(--electric-blue) 0%, var(--vibrant-purple) 100%);
-  --gradient-bg: linear-gradient(135deg, var(--rich-black) 0%, #1a1a1a 100%);
-  --gradient-surface: linear-gradient(135deg, var(--charcoal-gray) 0%, #2a2a2a 100%);
+  /* Typography */
+  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-md: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;    /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  --line-height-tight: 1.25;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  
+  /* Transitions */
+  --transition-fast: all 0.15s ease-out;
+  --transition-normal: all 0.2s ease-in-out;
+  --transition-slow: all 0.3s ease-in-out;
+  
+  /* Blur */
+  --blur-sm: 4px;
+  --blur-md: 8px;
+  --blur-lg: 12px;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  --gradient-bg: linear-gradient(135deg, var(--color-bg-primary) 0%, #1a1a1a 100%);
+  --gradient-text-animated: linear-gradient(-45deg, var(--color-primary), var(--color-secondary), var(--color-accent), var(--color-success));
 }
 
 /* Base Styles - Clean, modern foundation */
@@ -48,7 +103,7 @@ html {
 
 body {
   background: var(--gradient-bg);
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   font-family: var(--font-family-primary);
   line-height: var(--line-height-normal);
   min-height: 100vh;
@@ -62,27 +117,27 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--charcoal-gray);
+  background: var(--color-bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--slate-gray);
+  background: var(--color-bg-tertiary);
   border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cool-gray);
+  background: var(--color-text-muted);
 }
 
 /* Selection - Brand consistent */
 ::selection {
-  background: var(--electric-blue);
-  color: var(--text-primary);
+  background: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 /* Focus Styles - Accessible, clear */
 :focus-visible {
-  outline: 2px solid var(--electric-blue);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -129,8 +184,8 @@ body {
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
+  0%, 100% { box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.3); }
+  50% { box-shadow: 0 0 30px rgba(var(--color-primary-rgb), 0.5); }
 }
 
 @keyframes pulse {
@@ -169,12 +224,12 @@ body {
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.3);
 }
 
 /* Gradient text animation - Subtle, not distracting */
 .gradient-text-animated {
-  background: linear-gradient(-45deg, #6366f1, #8b5cf6, #06b6d4, #10b981);
+  background: linear-gradient(-45deg, var(--color-primary), var(--color-secondary), var(--color-accent), var(--color-success));
   background-size: 400% 400%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
