@@ -1,5 +1,7 @@
 // Promptly Extension Popup - Grammarly-style flow
 
+let isSigningIn = false; // Flag to prevent multiple sign-in attempts
+
 document.addEventListener('DOMContentLoaded', async () => {
   const loading = document.getElementById('loading');
   const notLoggedIn = document.getElementById('not-logged-in');
@@ -61,13 +63,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Sign in button
     document.getElementById('signin-btn')!.addEventListener('click', async () => {
+      if (isSigningIn) return; // Prevent multiple sign-in attempts
+      
       try {
+        isSigningIn = true;
+        
         // Clear any existing token first
         await chrome.runtime.sendMessage({
           type: 'SET_USER_TOKEN',
           token: null,
           user: null
         });
+        
+        // Check if there's already a sign-in tab open
+        const tabs = await chrome.tabs.query({ url: 'https://promptly-two-ashy.vercel.app/auth/signin*' });
+        if (tabs.length > 0) {
+          // Focus existing tab instead of creating new one
+          await chrome.tabs.update(tabs[0].id!, { active: true });
+          await chrome.windows.update(tabs[0].windowId!, { focused: true });
+          return;
+        }
         
         // Open sign in page with logout parameter to force account selection
         const tab = await chrome.tabs.create({ 
@@ -101,6 +116,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                         user: data.user
                       });
                       
+                      // Show success message in the tab
+                      chrome.scripting.executeScript({
+                        target: { tabId: tabId },
+                        func: () => {
+                          const message = document.createElement('div');
+                          message.innerHTML = `
+                            <div style="position: fixed; top: 20px; right: 20px; z-index: 10000; 
+                                         background: linear-gradient(135deg, #10b981, #059669); 
+                                         color: white; padding: 16px 24px; border-radius: 12px; 
+                                         box-shadow: 0 8px 24px rgba(0,0,0,0.15); 
+                                         font-family: Inter, sans-serif; font-size: 14px; font-weight: 500;">
+                              <div style="display: flex; align-items: center; gap: 8px;">
+                                <span>✅</span>
+                                <span>You can close this page now - you're signed in to the extension!</span>
+                              </div>
+                            </div>
+                          `;
+                          document.body.appendChild(message);
+                          setTimeout(() => message.remove(), 5000);
+                        }
+                      });
+                      
                       console.log('Extension authenticated successfully');
                     } else {
                       console.error('Authentication failed:', data);
@@ -110,6 +147,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                   }
                 } catch (error) {
                   console.error('Authentication error:', error);
+                } finally {
+                  isSigningIn = false; // Reset flag
                 }
               }, 1000);
               
@@ -123,6 +162,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Close popup
         window.close();
       } catch (error) {
+        isSigningIn = false; // Reset flag on error
+        console.error('Sign-in error:', error);
         showError('Failed to open sign in page');
       }
     });
@@ -144,35 +185,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     const quotaFill = document.getElementById('quota-fill') as HTMLElement;
     const quotaText = document.getElementById('quota-text');
 
-    if (config.tier === 'pro') {
-      statusBadge!.textContent = 'Pro';
-      statusBadge!.className = 'status-badge pro';
-      config.quotaLimit = 1000;
-    } else {
-      statusBadge!.textContent = 'Free';
-      statusBadge!.className = 'status-badge free';
+    if (statusBadge) {
+      if (config.tier === 'pro') {
+        statusBadge.textContent = 'Pro';
+        statusBadge.className = 'status-badge pro';
+        config.quotaLimit = 1000;
+      } else {
+        statusBadge.textContent = 'Free';
+        statusBadge.className = 'status-badge free';
+      }
     }
 
     // Update quota display
-    const quotaPercentage = (config.quotaUsed / config.quotaLimit) * 100;
-    quotaFill!.style.width = `${quotaPercentage}%`;
-    quotaText!.textContent = `${config.quotaUsed} / ${config.quotaLimit} prompts used`;
+    if (quotaFill && quotaText) {
+      const quotaPercentage = (config.quotaUsed / config.quotaLimit) * 100;
+      quotaFill.style.width = `${quotaPercentage}%`;
+      quotaText.textContent = `${config.quotaUsed} / ${config.quotaLimit} prompts used`;
+    }
 
     // Show upgrade banner if free user
     const upgradeBanner = document.getElementById('upgrade-banner');
-    if (config.tier === 'free' && config.quotaUsed > config.quotaLimit * 0.8) {
-      upgradeBanner!.style.display = 'block';
+    if (upgradeBanner && config.tier === 'free' && config.quotaUsed > config.quotaLimit * 0.8) {
+      upgradeBanner.style.display = 'block';
     }
 
     // Settings button
-    document.getElementById('settings-btn')!.addEventListener('click', () => {
-      chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/dashboard' });
-    });
+    const settingsBtn = document.getElementById('settings-btn');
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', () => {
+        chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/dashboard' });
+      });
+    }
 
     // Upgrade button
-    document.getElementById('upgrade-btn')!.addEventListener('click', () => {
-      chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/pricing' });
-    });
+    const upgradeBtn = document.getElementById('upgrade-btn');
+    if (upgradeBtn) {
+      upgradeBtn.addEventListener('click', () => {
+        chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/pricing' });
+      });
+    }
   }
 
 

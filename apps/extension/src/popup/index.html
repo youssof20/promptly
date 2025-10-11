@@ -44,8 +44,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
     }
 
     .logo-text {
@@ -354,7 +355,7 @@
   <!-- Header -->
   <div class="header">
     <div class="logo">
-      <div class="logo-icon">P</div>
+      <div class="logo-icon">⚡</div>
       <div class="logo-text">Promptly</div>
     </div>
     <div class="tagline">AI Prompt Optimizer</div>
@@ -375,12 +376,8 @@
 
     <!-- Not Logged In State -->
     <div id="not-logged-in" style="display: none;">
-      <div class="status-section">
-        <div class="status-header">
-          <div class="status-title">Connection Status</div>
-          <div class="status-badge disconnected">Disconnected</div>
-        </div>
-        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px;">
+      <div class="welcome-section">
+        <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px; text-align: center;">
           Sign in to start optimizing your AI prompts across all platforms.
         </p>
       </div>
@@ -390,10 +387,10 @@
           <span class="btn-icon">🔑</span>
           <span>Sign In</span>
         </button>
-        <button id="signup-btn" class="btn btn-secondary">
+        <a href="#" id="signup-link" class="btn btn-secondary">
           <span class="btn-icon">✨</span>
           <span>Sign Up</span>
-        </button>
+        </a>
       </div>
     </div>
 
@@ -419,6 +416,9 @@
         </div>
         <div class="quota-text" id="quota-text">0 / 50 prompts used</div>
       </div>
+
+      <!-- Status Badge (hidden, used by JavaScript) -->
+      <div id="status-badge" style="display: none;"></div>
 
       <!-- Upgrade Banner (shown when approaching limit) -->
       <div id="upgrade-banner" class="upgrade-banner" style="display: none;">
