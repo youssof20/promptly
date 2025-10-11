@@ -19,8 +19,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       // User is logged in
       showLoggedInState(config);
     } else {
-      // Check if user is signed in on the website
+      // Check if user is signed in on the website (auto sign-in)
       try {
+        console.log('Checking if user is signed in on website...');
         const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
           method: 'POST',
           headers: {
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.token) {
+            console.log('User is signed in on website, auto-signing in to extension...');
             // User is signed in on website, store token
             await chrome.runtime.sendMessage({
               type: 'SET_USER_TOKEN',
@@ -43,9 +45,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             showLoggedInState(newResult.config);
             return;
           }
+        } else {
+          console.log('User not signed in on website (status:', response.status, ')');
         }
       } catch (error) {
-        console.log('Not signed in on website');
+        console.log('Auto sign-in check failed:', error);
       }
       
       // User is not authenticated anywhere
@@ -74,6 +78,18 @@ document.addEventListener('DOMContentLoaded', async () => {
           token: null,
           user: null
         });
+        
+        // Force logout on website to allow account switching
+        try {
+          await fetch('https://promptly-two-ashy.vercel.app/api/auth/signout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        } catch (error) {
+          console.log('Could not force logout on website:', error);
+        }
         
         // Check if there's already a sign-in tab open
         const tabs = await chrome.tabs.query({ url: 'https://promptly-two-ashy.vercel.app/auth/signin*' });
@@ -168,6 +184,50 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
+    // Refresh button (check website sign-in)
+    document.getElementById('refresh-btn')!.addEventListener('click', async () => {
+      try {
+        loading!.style.display = 'flex';
+        notLoggedIn!.style.display = 'none';
+        
+        console.log('Manually checking website sign-in status...');
+        const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.token) {
+            console.log('Found website sign-in, auto-signing in to extension...');
+            // User is signed in on website, store token
+            await chrome.runtime.sendMessage({
+              type: 'SET_USER_TOKEN',
+              token: data.token,
+              user: data.user
+            });
+            
+            // Reload config and show logged in state
+            const newResult = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
+            showLoggedInState(newResult.config);
+            return;
+          }
+        }
+        
+        // No sign-in found
+        loading!.style.display = 'none';
+        notLoggedIn!.style.display = 'block';
+        showError('Not signed in on website. Please sign in first.');
+      } catch (error) {
+        console.error('Refresh check failed:', error);
+        loading!.style.display = 'none';
+        notLoggedIn!.style.display = 'block';
+        showError('Failed to check website status');
+      }
+    });
+
     // Sign up link
     document.getElementById('signup-link')!.addEventListener('click', (e) => {
       e.preventDefault();
@@ -237,6 +297,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (upgradeBtn) {
       upgradeBtn.addEventListener('click', () => {
         chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/pricing' });
+      });
+    }
+
+    // Sign out button
+    const signoutBtn = document.getElementById('signout-btn');
+    if (signoutBtn) {
+      signoutBtn.addEventListener('click', async () => {
+        try {
+          // Clear extension token
+          await chrome.runtime.sendMessage({
+            type: 'SET_USER_TOKEN',
+            token: null,
+            user: null
+          });
+          
+          // Open website logout page
+          chrome.tabs.create({ 
+            url: 'https://promptly-two-ashy.vercel.app/api/auth/signout',
+            active: true 
+          });
+          
+          // Show not logged in state
+          showNotLoggedInState();
+          
+          // Close popup
+          window.close();
+        } catch (error) {
+          console.error('Sign out error:', error);
+          showError('Failed to sign out');
+        }
       });
     }
   }
