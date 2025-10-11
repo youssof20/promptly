@@ -185,16 +185,11 @@ const createOptimizationHint = (): HTMLElement => {
   const text = document.createElement('div');
   text.className = 'promptly-hint-text';
   
-  const title = document.createElement('div');
-  title.className = 'promptly-hint-title';
-  title.textContent = 'Optimize';
-  
-  const subtitle = document.createElement('div');
-  subtitle.className = 'promptly-hint-subtitle';
-  subtitle.textContent = 'with AI';
-  
-  text.appendChild(title);
-  text.appendChild(subtitle);
+          const title = document.createElement('div');
+          title.className = 'promptly-hint-title';
+          title.textContent = 'Optimize with AI';
+          
+          text.appendChild(title);
   hintContent.appendChild(icon);
   hintContent.appendChild(text);
   hint.appendChild(hintContent);
@@ -392,7 +387,7 @@ const monitorChatbox = (chatbox: Element): void => {
     const now = Date.now();
     
     // Only check if enough time has passed since last activity (debounce)
-    if (now - lastActivityTime < 1000) {
+    if (now - lastActivityTime < 300) {
       return;
     }
     

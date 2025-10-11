@@ -246,9 +246,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = document.getElementById('user-email');
     
     if (userAvatar && userName && userEmail) {
+      // Debug logging
+      console.log('Config user data:', config.user);
+      
       // Extract name from email (before @) or use email
       const name = config.user?.name || config.user?.email?.split('@')[0] || 'User';
       const email = config.user?.email || 'user@example.com';
+      
+      console.log('Setting user info:', { name, email });
       
       userAvatar.textContent = name.charAt(0).toUpperCase();
       userName.textContent = name;

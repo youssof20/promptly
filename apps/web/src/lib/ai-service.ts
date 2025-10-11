@@ -231,16 +231,23 @@ export class AIService {
 
   constructor() {
     // Initialize providers based on available API keys
+    console.log('Initializing AI providers...');
+    console.log('OpenAI API Key available:', !!process.env.OPENAI_API_KEY);
+    console.log('DeepSeek API Key available:', !!process.env.DEEPSEEK_API_KEY);
+    
     if (process.env.OPENAI_API_KEY) {
       this.providers.set('openai', new OpenAIProvider(process.env.OPENAI_API_KEY));
+      console.log('OpenAI provider initialized');
     }
     
     if (process.env.DEEPSEEK_API_KEY) {
       this.providers.set('deepseek', new DeepSeekProvider(process.env.DEEPSEEK_API_KEY));
+      console.log('DeepSeek provider initialized');
     }
     
     // Always add mock provider as fallback
     this.providers.set('mock', new MockProvider());
+    console.log('Available providers:', Array.from(this.providers.keys()));
   }
 
   async optimizePrompt(request: AIOptimizationRequest): Promise<AIOptimizationResponse> {
@@ -260,9 +267,11 @@ export class AIService {
     if (tier === 'pro') {
       // Prefer OpenAI for Pro tier
       provider = this.providers.get('openai') || this.providers.get('deepseek') || this.providers.get('mock')!;
+      console.log(`Pro tier: Selected provider: ${provider.constructor.name}`);
     } else {
       // Prefer DeepSeek for Free tier (more cost-effective)
       provider = this.providers.get('deepseek') || this.providers.get('openai') || this.providers.get('mock')!;
+      console.log(`Free tier: Selected provider: ${provider.constructor.name}`);
     }
 
     try {
