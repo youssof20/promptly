@@ -8,6 +8,10 @@ interface PromptlyConfig {
   tier: 'free' | 'pro';
   quotaUsed: number;
   quotaLimit: number;
+  user?: {
+    name: string;
+    email: string;
+  };
 }
 
 class PromptlyBackground {
@@ -159,6 +163,11 @@ class PromptlyBackground {
           this.config.tier = message.user.tier.toLowerCase();
           this.config.quotaUsed = message.user.quotaUsed || 0;
           this.config.quotaLimit = message.user.quotaLimit || 50;
+          // Store user info for display
+          this.config.user = {
+            name: message.user.name || message.user.email?.split('@')[0] || 'User',
+            email: message.user.email || 'user@example.com'
+          };
         }
         await this.saveConfig();
         sendResponse({ success: true });

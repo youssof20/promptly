@@ -180,6 +180,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     notLoggedIn!.style.display = 'none';
     loggedIn!.style.display = 'block';
 
+    // Update user info
+    const userAvatar = document.getElementById('user-avatar');
+    const userName = document.getElementById('user-name');
+    const userEmail = document.getElementById('user-email');
+    
+    if (userAvatar && userName && userEmail) {
+      // Extract name from email (before @) or use email
+      const name = config.user?.name || config.user?.email?.split('@')[0] || 'User';
+      const email = config.user?.email || 'user@example.com';
+      
+      userAvatar.textContent = name.charAt(0).toUpperCase();
+      userName.textContent = name;
+      userEmail.textContent = email;
+    }
+
     // Update status badge
     const statusBadge = document.getElementById('status-badge');
     const quotaFill = document.getElementById('quota-fill') as HTMLElement;

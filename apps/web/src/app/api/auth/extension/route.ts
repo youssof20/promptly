@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
 
     const userId = (session.user as any).id;
     const userEmail = session.user.email;
+    const userName = session.user.name || userEmail?.split('@')[0] || 'User';
     const subscriptionTier = (session.user as any).subscriptionTier || 'FREE';
 
     // Get user's current quota status
@@ -28,6 +29,7 @@ export async function POST(request: NextRequest) {
     // Generate a secure token for the extension
     const extensionToken = Buffer.from(JSON.stringify({
       userId,
+      name: userName,
       email: userEmail,
       tier: subscriptionTier,
       quotaUsed: quotaInfo.quotaLimit - quotaInfo.remainingQuota,
@@ -40,6 +42,7 @@ export async function POST(request: NextRequest) {
       token: extensionToken,
       user: {
         id: userId,
+        name: userName,
         email: userEmail,
         tier: subscriptionTier,
         quotaUsed: quotaInfo.quotaLimit - quotaInfo.remainingQuota,
@@ -107,6 +110,7 @@ export async function GET(request: NextRequest) {
         success: true,
         user: {
           id: decoded.userId,
+          name: decoded.name || decoded.email?.split('@')[0] || 'User',
           email: decoded.email,
           tier: decoded.tier,
           quotaUsed: quotaInfo.quotaLimit - quotaInfo.remainingQuota,
