@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Not authenticated' }, { 
         status: 401,
         headers: {
-          'Access-Control-Allow-Origin': 'chrome-extension://*',
+          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       }
     }, {
       headers: {
-        'Access-Control-Allow-Origin': 'chrome-extension://*',
+        'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Authentication failed' }, { 
       status: 500,
       headers: {
-        'Access-Control-Allow-Origin': 'chrome-extension://*',
+        'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
@@ -69,7 +69,7 @@ export async function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'chrome-extension://*',
+      'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
@@ -80,7 +80,14 @@ export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'No token provided' }, { status: 401 });
+      return NextResponse.json({ error: 'No token provided' }, { 
+        status: 401,
+        headers: {
+          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      });
     }
 
     const token = authHeader.substring(7);
@@ -105,12 +112,32 @@ export async function GET(request: NextRequest) {
           quotaUsed: quotaInfo.quotaLimit - quotaInfo.remainingQuota,
           quotaLimit: quotaInfo.quotaLimit
         }
+      }, {
+        headers: {
+          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
       });
     } catch (decodeError) {
-      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+      return NextResponse.json({ error: 'Invalid token' }, { 
+        status: 401,
+        headers: {
+          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      });
     }
   } catch (error) {
     console.error('Extension token validation error:', error);
-    return NextResponse.json({ error: 'Token validation failed' }, { status: 500 });
+    return NextResponse.json({ error: 'Token validation failed' }, { 
+      status: 500,
+      headers: {
+        'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
   }
 }
