@@ -32,7 +32,6 @@ const plans = [
       '1,000 optimizations per month',
       '⚡ Priority speed (instant processing)',
       '📚 Unlimited optimization history',
-      '🌙 Dark mode',
       '📊 Advanced analytics',
       '🔧 Custom templates',
       '⌨️ Keyboard shortcuts',

@@ -24,7 +24,7 @@ export const browser = (() => {
 export const storage = {
   async get(keys: string | string[] | Record<string, any>): Promise<Record<string, any>> {
     return new Promise((resolve, reject) => {
-      browser.storage.sync.get(keys, (result) => {
+      browser.storage.sync.get(keys, (result: Record<string, any>) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
@@ -63,7 +63,7 @@ export const storage = {
 export const messaging = {
   async sendMessage(message: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      browser.runtime.sendMessage(message, (response) => {
+      browser.runtime.sendMessage(message, (response: any) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
@@ -88,7 +88,7 @@ export const messaging = {
 export const tabs = {
   async create(createProperties: chrome.tabs.CreateProperties): Promise<chrome.tabs.Tab> {
     return new Promise((resolve, reject) => {
-      browser.tabs.create(createProperties, (tab) => {
+      browser.tabs.create(createProperties, (tab: chrome.tabs.Tab) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
@@ -100,7 +100,7 @@ export const tabs = {
 
   async update(tabId: number, updateProperties: chrome.tabs.UpdateProperties): Promise<chrome.tabs.Tab> {
     return new Promise((resolve, reject) => {
-      browser.tabs.update(tabId, updateProperties, (tab) => {
+      browser.tabs.update(tabId, updateProperties, (tab: chrome.tabs.Tab) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
@@ -112,7 +112,7 @@ export const tabs = {
 
   async query(queryInfo: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]> {
     return new Promise((resolve, reject) => {
-      browser.tabs.query(queryInfo, (tabs) => {
+      browser.tabs.query(queryInfo, (tabs: chrome.tabs.Tab[]) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
@@ -124,7 +124,7 @@ export const tabs = {
 
   async get(tabId: number): Promise<chrome.tabs.Tab> {
     return new Promise((resolve, reject) => {
-      browser.tabs.get(tabId, (tab) => {
+      browser.tabs.get(tabId, (tab: chrome.tabs.Tab) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
@@ -149,7 +149,7 @@ export const tabs = {
 export const windows = {
   async update(windowId: number, updateInfo: chrome.windows.UpdateInfo): Promise<chrome.windows.Window> {
     return new Promise((resolve, reject) => {
-      browser.windows.update(windowId, updateInfo, (window) => {
+      browser.windows.update(windowId, updateInfo, (window: chrome.windows.Window) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
@@ -162,9 +162,9 @@ export const windows = {
 
 // Unified scripting API (for content script injection)
 export const scripting = {
-  async executeScript(injection: chrome.scripting.ScriptInjection): Promise<chrome.scripting.InjectionResult[]> {
+  async executeScript(injection: chrome.scripting.ScriptInjection<any, any>): Promise<chrome.scripting.InjectionResult<any>[]> {
     return new Promise((resolve, reject) => {
-      browser.scripting.executeScript(injection, (results) => {
+      browser.scripting.executeScript(injection, (results: chrome.scripting.InjectionResult<any>[]) => {
         if (browser.runtime.lastError) {
           reject(new Error(browser.runtime.lastError.message));
         } else {
