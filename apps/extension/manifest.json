@@ -33,13 +33,13 @@
         "https://x.com/*",
         "https://twitter.com/*"
       ],
-      "js": ["dist/content.js"],
-      "css": ["dist/content.css"],
+      "js": ["content.js"],
+      "css": ["content.css"],
       "run_at": "document_end"
     }
   ],
   "action": {
-    "default_popup": "dist/popup.html",
+    "default_popup": "popup.html",
     "default_title": "Promptly - AI Prompt Optimizer"
   },
   "icons": {
@@ -50,7 +50,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["dist/injected.js"],
+      "resources": ["injected.js"],
       "matches": ["<all_urls>"]
     }
   ]
