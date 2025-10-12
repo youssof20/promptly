@@ -36,6 +36,10 @@ export default defineConfig({
       },
       output: {
         entryFileNames: (chunkInfo) => {
+          // Ensure background.js goes to dist/background.js to match manifest
+          if (chunkInfo.name === 'background') {
+            return 'background.js';
+          }
           return chunkInfo.name === 'popup.js' ? 'popup.js' : '[name].js';
         },
         chunkFileNames: '[name].js',

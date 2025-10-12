@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { databaseService } from '@/lib/database-service';
+import { signExtensionToken, verifyExtensionToken } from '@/lib/jwt';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,11 +11,7 @@ export async function POST(request: NextRequest) {
     if (!session?.user) {
       return NextResponse.json({ error: 'Not authenticated' }, { 
         status: 401,
-        headers: {
-          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
+        headers: getCorsHeaders(),
       });
     }
 
@@ -26,16 +23,15 @@ export async function POST(request: NextRequest) {
     // Get user's current quota status
     const quotaInfo = await databaseService.checkQuota(userId);
 
-    // Generate a secure token for the extension
-    const extensionToken = Buffer.from(JSON.stringify({
+    // Generate a secure JWT token for the extension
+    const extensionToken = signExtensionToken({
       userId,
+      email: userEmail || '',
       name: userName,
-      email: userEmail,
       tier: subscriptionTier,
       quotaUsed: quotaInfo.quotaLimit - quotaInfo.remainingQuota,
       quotaLimit: quotaInfo.quotaLimit,
-      exp: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days
-    })).toString('base64');
+    });
 
     return NextResponse.json({
       success: true,
@@ -49,21 +45,13 @@ export async function POST(request: NextRequest) {
         quotaLimit: quotaInfo.quotaLimit
       }
     }, {
-      headers: {
-        'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      headers: getCorsHeaders(),
     });
   } catch (error) {
     console.error('Extension auth error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { 
       status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      headers: getCorsHeaders(),
     });
   }
 }
@@ -71,11 +59,7 @@ export async function POST(request: NextRequest) {
 export async function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+    headers: getCorsHeaders(),
   });
 }
 
@@ -85,22 +69,17 @@ export async function GET(request: NextRequest) {
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'No token provided' }, { 
         status: 401,
-        headers: {
-          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
+        headers: getCorsHeaders(),
       });
     }
 
     const token = authHeader.substring(7);
     
     try {
-      const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
+      const decoded = verifyExtensionToken(token);
       
-      // Check if token is expired
-      if (decoded.exp < Date.now()) {
-        return NextResponse.json({ error: 'Token expired' }, { status: 401 });
+      if (!decoded) {
+        return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
       }
 
       // Get fresh quota info
@@ -117,31 +96,27 @@ export async function GET(request: NextRequest) {
           quotaLimit: quotaInfo.quotaLimit
         }
       }, {
-        headers: {
-          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
+        headers: getCorsHeaders(),
       });
     } catch (decodeError) {
       return NextResponse.json({ error: 'Invalid token' }, { 
         status: 401,
-        headers: {
-          'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
+        headers: getCorsHeaders(),
       });
     }
   } catch (error) {
     console.error('Extension token validation error:', error);
     return NextResponse.json({ error: 'Token validation failed' }, { 
       status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': 'chrome-extension://eemkbcoembomnhfnhbcppgihnaikbmbn',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      headers: getCorsHeaders(),
     });
   }
+}
+
+function getCorsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*', // Allow all extension origins
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
 }

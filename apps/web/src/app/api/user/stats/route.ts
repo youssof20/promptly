@@ -1,27 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { databaseService } from '@/lib/database-service';
 
 export async function GET(request: NextRequest) {
   try {
-    // Check authentication
     const session = await getServerSession(authOptions);
-    if (!session?.user || !(session.user as any).id) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+    
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    // Get user statistics
-    const stats = await databaseService.getUserStats((session.user as any).id);
+    const userId = (session.user as any).id;
+    const subscriptionTier = (session.user as any).subscriptionTier || 'FREE';
+
+    // Get user stats
+    const stats = await databaseService.getUserStats(userId);
     
-    return NextResponse.json(stats);
+    // Get optimization history (limited for free users)
+    const historyLimit = subscriptionTier === 'PRO' || subscriptionTier === 'ENTERPRISE' ? 50 : 5;
+    const history = await databaseService.getOptimizationHistory(userId, historyLimit);
+
+    // Get current quota info
+    const quotaInfo = await databaseService.checkQuota(userId);
+
+    return NextResponse.json({
+      success: true,
+      stats: {
+        ...stats,
+        subscriptionTier,
+        quotaInfo: {
+          used: quotaInfo.quotaLimit - quotaInfo.remainingQuota,
+          limit: quotaInfo.quotaLimit,
+          remaining: quotaInfo.remainingQuota,
+          period: quotaInfo.quotaPeriod
+        }
+      },
+      history,
+      isPro: subscriptionTier === 'PRO' || subscriptionTier === 'ENTERPRISE'
+    });
   } catch (error) {
     console.error('User stats API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to fetch user stats' },
       { status: 500 }
     );
   }

@@ -1,6 +1,8 @@
 // Content script for Promptly browser extension
 // Detects AI chat platforms and provides minimal hint-based optimization
 
+import { messaging } from '../utils/browser-api';
+
 (function() {
   // Prevent multiple injections
   if ((window as any).promptlyLoaded) {
@@ -276,7 +278,7 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
   
   try {
     // Send message to background script for optimization
-    const response = await chrome.runtime.sendMessage({
+    const response = await messaging.sendMessage({
       type: 'OPTIMIZE_PROMPT',
       prompt: text
     });
@@ -285,6 +287,11 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
     
     if (response && response.success && response.optimized) {
       console.log('Optimized prompt:', response.optimized);
+      
+      // Add Pro tier delay for free users (artificial speed difference)
+      if (response.tier === 'free') {
+        await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
+      }
       
       // Replace text in chatbox
       if (chatbox instanceof HTMLTextAreaElement) {
@@ -295,8 +302,8 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
         chatbox.dispatchEvent(new Event('input', { bubbles: true }));
       }
       
-      // Show success feedback
-      showSuccessFeedback();
+      // Show success feedback with tier-specific messaging
+      showSuccessFeedback(response.tier);
     } else {
       console.error('Optimization failed:', response);
       showErrorFeedback();
@@ -307,24 +314,34 @@ const optimizePrompt = async (chatbox: Element): Promise<void> => {
   }
 };
 
-// Show success feedback with dopamine boost
-const showSuccessFeedback = (): void => {
+// Show success feedback with dopamine boost and tier-specific messaging
+const showSuccessFeedback = (tier: string = 'free'): void => {
+  const isPro = tier === 'pro';
   const feedback = document.createElement('div');
   feedback.className = 'promptly-feedback promptly-success';
+  
   feedback.innerHTML = `
     <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="font-size: 18px;">✨</span>
+      <span style="font-size: 18px;">${isPro ? '⚡' : '✨'}</span>
       <div>
-        <div style="font-weight: 600; margin-bottom: 2px;">Prompt optimized!</div>
-        <div style="font-size: 12px; opacity: 0.9;">Clearer, more specific. You'll get a sharper response.</div>
+        <div style="font-weight: 600; margin-bottom: 2px;">
+          ${isPro ? 'Pro optimization complete!' : 'Prompt optimized!'}
+        </div>
+        <div style="font-size: 12px; opacity: 0.9;">
+          ${isPro ? 'Premium AI enhancement applied instantly.' : 'Clearer, more specific. You\'ll get a sharper response.'}
+        </div>
       </div>
     </div>
   `;
+  
   feedback.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    background: ${isPro 
+      ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)' 
+      : 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)'
+    };
     color: white;
     padding: 16px 20px;
     border-radius: 12px;
@@ -332,7 +349,10 @@ const showSuccessFeedback = (): void => {
     font-size: 14px;
     font-weight: 500;
     z-index: 10001;
-    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+    box-shadow: ${isPro 
+      ? '0 8px 24px rgba(139, 92, 246, 0.4)' 
+      : '0 8px 24px rgba(34, 197, 94, 0.4)'
+    };
     animation: promptly-bounce-in 0.4s ease-out;
     border: 1px solid rgba(255, 255, 255, 0.2);
   `;

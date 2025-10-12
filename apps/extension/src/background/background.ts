@@ -1,6 +1,8 @@
 // Background script for Promptly browser extension
 // Handles extension lifecycle, storage, and communication
 
+import { browser, storage, messaging, tabs, windows, scripting, runtime, browserInfo } from '../utils/browser-api';
+
 interface PromptlyConfig {
   apiUrl: string;
   isEnabled: boolean;
@@ -44,7 +46,7 @@ class PromptlyBackground {
 
   private async loadConfig() {
     try {
-      const result = await chrome.storage.sync.get(['promptlyConfig']);
+      const result = await storage.get(['promptlyConfig']);
       if (result.promptlyConfig && typeof result.promptlyConfig === 'object') {
         this.config = { ...this.config, ...result.promptlyConfig };
       }
@@ -64,7 +66,7 @@ class PromptlyBackground {
 
   private async saveConfig() {
     try {
-      await chrome.storage.sync.set({ promptlyConfig: this.config });
+      await storage.set({ promptlyConfig: this.config });
     } catch (error) {
       console.error('Failed to save Promptly config:', error);
     }
@@ -72,18 +74,18 @@ class PromptlyBackground {
 
   private setupEventListeners() {
     // Handle extension installation
-    chrome.runtime.onInstalled.addListener((details) => {
+    runtime.onInstalled.addListener((details) => {
       this.handleInstallation(details);
     });
 
     // Handle messages from content scripts and popup
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    messaging.onMessage.addListener((message, sender, sendResponse) => {
       this.handleMessage(message, sender, sendResponse);
       return true; // Keep message channel open for async responses
     });
 
     // Handle tab updates to inject content scripts
-    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       this.handleTabUpdate(tabId, changeInfo, tab);
     });
   }
@@ -106,7 +108,7 @@ class PromptlyBackground {
 
   private showUpdateNotification(previousVersion?: string) {
     // Use console log instead of notifications to avoid permission issues
-    console.log(`🔄 Promptly Updated from ${previousVersion} to ${chrome.runtime.getManifest().version}`);
+    console.log(`🔄 Promptly Updated from ${previousVersion} to ${runtime.getManifest().version}`);
   }
 
   private async handleMessage(
@@ -195,15 +197,15 @@ class PromptlyBackground {
     if (this.isSupportedPlatform(tab.url)) {
       try {
         // Inject content script
-        await chrome.scripting.executeScript({
+        await scripting.executeScript({
           target: { tabId },
-          files: ['dist/content.js']
+          files: ['content.js']
         });
 
         // Inject CSS
-        await chrome.scripting.insertCSS({
+        await scripting.insertCSS({
           target: { tabId },
-          files: ['dist/content.css']
+          files: ['content.css']
         });
       } catch (error) {
         console.warn('Failed to inject Promptly scripts:', error);
@@ -346,21 +348,22 @@ class PromptlyBackground {
   }
 
   private async initializeQuotaTracking() {
-    // Reset quota on new day
-    const today = new Date().toDateString();
-    const lastReset = await chrome.storage.local.get(['lastQuotaReset']);
+    // Reset quota on new month (not daily)
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${now.getMonth()}`;
+    const lastReset = await storage.get(['lastQuotaReset']);
     
-    if (lastReset.lastQuotaReset !== today) {
+    if (lastReset.lastQuotaReset !== currentMonth) {
       this.config.quotaUsed = 0;
       await this.saveConfig();
-      await chrome.storage.local.set({ lastQuotaReset: today });
+      await storage.set({ lastQuotaReset: currentMonth });
     }
   }
 
   private async checkAuthStatus() {
     try {
       // Check if we have a stored token
-      const storedConfig = await chrome.storage.sync.get(['promptlyConfig']);
+      const storedConfig = await storage.get(['promptlyConfig']);
       const token = storedConfig.promptlyConfig?.userToken;
       
       if (token) {

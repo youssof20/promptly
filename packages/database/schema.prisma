@@ -93,12 +93,13 @@ model QuotaLog {
   userId      String    @map("user_id")
   date        DateTime  @db.Date
   promptsUsed Int       @map("prompts_used")
+  quotaPeriod String    @map("quota_period") // Format: "YYYY-MM" for monthly tracking
   createdAt   DateTime  @default(now()) @map("created_at")
 
   // Relations
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, date])
+  @@unique([userId, quotaPeriod])
   @@map("quota_logs")
 }
 

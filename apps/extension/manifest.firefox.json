@@ -1,0 +1,53 @@
+{
+  "manifest_version": 2,
+  "name": "Promptly",
+  "version": "1.0.0",
+  "description": "AI prompt optimizer that automatically improves your prompts before sending to AI systems",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "https://chat.openai.com/*",
+    "https://claude.ai/*",
+    "https://poe.com/*",
+    "https://bard.google.com/*",
+    "https://chatgpt.com/*",
+    "https://deepseek.com/*",
+    "https://x.com/*",
+    "https://twitter.com/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://poe.com/*",
+        "https://bard.google.com/*",
+        "https://chatgpt.com/*",
+        "https://deepseek.com/*",
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Promptly - AI Prompt Optimizer"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "web_accessible_resources": [
+    "injected.js"
+  ]
+}
