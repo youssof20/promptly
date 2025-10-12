@@ -15,8 +15,8 @@ const plans = [
     features: [
       '50 optimizations per month',
       'Smart prompt enhancement',
-      'DeepSeek AI model',
-      'Works on all platforms',
+      'Works on all AI platforms',
+      'Basic optimization history (5 recent)',
       'Community support',
     ],
     cta: 'Current Plan',
@@ -30,12 +30,13 @@ const plans = [
     description: 'For professionals who use AI daily',
     features: [
       '1,000 optimizations per month',
-      'Advanced AI optimization',
-      'GPT-4o-mini model',
-      'Priority support',
-      'Usage analytics',
-      'API access',
-      'Custom templates',
+      '⚡ Priority speed (instant processing)',
+      '📚 Unlimited optimization history',
+      '🌙 Dark mode',
+      '📊 Advanced analytics',
+      '🔧 Custom templates',
+      '⌨️ Keyboard shortcuts',
+      '💎 Premium support',
     ],
     cta: 'Upgrade to Pro',
     popular: true,
@@ -199,21 +200,31 @@ export default function PricingPage() {
 
             <div className="bg-slate-800/30 rounded-xl p-6">
               <h3 className="text-xl font-semibold text-white mb-3">
-                What happens if I exceed my quota?
+                What happens if I exceed my monthly optimizations?
               </h3>
               <p className="text-slate-300">
                 We'll notify you when you're approaching your limit. If you exceed your monthly quota, 
-                you can either wait until the next month or upgrade your plan for immediate access.
+                you can either wait until the next month or upgrade your plan for immediate access to more optimizations.
               </p>
             </div>
 
             <div className="bg-slate-800/30 rounded-xl p-6">
               <h3 className="text-xl font-semibold text-white mb-3">
-                Do you offer refunds?
+                How does prompt optimization work?
               </h3>
               <p className="text-slate-300">
-                Yes! We offer a 30-day money-back guarantee for all paid plans. If Promptly doesn't 
-                work for you, we'll refund every penny. No questions asked.
+                Our AI analyzes your prompts and makes them clearer, more specific, and more effective. 
+                We improve structure, add context, and optimize for better AI responses. Works on ChatGPT, Claude, Gemini, and more.
+              </p>
+            </div>
+
+            <div className="bg-slate-800/30 rounded-xl p-6">
+              <h3 className="text-xl font-semibold text-white mb-3">
+                What's the difference between Free and Pro?
+              </h3>
+              <p className="text-slate-300">
+                Free gives you 50 optimizations per month with basic features. Pro gives you 1,000 optimizations 
+                plus priority speed, unlimited history, dark mode, analytics, templates, and keyboard shortcuts.
               </p>
             </div>
           </div>
