@@ -1,349 +1,230 @@
-// Promptly Extension Popup - Grammarly-style flow
-
-import { messaging, tabs, windows, browser } from '../utils/browser-api';
-
-let isSigningIn = false; // Flag to prevent multiple sign-in attempts
+// Promptly Extension Popup - Open Source Version
+// Handles API key configuration and settings
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const loading = document.getElementById('loading');
-  const notLoggedIn = document.getElementById('not-logged-in');
-  const loggedIn = document.getElementById('logged-in');
-  const error = document.getElementById('error');
+  const aiProviderSelect = document.getElementById('ai-provider') as HTMLSelectElement;
+  const apiKeyInput = document.getElementById('api-key') as HTMLInputElement;
+  const localEndpointInput = document.getElementById('local-endpoint') as HTMLInputElement;
+  const apiKeyGroup = document.getElementById('api-key-group') as HTMLElement;
+  const localEndpointGroup = document.getElementById('local-endpoint-group') as HTMLElement;
+  const testButton = document.getElementById('test-connection') as HTMLButtonElement;
+  const saveButton = document.getElementById('save-settings') as HTMLButtonElement;
+  const statusDot = document.getElementById('status-dot') as HTMLElement;
+  const statusText = document.getElementById('status-text') as HTMLElement;
+  const testResult = document.getElementById('test-result') as HTMLElement;
+  const apiKeyHelp = document.getElementById('api-key-help') as HTMLElement;
 
-  // Load user state
-  try {
-    const result = await messaging.sendMessage({ type: 'GET_CONFIG' });
-    const config = result.config;
+  // Tab switching
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
 
-    loading!.style.display = 'none';
-
-    if (config.userToken) {
-      // User is logged in
-      showLoggedInState(config);
-    } else {
-      // Check if user is signed in on the website (auto sign-in)
-      try {
-        console.log('Checking if user is signed in on website...');
-        const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.token) {
-            console.log('User is signed in on website, auto-signing in to extension...');
-            // User is signed in on website, store token
-            await messaging.sendMessage({
-              type: 'SET_USER_TOKEN',
-              token: data.token,
-              user: data.user
-            });
-            
-            // Reload config and show logged in state
-            const newResult = await messaging.sendMessage({ type: 'GET_CONFIG' });
-            showLoggedInState(newResult.config);
-            return;
-          }
-        } else {
-          console.log('User not signed in on website (status:', response.status, ')');
-        }
-      } catch (error) {
-        console.log('Auto sign-in check failed:', error);
-      }
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tabName = (button as HTMLElement).dataset.tab;
+      if (!tabName) return;
       
-      // User is not authenticated anywhere
-      showNotLoggedInState();
-    }
-  } catch (error) {
-    console.error('Failed to load config:', error);
-    loading!.style.display = 'none';
-    showNotLoggedInState();
-  }
-
-  function showNotLoggedInState() {
-    notLoggedIn!.style.display = 'block';
-    loggedIn!.style.display = 'none';
-
-    // Sign in button
-    document.getElementById('signin-btn')!.addEventListener('click', async () => {
-      if (isSigningIn) return; // Prevent multiple sign-in attempts
+      // Update active tab button
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
       
-      try {
-        isSigningIn = true;
-        
-        // Clear any existing token first
-        await messaging.sendMessage({
-          type: 'SET_USER_TOKEN',
-          token: null,
-          user: null
-        });
-        
-        // Force logout on website to allow account switching
-        try {
-          await fetch('https://promptly-two-ashy.vercel.app/api/auth/signout', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-        } catch (error) {
-          console.log('Could not force logout on website:', error);
-        }
-        
-        // Check if there's already a sign-in tab open
-        const existingTabs = await tabs.query({ url: 'https://promptly-two-ashy.vercel.app/auth/signin*' });
-        if (existingTabs.length > 0) {
-          // Focus existing tab instead of creating new one
-          await tabs.update(existingTabs[0].id!, { active: true });
-          await windows.update(existingTabs[0].windowId!, { focused: true });
-          return;
-        }
-        
-        // Open sign in page with logout parameter to force account selection
-        const tab = await tabs.create({ 
-          url: 'https://promptly-two-ashy.vercel.app/auth/signin?extension=true&logout=true',
-          active: true 
-        });
-        
-        // Listen for the tab to complete authentication
-        const listener = async (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
-          if (tabId === tab.id && changeInfo.status === 'complete') {
-            const tabInfo = await tabs.get(tabId);
-            if (tabInfo.url?.includes('/dashboard')) {
-              // User successfully signed in, wait a moment then get auth token
-              setTimeout(async () => {
-                try {
-                  // Get auth token from web app
-                  const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    }
-                  });
-
-                  if (response.ok) {
-                    const data = await response.json();
-                    if (data.success && data.token) {
-                      // Store the token in extension
-                      await messaging.sendMessage({
-                        type: 'SET_USER_TOKEN',
-                        token: data.token,
-                        user: data.user
-                      });
-                      
-                      // Show success message in the tab
-                      browser.scripting.executeScript({
-                        target: { tabId: tabId },
-                        func: () => {
-                          const message = document.createElement('div');
-                          message.innerHTML = `
-                            <div style="position: fixed; top: 20px; right: 20px; z-index: 10000; 
-                                         background: linear-gradient(135deg, #10b981, #059669); 
-                                         color: white; padding: 16px 24px; border-radius: 12px; 
-                                         box-shadow: 0 8px 24px rgba(0,0,0,0.15); 
-                                         font-family: Inter, sans-serif; font-size: 14px; font-weight: 500;">
-                              <div style="display: flex; align-items: center; gap: 8px;">
-                                <span>✅</span>
-                                <span>You can close this page now - you're signed in to the extension!</span>
-                              </div>
-                            </div>
-                          `;
-                          document.body.appendChild(message);
-                          setTimeout(() => message.remove(), 5000);
-                        }
-                      });
-                      
-                      console.log('Extension authenticated successfully');
-                    } else {
-                      console.error('Authentication failed:', data);
-                    }
-                  } else {
-                    console.error('Failed to get auth token:', response.status);
-                  }
-                } catch (error) {
-                  console.error('Authentication error:', error);
-                } finally {
-                  isSigningIn = false; // Reset flag
-                }
-              }, 1000);
-              
-              tabs.onUpdated.removeListener(listener);
-            }
-          }
-        };
-        
-        tabs.onUpdated.addListener(listener);
-        
-        // Close popup
-        window.close();
-      } catch (error) {
-        isSigningIn = false; // Reset flag on error
-        console.error('Sign-in error:', error);
-        showError('Failed to open sign in page');
+      // Update active tab content
+      tabContents.forEach(content => content.classList.remove('active'));
+      const targetContent = document.getElementById(tabName);
+      if (targetContent) {
+        targetContent.classList.add('active');
       }
     });
+  });
 
-    // Refresh button (check website sign-in)
-    document.getElementById('refresh-btn')!.addEventListener('click', async () => {
-      try {
-        loading!.style.display = 'flex';
-        notLoggedIn!.style.display = 'none';
-        
-        console.log('Manually checking website sign-in status...');
-        const response = await fetch('https://promptly-two-ashy.vercel.app/api/auth/extension', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+  // Load saved settings
+  await loadSettings();
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.token) {
-            console.log('Found website sign-in, auto-signing in to extension...');
-            // User is signed in on website, store token
-            await messaging.sendMessage({
-              type: 'SET_USER_TOKEN',
-              token: data.token,
-              user: data.user
-            });
-            
-            // Reload config and show logged in state
-            const newResult = await messaging.sendMessage({ type: 'GET_CONFIG' });
-            showLoggedInState(newResult.config);
-            return;
-          }
-        }
-        
-        // No sign-in found
-        loading!.style.display = 'none';
-        notLoggedIn!.style.display = 'block';
-        showError('Not signed in on website. Please sign in first.');
-      } catch (error) {
-        console.error('Refresh check failed:', error);
-        loading!.style.display = 'none';
-        notLoggedIn!.style.display = 'block';
-        showError('Failed to check website status');
-      }
-    });
+  // Provider change handler
+  aiProviderSelect.addEventListener('change', () => {
+    updateUIForProvider();
+  });
 
-    // Sign up link
-    document.getElementById('signup-link')!.addEventListener('click', (e) => {
-      e.preventDefault();
-      tabs.create({ url: 'https://promptly-two-ashy.vercel.app/auth/signup' });
-    });
+  // Test connection handler
+  testButton.addEventListener('click', async () => {
+    await testConnection();
+  });
 
-  }
+  // Save settings handler
+  saveButton.addEventListener('click', async () => {
+    await saveSettings();
+  });
 
-  function showLoggedInState(config: any) {
-    notLoggedIn!.style.display = 'none';
-    loggedIn!.style.display = 'block';
-
-    // Update user info
-    const userAvatar = document.getElementById('user-avatar');
-    const userName = document.getElementById('user-name');
-    const userEmail = document.getElementById('user-email');
+  // Update UI based on selected provider
+  function updateUIForProvider() {
+    const provider = aiProviderSelect.value;
     
-    if (userAvatar && userName && userEmail) {
-      // Debug logging
-      console.log('Config user data:', config.user);
+    if (provider === 'ollama' || provider === 'lmstudio') {
+      // Local AI providers
+      apiKeyGroup.style.display = 'none';
+      localEndpointGroup.style.display = 'block';
       
-      // Extract name from email (before @) or use email
-      const name = config.user?.name || config.user?.email?.split('@')[0] || 'User';
-      const email = config.user?.email || 'user@example.com';
-      
-      console.log('Setting user info:', { name, email });
-      
-      userAvatar.textContent = name.charAt(0).toUpperCase();
-      userName.textContent = name;
-      userEmail.textContent = email;
-    }
-
-    // Update status badge
-    const statusBadge = document.getElementById('status-badge');
-    const quotaFill = document.getElementById('quota-fill') as HTMLElement;
-    const quotaText = document.getElementById('quota-text');
-
-    if (statusBadge) {
-      if (config.tier === 'pro') {
-        statusBadge.textContent = 'Pro';
-        statusBadge.className = 'status-badge pro';
-        config.quotaLimit = 1000;
+      if (provider === 'ollama') {
+        localEndpointInput.placeholder = 'http://localhost:11434';
+        localEndpointInput.value = localEndpointInput.value || 'http://localhost:11434';
       } else {
-        statusBadge.textContent = 'Free';
-        statusBadge.className = 'status-badge free';
+        localEndpointInput.placeholder = 'http://localhost:1234';
+        localEndpointInput.value = localEndpointInput.value || 'http://localhost:1234';
       }
-    }
-
-    // Update quota display
-    if (quotaFill && quotaText) {
-      const quotaPercentage = (config.quotaUsed / config.quotaLimit) * 100;
-      quotaFill.style.width = `${quotaPercentage}%`;
-      quotaText.textContent = `${config.quotaUsed} / ${config.quotaLimit} prompts used`;
-    }
-
-    // Show upgrade banner if free user
-    const upgradeBanner = document.getElementById('upgrade-banner');
-    if (upgradeBanner && config.tier === 'free' && config.quotaUsed > config.quotaLimit * 0.8) {
-      upgradeBanner.style.display = 'block';
-    }
-
-    // Settings button
-    const settingsBtn = document.getElementById('settings-btn');
-    if (settingsBtn) {
-      settingsBtn.addEventListener('click', () => {
-        tabs.create({ url: 'https://promptly-two-ashy.vercel.app/dashboard' });
-      });
-    }
-
-    // Upgrade button
-    const upgradeBtn = document.getElementById('upgrade-btn');
-    if (upgradeBtn) {
-      upgradeBtn.addEventListener('click', () => {
-        tabs.create({ url: 'https://promptly-two-ashy.vercel.app/pricing' });
-      });
-    }
-
-    // Sign out button
-    const signoutBtn = document.getElementById('signout-btn');
-    if (signoutBtn) {
-      signoutBtn.addEventListener('click', async () => {
-        try {
-          // Clear extension token
-          await messaging.sendMessage({
-            type: 'SET_USER_TOKEN',
-            token: null,
-            user: null
-          });
-          
-          // Open website logout page
-          tabs.create({ 
-            url: 'https://promptly-two-ashy.vercel.app/api/auth/signout',
-            active: true 
-          });
-          
-          // Show not logged in state
-          showNotLoggedInState();
-          
-          // Close popup
-          window.close();
-        } catch (error) {
-          console.error('Sign out error:', error);
-          showError('Failed to sign out');
-        }
-      });
+    } else {
+      // Cloud AI providers
+      apiKeyGroup.style.display = 'block';
+      localEndpointGroup.style.display = 'none';
+      
+      // Update API key help text based on provider
+      const helpTexts: Record<string, string> = {
+        openai: 'Get your API key from https://platform.openai.com/api-keys',
+        anthropic: 'Get your API key from https://console.anthropic.com/',
+        google: 'Get your API key from https://makersuite.google.com/app/apikey',
+        deepseek: 'Get your API key from https://platform.deepseek.com/api_keys'
+      };
+      
+      apiKeyHelp.textContent = helpTexts[provider] || 'Your API key is stored locally and never sent to our servers';
     }
   }
 
+  // Load settings from storage
+  async function loadSettings() {
+    try {
+      const result = await chrome.storage.local.get(['promptlySettings']);
+      const settings = result.promptlySettings || {};
+      
+      aiProviderSelect.value = settings.provider || 'openai';
+      apiKeyInput.value = settings.apiKey || '';
+      localEndpointInput.value = settings.localEndpoint || '';
+      
+      updateUIForProvider();
+      updateStatus();
+    } catch (error) {
+      console.error('Failed to load settings:', error);
+      showError('Failed to load settings');
+    }
+  }
 
+  // Save settings to storage
+  async function saveSettings() {
+    try {
+      const provider = aiProviderSelect.value;
+      const apiKey = apiKeyInput.value.trim();
+      const localEndpoint = localEndpointInput.value.trim();
+      
+      // Validate settings
+      if (provider !== 'ollama' && provider !== 'lmstudio' && !apiKey) {
+        showError('API key is required for this provider');
+        return;
+      }
+      
+      if ((provider === 'ollama' || provider === 'lmstudio') && !localEndpoint) {
+        showError('Local endpoint is required for this provider');
+        return;
+      }
+      
+      const settings = {
+        provider,
+        apiKey: provider === 'ollama' || provider === 'lmstudio' ? '' : apiKey,
+        localEndpoint: provider === 'ollama' || provider === 'lmstudio' ? localEndpoint : '',
+        lastUpdated: Date.now()
+      };
+      
+      await chrome.storage.local.set({ promptlySettings: settings });
+      
+      // Update status
+      updateStatus();
+      
+      // Show success message
+      showSuccess('Settings saved successfully!');
+      
+      // Notify background script of settings change
+      chrome.runtime.sendMessage({ type: 'SETTINGS_UPDATED', settings });
+      
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      showError('Failed to save settings');
+    }
+  }
+
+  // Test connection to AI provider
+  async function testConnection() {
+    const provider = aiProviderSelect.value;
+    const apiKey = apiKeyInput.value.trim();
+    const localEndpoint = localEndpointInput.value.trim();
+    
+    testButton.disabled = true;
+    testButton.innerHTML = '<div class="loading"></div> Testing...';
+    clearMessages();
+    
+    try {
+      let testPrompt = 'Hello, this is a test. Please respond with "Test successful".';
+      
+      const response = await chrome.runtime.sendMessage({
+        type: 'TEST_CONNECTION',
+        provider,
+        apiKey: provider === 'ollama' || provider === 'lmstudio' ? '' : apiKey,
+        localEndpoint: provider === 'ollama' || provider === 'lmstudio' ? localEndpoint : '',
+        prompt: testPrompt
+      });
+      
+      if (response.success) {
+        showSuccess('Connection successful! Your AI provider is working correctly.');
+        updateStatus('connected');
+      } else {
+        showError(`Connection failed: ${response.error || 'Unknown error'}`);
+        updateStatus('error');
+      }
+    } catch (error) {
+      console.error('Connection test failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      showError(`Connection test failed: ${errorMessage}`);
+      updateStatus('error');
+    } finally {
+      testButton.disabled = false;
+      testButton.textContent = 'Test Connection';
+    }
+  }
+
+  // Update status indicator
+  function updateStatus(status: string = 'ready') {
+    const statusDots: Record<string, { class: string; text: string }> = {
+      ready: { class: '', text: 'Ready to optimize prompts' },
+      connected: { class: '', text: 'Connected to AI provider' },
+      error: { class: 'error', text: 'Connection error - check settings' },
+      warning: { class: 'warning', text: 'Settings not configured' }
+    };
+    
+    const statusInfo = statusDots[status] || statusDots.ready;
+    
+    statusDot.className = `status-dot ${statusInfo.class}`;
+    statusText.textContent = statusInfo.text;
+  }
+
+  // Show error message
   function showError(message: string) {
-    error!.textContent = message;
-    error!.style.display = 'block';
-    setTimeout(() => {
-      error!.style.display = 'none';
-    }, 3000);
+    clearMessages();
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    testResult.appendChild(errorDiv);
   }
+
+  // Show success message
+  function showSuccess(message: string) {
+    clearMessages();
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.textContent = message;
+    testResult.appendChild(successDiv);
+  }
+
+  // Clear all messages
+  function clearMessages() {
+    testResult.innerHTML = '';
+  }
+
+  // Initialize UI
+  updateUIForProvider();
+  updateStatus();
 });

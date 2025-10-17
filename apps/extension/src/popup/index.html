@@ -1,368 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Promptly - AI Prompt Optimizer</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promptly - Open Source AI Prompt Optimizer</title>
+    <link rel="stylesheet" href="../content/content.css">
+    <style>
+        /* Popup-specific styles */
+        body {
+            width: 380px;
+            min-height: 500px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 100%);
+            color: #E2E8F0;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-    body {
-      width: 380px;
-      min-height: 500px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0D0D0D 0%, #1F1F1F 100%);
-      color: #ffffff;
-      overflow-x: hidden;
-    }
+        .header {
+            background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
 
-    .header {
-      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-      padding: 20px;
-      text-align: center;
-      position: relative;
-    }
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
 
-    .header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
 
-    .header p {
-      font-size: 12px;
-      opacity: 0.9;
-    }
+        .tabs {
+            display: flex;
+            background: #1E293B;
+            border-bottom: 1px solid #334155;
+        }
 
-    .content {
-      padding: 20px;
-    }
+        .tab-button {
+            flex: 1;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            color: #94A3B8;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+        }
 
-    .tab-buttons {
-      display: flex;
-      margin-bottom: 20px;
-      background: #2A2A2A;
-      border-radius: 8px;
-      padding: 4px;
-    }
+        .tab-button:hover {
+            color: #E2E8F0;
+            background: #334155;
+        }
 
-    .tab-button {
-      flex: 1;
-      padding: 8px 12px;
-      background: transparent;
-      border: none;
-      color: #9CA3AF;
-      font-size: 12px;
-      font-weight: 500;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+        .tab-button.active {
+            color: #00D4FF;
+            border-bottom-color: #00D4FF;
+            background: #1E293B;
+        }
 
-    .tab-button.active {
-      background: #3B82F6;
-      color: white;
-    }
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
 
-    .tab-content {
-      display: none;
-    }
+        .tab-content.active {
+            display: block;
+        }
 
-    .tab-content.active {
-      display: block;
-    }
+        .form-group {
+            margin-bottom: 16px;
+        }
 
-    .form-group {
-      margin-bottom: 16px;
-    }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #CBD5E1;
+        }
 
-    .form-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #E5E7EB;
-      margin-bottom: 6px;
-    }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            background: #1E293B;
+            color: #E2E8F0;
+            font-size: 13px;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
 
-    .form-input {
-      width: 100%;
-      padding: 10px 12px;
-      background: #374151;
-      border: 1px solid #4B5563;
-      border-radius: 6px;
-      color: #ffffff;
-      font-size: 13px;
-      transition: border-color 0.2s;
-    }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00D4FF;
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1);
+        }
 
-    .form-input:focus {
-      outline: none;
-      border-color: #3B82F6;
-    }
+        .form-group input::placeholder {
+            color: #64748B;
+        }
 
-    .form-input::placeholder {
-      color: #9CA3AF;
-    }
+        .help-text {
+            font-size: 11px;
+            color: #64748B;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
 
-    .form-select {
-      width: 100%;
-      padding: 10px 12px;
-      background: #374151;
-      border: 1px solid #4B5563;
-      border-radius: 6px;
-      color: #ffffff;
-      font-size: 13px;
-      cursor: pointer;
-    }
+        .button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
 
-    .form-select:focus {
-      outline: none;
-      border-color: #3B82F6;
-    }
+        .button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
-    .form-select option {
-      background: #374151;
-      color: #ffffff;
-    }
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-    .test-button {
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      margin-top: 8px;
-    }
+        .button.secondary {
+            background: #334155;
+            color: #E2E8F0;
+        }
 
-    .test-button:hover {
-      opacity: 0.9;
-    }
+        .button.secondary:hover {
+            background: #475569;
+        }
 
-    .test-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+        .status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #1E293B;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
 
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: #1F2937;
-      border-radius: 6px;
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B981;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10B981;
-    }
+        .status-dot.error {
+            background: #EF4444;
+        }
 
-    .status-dot.error {
-      background: #EF4444;
-    }
+        .status-dot.warning {
+            background: #F59E0B;
+        }
 
-    .status-dot.warning {
-      background: #F59E0B;
-    }
+        .status-text {
+            font-size: 12px;
+            color: #CBD5E1;
+        }
 
-    .help-text {
-      font-size: 11px;
-      color: #9CA3AF;
-      margin-top: 4px;
-      line-height: 1.4;
-    }
+        .test-result {
+            margin-top: 12px;
+            min-height: 20px;
+        }
 
-    .save-button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      margin-top: 20px;
-    }
+        .success-message {
+            color: #10B981;
+            font-size: 12px;
+            padding: 8px 12px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
 
-    .save-button:hover {
-      opacity: 0.9;
-    }
+        .error-message {
+            color: #EF4444;
+            font-size: 12px;
+            padding: 8px 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
 
-    .save-button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 6px;
+        }
 
-    .features-list {
-      list-style: none;
-      margin: 16px 0;
-    }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
-    .features-list li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 0;
-      font-size: 12px;
-      color: #D1D5DB;
-    }
+        .footer {
+            padding: 16px 20px;
+            background: #0F172A;
+            border-top: 1px solid #334155;
+            text-align: center;
+        }
 
-    .features-list li::before {
-      content: "✓";
-      color: #10B981;
-      font-weight: bold;
-    }
+        .footer a {
+            color: #00D4FF;
+            text-decoration: none;
+            font-size: 11px;
+        }
 
-    .github-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px;
-      background: #1F2937;
-      border: 1px solid #374151;
-      border-radius: 6px;
-      color: #D1D5DB;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s;
-      margin-top: 16px;
-    }
+        .footer a:hover {
+            text-decoration: underline;
+        }
 
-    .github-link:hover {
-      background: #374151;
-      color: white;
-    }
-
-    .loading {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #ffffff;
-      border-radius: 50%;
-      border-top-color: transparent;
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .error-message {
-      background: #FEF2F2;
-      border: 1px solid #FECACA;
-      color: #DC2626;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      margin-top: 8px;
-    }
-
-    .success-message {
-      background: #F0FDF4;
-      border: 1px solid #BBF7D0;
-      color: #059669;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      margin-top: 8px;
-    }
-  </style>
+        .privacy-note {
+            font-size: 10px;
+            color: #64748B;
+            margin-top: 8px;
+            line-height: 1.3;
+        }
+    </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Promptly</h1>
-    <p>Open Source AI Prompt Optimizer</p>
-  </div>
-
-  <div class="content">
-    <div class="tab-buttons">
-      <button class="tab-button active" data-tab="settings">Settings</button>
-      <button class="tab-button" data-tab="about">About</button>
+    <div class="header">
+        <h1>Promptly</h1>
+        <p>Open Source AI Prompt Optimizer</p>
     </div>
 
-    <!-- Settings Tab -->
-    <div class="tab-content active" id="settings">
-      <div class="status-indicator">
-        <div class="status-dot" id="status-dot"></div>
-        <span id="status-text">Ready to optimize prompts</span>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="ai-provider">AI Provider</label>
-        <select class="form-select" id="ai-provider">
-          <option value="openai">OpenAI (GPT-4, GPT-3.5)</option>
-          <option value="anthropic">Anthropic (Claude)</option>
-          <option value="google">Google (Gemini)</option>
-          <option value="deepseek">DeepSeek</option>
-          <option value="ollama">Ollama (Local)</option>
-          <option value="lmstudio">LM Studio (Local)</option>
-        </select>
-        <div class="help-text">Choose your preferred AI provider for optimization</div>
-      </div>
-
-      <div class="form-group" id="api-key-group">
-        <label class="form-label" for="api-key">API Key</label>
-        <input type="password" class="form-input" id="api-key" placeholder="Enter your API key">
-        <div class="help-text" id="api-key-help">Your API key is stored locally and never sent to our servers</div>
-      </div>
-
-      <div class="form-group" id="local-endpoint-group" style="display: none;">
-        <label class="form-label" for="local-endpoint">Local Endpoint</label>
-        <input type="text" class="form-input" id="local-endpoint" placeholder="http://localhost:11434">
-        <div class="help-text">URL of your local AI server (Ollama: 11434, LM Studio: 1234)</div>
-      </div>
-
-      <button class="test-button" id="test-connection">Test Connection</button>
-
-      <div id="test-result"></div>
-
-      <button class="save-button" id="save-settings">Save Settings</button>
+    <div class="tabs">
+        <button class="tab-button active" data-tab="settings">Settings</button>
+        <button class="tab-button" data-tab="about">About</button>
     </div>
 
-    <!-- About Tab -->
-    <div class="tab-content" id="about">
-      <h3 style="font-size: 16px; margin-bottom: 12px; color: #E5E7EB;">About Promptly</h3>
-      
-      <p style="font-size: 12px; color: #9CA3AF; line-height: 1.5; margin-bottom: 16px;">
-        Promptly is an open-source browser extension that automatically optimizes your prompts 
-        before sending them to AI systems like ChatGPT, Claude, and Gemini.
-      </p>
+    <div id="settings" class="tab-content active">
+        <div class="status">
+            <div id="status-dot" class="status-dot"></div>
+            <div id="status-text" class="status-text">Ready to optimize prompts</div>
+        </div>
 
-      <ul class="features-list">
-        <li>Works with 20+ AI platforms</li>
-        <li>Uses your own API keys</li>
-        <li>Supports local AI models</li>
-        <li>100% privacy-focused</li>
-        <li>No data collection</li>
-        <li>Completely free and open source</li>
-      </ul>
+        <div class="form-group">
+            <label for="ai-provider">AI Provider</label>
+            <select id="ai-provider">
+                <option value="openai">OpenAI (GPT-3.5/4)</option>
+                <option value="anthropic">Anthropic (Claude)</option>
+                <option value="google">Google (Gemini)</option>
+                <option value="deepseek">DeepSeek</option>
+                <option value="ollama">Ollama (Local)</option>
+                <option value="lmstudio">LM Studio (Local)</option>
+            </select>
+        </div>
 
-      <a href="https://github.com/your-username/promptly" target="_blank" class="github-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-        </svg>
-        View on GitHub
-      </a>
+        <div id="api-key-group" class="form-group">
+            <label for="api-key">API Key</label>
+            <input type="password" id="api-key" placeholder="Enter your API key">
+            <div id="api-key-help" class="help-text">
+                Your API key is stored locally and never sent to our servers
+            </div>
+        </div>
+
+        <div id="local-endpoint-group" class="form-group" style="display: none;">
+            <label for="local-endpoint">Local Endpoint</label>
+            <input type="text" id="local-endpoint" placeholder="http://localhost:11434">
+            <div class="help-text">
+                URL of your local AI server (Ollama or LM Studio)
+            </div>
+        </div>
+
+        <button id="test-connection" class="button secondary">Test Connection</button>
+        <button id="save-settings" class="button">Save Settings</button>
+
+        <div id="test-result" class="test-result"></div>
     </div>
-  </div>
 
-  <script src="popup.js"></script>
+    <div id="about" class="tab-content">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h3 style="margin: 0 0 8px 0; color: #E2E8F0;">Promptly</h3>
+            <p style="margin: 0; color: #94A3B8; font-size: 12px;">Open Source AI Prompt Optimizer</p>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+            <h4 style="margin: 0 0 8px 0; color: #E2E8F0; font-size: 13px;">Features</h4>
+            <ul style="margin: 0; padding-left: 16px; color: #CBD5E1; font-size: 12px; line-height: 1.5;">
+                <li>Works with 6 AI providers</li>
+                <li>Supports local AI models</li>
+                <li>100% privacy-focused</li>
+                <li>No data collection</li>
+                <li>Completely free</li>
+            </ul>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+            <h4 style="margin: 0 0 8px 0; color: #E2E8F0; font-size: 13px;">Supported Platforms</h4>
+            <p style="margin: 0; color: #CBD5E1; font-size: 12px; line-height: 1.5;">
+                ChatGPT, Claude, Gemini, DeepSeek, and 20+ other AI platforms
+            </p>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="https://github.com/youssof20/promptly" target="_blank" style="color: #00D4FF; text-decoration: none; font-size: 12px;">
+                View on GitHub →
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="https://github.com/youssof20/promptly" target="_blank">GitHub</a>
+        <div class="privacy-note">
+            Your data stays on your device. No tracking, no servers.
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
 </body>
 </html>

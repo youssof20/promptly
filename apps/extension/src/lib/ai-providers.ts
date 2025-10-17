@@ -229,7 +229,7 @@ export class DeepSeekProvider implements AIProvider {
 export class OllamaProvider implements AIProvider {
   name = 'Ollama';
 
-  async optimize(prompt: string, apiKey?: string, endpoint?: string): Promise<string> {
+  async optimize(prompt: string, _apiKey?: string, endpoint?: string): Promise<string> {
     const baseUrl = endpoint || 'http://localhost:11434';
     
     const response = await fetch(`${baseUrl}/api/generate`, {
@@ -252,7 +252,7 @@ export class OllamaProvider implements AIProvider {
     return data.response || prompt;
   }
 
-  async testConnection(apiKey?: string, endpoint?: string): Promise<boolean> {
+  async testConnection(_apiKey?: string, endpoint?: string): Promise<boolean> {
     const baseUrl = endpoint || 'http://localhost:11434';
     
     try {
@@ -267,7 +267,7 @@ export class OllamaProvider implements AIProvider {
 export class LMStudioProvider implements AIProvider {
   name = 'LM Studio';
 
-  async optimize(prompt: string, apiKey?: string, endpoint?: string): Promise<string> {
+  async optimize(prompt: string, _apiKey?: string, endpoint?: string): Promise<string> {
     const baseUrl = endpoint || 'http://localhost:1234';
     
     const response = await fetch(`${baseUrl}/v1/chat/completions`, {
@@ -300,7 +300,7 @@ export class LMStudioProvider implements AIProvider {
     return data.choices[0]?.message?.content || prompt;
   }
 
-  async testConnection(apiKey?: string, endpoint?: string): Promise<boolean> {
+  async testConnection(_apiKey?: string, endpoint?: string): Promise<boolean> {
     const baseUrl = endpoint || 'http://localhost:1234';
     
     try {
