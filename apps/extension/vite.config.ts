@@ -36,10 +36,15 @@ export default defineConfig({
       },
       output: {
         entryFileNames: (chunkInfo) => {
+          // Ensure background.js goes to root of dist to match manifest
+          if (chunkInfo.name === 'background') {
+            return 'background.js';
+          }
           return chunkInfo.name === 'popup.js' ? 'popup.js' : '[name].js';
         },
         chunkFileNames: '[name].js',
-        assetFileNames: '[name].[ext]'
+        assetFileNames: '[name].[ext]',
+        format: 'es'
       }
     }
   },

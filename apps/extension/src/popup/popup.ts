@@ -1,5 +1,7 @@
 // Promptly Extension Popup - Grammarly-style flow
 
+import { messaging, tabs, windows, browser } from '../utils/browser-api';
+
 let isSigningIn = false; // Flag to prevent multiple sign-in attempts
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -10,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Load user state
   try {
-    const result = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
+    const result = await messaging.sendMessage({ type: 'GET_CONFIG' });
     const config = result.config;
 
     loading!.style.display = 'none';
@@ -34,14 +36,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (data.success && data.token) {
             console.log('User is signed in on website, auto-signing in to extension...');
             // User is signed in on website, store token
-            await chrome.runtime.sendMessage({
+            await messaging.sendMessage({
               type: 'SET_USER_TOKEN',
               token: data.token,
               user: data.user
             });
             
             // Reload config and show logged in state
-            const newResult = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
+            const newResult = await messaging.sendMessage({ type: 'GET_CONFIG' });
             showLoggedInState(newResult.config);
             return;
           }
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         isSigningIn = true;
         
         // Clear any existing token first
-        await chrome.runtime.sendMessage({
+        await messaging.sendMessage({
           type: 'SET_USER_TOKEN',
           token: null,
           user: null
@@ -92,16 +94,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         
         // Check if there's already a sign-in tab open
-        const tabs = await chrome.tabs.query({ url: 'https://promptly-two-ashy.vercel.app/auth/signin*' });
-        if (tabs.length > 0) {
+        const existingTabs = await tabs.query({ url: 'https://promptly-two-ashy.vercel.app/auth/signin*' });
+        if (existingTabs.length > 0) {
           // Focus existing tab instead of creating new one
-          await chrome.tabs.update(tabs[0].id!, { active: true });
-          await chrome.windows.update(tabs[0].windowId!, { focused: true });
+          await tabs.update(existingTabs[0].id!, { active: true });
+          await windows.update(existingTabs[0].windowId!, { focused: true });
           return;
         }
         
         // Open sign in page with logout parameter to force account selection
-        const tab = await chrome.tabs.create({ 
+        const tab = await tabs.create({ 
           url: 'https://promptly-two-ashy.vercel.app/auth/signin?extension=true&logout=true',
           active: true 
         });
@@ -109,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Listen for the tab to complete authentication
         const listener = async (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
           if (tabId === tab.id && changeInfo.status === 'complete') {
-            const tabInfo = await chrome.tabs.get(tabId);
+            const tabInfo = await tabs.get(tabId);
             if (tabInfo.url?.includes('/dashboard')) {
               // User successfully signed in, wait a moment then get auth token
               setTimeout(async () => {
@@ -126,14 +128,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const data = await response.json();
                     if (data.success && data.token) {
                       // Store the token in extension
-                      await chrome.runtime.sendMessage({
+                      await messaging.sendMessage({
                         type: 'SET_USER_TOKEN',
                         token: data.token,
                         user: data.user
                       });
                       
                       // Show success message in the tab
-                      chrome.scripting.executeScript({
+                      browser.scripting.executeScript({
                         target: { tabId: tabId },
                         func: () => {
                           const message = document.createElement('div');
@@ -168,12 +170,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
               }, 1000);
               
-              chrome.tabs.onUpdated.removeListener(listener);
+              tabs.onUpdated.removeListener(listener);
             }
           }
         };
         
-        chrome.tabs.onUpdated.addListener(listener);
+        tabs.onUpdated.addListener(listener);
         
         // Close popup
         window.close();
@@ -203,14 +205,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (data.success && data.token) {
             console.log('Found website sign-in, auto-signing in to extension...');
             // User is signed in on website, store token
-            await chrome.runtime.sendMessage({
+            await messaging.sendMessage({
               type: 'SET_USER_TOKEN',
               token: data.token,
               user: data.user
             });
             
             // Reload config and show logged in state
-            const newResult = await chrome.runtime.sendMessage({ type: 'GET_CONFIG' });
+            const newResult = await messaging.sendMessage({ type: 'GET_CONFIG' });
             showLoggedInState(newResult.config);
             return;
           }
@@ -231,7 +233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Sign up link
     document.getElementById('signup-link')!.addEventListener('click', (e) => {
       e.preventDefault();
-      chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/auth/signup' });
+      tabs.create({ url: 'https://promptly-two-ashy.vercel.app/auth/signup' });
     });
 
   }
@@ -293,7 +295,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const settingsBtn = document.getElementById('settings-btn');
     if (settingsBtn) {
       settingsBtn.addEventListener('click', () => {
-        chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/dashboard' });
+        tabs.create({ url: 'https://promptly-two-ashy.vercel.app/dashboard' });
       });
     }
 
@@ -301,7 +303,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const upgradeBtn = document.getElementById('upgrade-btn');
     if (upgradeBtn) {
       upgradeBtn.addEventListener('click', () => {
-        chrome.tabs.create({ url: 'https://promptly-two-ashy.vercel.app/pricing' });
+        tabs.create({ url: 'https://promptly-two-ashy.vercel.app/pricing' });
       });
     }
 
@@ -311,14 +313,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       signoutBtn.addEventListener('click', async () => {
         try {
           // Clear extension token
-          await chrome.runtime.sendMessage({
+          await messaging.sendMessage({
             type: 'SET_USER_TOKEN',
             token: null,
             user: null
           });
           
           // Open website logout page
-          chrome.tabs.create({ 
+          tabs.create({ 
             url: 'https://promptly-two-ashy.vercel.app/api/auth/signout',
             active: true 
           });

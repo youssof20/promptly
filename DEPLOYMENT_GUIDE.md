@@ -10,6 +10,7 @@ This guide will walk you through setting up all the necessary services and deplo
 - [ ] Deploy to Vercel
 - [ ] Configure environment variables
 - [ ] Test all functionality
+- [ ] Build and test browser extension
 
 ## 📋 Prerequisites
 
@@ -24,7 +25,7 @@ This guide will walk you through setting up all the necessary services and deplo
 
 ## 1. 🗄️ Database Setup (Supabase)
 
-### Step 1: Create Supabase Project & Connect to Vercel
+### Step 1: Create Supabase Project
 1. Go to [supabase.com](https://supabase.com)
 2. Click "Start your project"
 3. Sign in with GitHub
@@ -34,10 +35,10 @@ This guide will walk you through setting up all the necessary services and deplo
    - **Name**: `promptly-production`
    - **Database Password**: Generate a strong password (save this!)
    - **Region**: Choose closest to your users
-6. Click "Create new project"
-7. Wait for setup to complete (2-3 minutes)
+7. Click "Create new project"
+8. Wait for setup to complete (2-3 minutes)
 
-### Step 2: Connect Supabase to Vercel (✅ DONE)
+### Step 2: Connect Supabase to Vercel
 1. In your Vercel project dashboard
 2. Go to **Settings** → **Integrations**
 3. Find **Supabase** and click **Add Integration**
@@ -45,9 +46,6 @@ This guide will walk you through setting up all the necessary services and deplo
 5. Vercel will automatically add all environment variables
 
 ### Step 3: Run Database Migrations
-Since you have the environment variables in Vercel, you need to run the database setup. You have two options:
-
-**Option A: Run locally (Recommended)**
 ```bash
 # Install dependencies
 npm install
@@ -65,26 +63,6 @@ npx prisma db push
 
 # Verify tables were created
 npx prisma studio
-```
-
-**Option B: Run through Vercel CLI**
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login to Vercel
-vercel login
-
-# Link to your project
-vercel link
-
-# Pull environment variables
-vercel env pull .env.local
-
-# Run migrations
-cd packages/database
-npx prisma generate
-npx prisma db push
 ```
 
 ---
@@ -156,11 +134,11 @@ npx prisma db push
 5. Configure project:
    - **Framework Preset**: Next.js
    - **Root Directory**: `apps/web`
-   - **Build Command**: `turbo run build --filter=promptly-web`
+   - **Build Command**: `cd apps/web && npm run build`
    - **Output Directory**: `.next`
 
 ### Step 2: Configure Environment Variables
-In Vercel dashboard, go to **Settings** → **Environment Variables** and add the remaining variables:
+In Vercel dashboard, go to **Settings** → **Environment Variables** and add:
 
 **✅ Already Added by Supabase Integration:**
 - `POSTGRES_URL`
@@ -255,18 +233,57 @@ NEXT_PUBLIC_API_URL=https://your-domain.vercel.app/api
 
 ---
 
-## 7. 🧪 Testing Your Deployment
+## 7. 🌐 Browser Extension Setup
 
-### Test Authentication
+### Step 1: Build Extension
+```bash
+# Build for all browsers
+npm run build:all
+
+# Or build individually
+npm run build:chrome
+npm run build:firefox
+npm run build:edge
+```
+
+### Step 2: Test Extension Locally
+1. Open Chrome → Extensions → Developer mode
+2. Click "Load unpacked" → Select `apps/extension/dist`
+3. Test on ChatGPT, Claude, Gemini, etc.
+
+### Step 3: Prepare for Store Submission
+1. **Chrome Web Store**:
+   - Create developer account ($5 one-time fee)
+   - Prepare store listing with screenshots
+   - Upload extension package
+
+2. **Firefox Add-ons**:
+   - Create developer account (free)
+   - Upload extension package
+   - Complete store listing
+
+3. **Edge Add-ons**:
+   - Create developer account (free)
+   - Upload extension package
+   - Complete store listing
+
+---
+
+## 8. 🧪 Testing Your Deployment
+
+### Test Web Application
 1. Visit `https://your-domain.vercel.app`
 2. Click **Get Started**
 3. Try signing up with Google/GitHub
 4. Verify you can access the dashboard
+5. Test optimization API
 
-### Test AI Integration
-1. Go to dashboard
-2. Try optimizing a prompt (if you have API keys set)
-3. Check quota tracking works
+### Test Browser Extension
+1. Install extension from store or load unpacked
+2. Visit ChatGPT, Claude, or Gemini
+3. Write a prompt and click the optimization hint
+4. Verify prompt gets optimized
+5. Test authentication flow
 
 ### Test Billing (Test Mode)
 1. Go to `/pricing`
@@ -278,10 +295,11 @@ NEXT_PUBLIC_API_URL=https://your-domain.vercel.app/api
 1. Check Supabase dashboard
 2. Verify users are being created
 3. Check quota logs are being recorded
+4. Verify optimization history is stored
 
 ---
 
-## 8. 🎯 Production Checklist
+## 9. 🎯 Production Checklist
 
 ### Security
 - [ ] All environment variables are set
@@ -289,45 +307,66 @@ NEXT_PUBLIC_API_URL=https://your-domain.vercel.app/api
 - [ ] API keys are production keys (not test)
 - [ ] Webhook secrets are configured
 - [ ] HTTPS is enabled
+- [ ] CORS is properly configured
 
 ### Functionality
-- [ ] Authentication works
-- [ ] AI optimization works
-- [ ] Quota tracking works
-- [ ] Billing system works
+- [ ] Authentication works (Google, GitHub)
+- [ ] AI optimization works (OpenAI, DeepSeek)
+- [ ] Quota tracking works (monthly reset)
+- [ ] Billing system works (Stripe)
 - [ ] Dashboard displays correctly
+- [ ] Extension loads without errors
+- [ ] Extension works on all supported platforms
 
 ### Performance
 - [ ] Database queries are optimized
 - [ ] Images are optimized
 - [ ] Caching is configured
 - [ ] CDN is enabled
+- [ ] Extension bundle size < 500KB
+
+### Monitoring
+- [ ] Health check endpoint working
+- [ ] Error tracking configured (Sentry)
+- [ ] Analytics tracking enabled
+- [ ] Rate limiting working
+- [ ] Database monitoring active
 
 ---
 
-## 9. 🔧 Troubleshooting
+## 10. 🔧 Troubleshooting
 
 ### Common Issues
+
+**Extension Won't Load**
+- Check manifest.json paths match Vite output
+- Verify all required files are in dist/
+- Check browser console for errors
+- Ensure extension has proper permissions
 
 **Database Connection Failed**
 - Check DATABASE_URL format
 - Verify Supabase project is active
 - Check firewall settings
+- Run `npx prisma db push` to sync schema
 
 **Authentication Not Working**
 - Verify OAuth redirect URLs
 - Check NEXTAUTH_SECRET is set
 - Ensure OAuth apps are configured correctly
+- Check JWT token generation
 
 **Stripe Webhooks Failing**
 - Check webhook URL is correct
 - Verify webhook secret matches
 - Check Stripe dashboard for error logs
+- Ensure webhook events are properly configured
 
 **AI API Errors**
 - Verify API keys are correct
 - Check API quotas and limits
 - Ensure models are available
+- Check rate limiting isn't blocking requests
 
 ### Debug Mode
 Add to your environment variables for debugging:
@@ -338,7 +377,7 @@ NODE_ENV=development
 
 ---
 
-## 10. 📊 Monitoring & Analytics
+## 11. 📊 Monitoring & Analytics
 
 ### Recommended Tools
 - **Vercel Analytics**: Built-in performance monitoring
@@ -352,6 +391,7 @@ NODE_ENV=development
 - Payment success rates
 - Database performance
 - Error rates and response times
+- Extension installation and usage
 
 ---
 
@@ -364,6 +404,8 @@ Your Promptly application should now be fully deployed and functional. Users can
 3. ✅ Track their usage and quotas
 4. ✅ Upgrade to paid plans
 5. ✅ Manage their billing
+6. ✅ Install browser extension
+7. ✅ Use extension on all major AI platforms
 
 ### Next Steps
 1. Set up monitoring and alerts
@@ -371,6 +413,7 @@ Your Promptly application should now be fully deployed and functional. Users can
 3. Plan marketing and user acquisition
 4. Monitor performance and costs
 5. Iterate based on user feedback
+6. Submit extension to app stores
 
 ---
 
@@ -383,5 +426,6 @@ If you encounter any issues during deployment:
 3. Check Supabase logs
 4. Verify all environment variables are set correctly
 5. Test each component individually
+6. Check browser extension console for errors
 
 Good luck with your deployment! 🚀

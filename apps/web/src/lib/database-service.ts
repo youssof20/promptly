@@ -1,77 +1,45 @@
 import { prisma } from '@promptly/database';
-import { SubscriptionTier } from '@prisma/client';
 
-interface LogOptimizationParams {
+export interface QuotaInfo {
+  quotaLimit: number;
+  remainingQuota: number;
+  canOptimize: boolean;
+  tier: string;
+  quotaPeriod: string;
+}
+
+export interface OptimizationLog {
   userId: string;
   originalPrompt: string;
   optimizedPrompt: string;
   tokensUsed: number;
   model: string;
-  tier: 'free' | 'pro';
-}
-
-interface QuotaCheck {
-  canOptimize: boolean;
-  remainingQuota: number;
-  quotaLimit: number;
-  tier: SubscriptionTier;
+  tier: string;
 }
 
 export class DatabaseService {
-  async logOptimization(params: LogOptimizationParams): Promise<void> {
-    const { userId, originalPrompt, optimizedPrompt, tokensUsed, model, tier } = params;
-    
-    try {
-      // Convert tier to SubscriptionTier enum
-      const subscriptionTier = tier === 'pro' ? SubscriptionTier.PRO : SubscriptionTier.FREE;
-      
-      // Create prompt record
-      await prisma.prompt.create({
-        data: {
-          userId,
-          originalPrompt,
-          optimizedPrompt,
-          tokensIn: Math.floor(originalPrompt.length / 4), // Rough token estimation
-          tokensOut: tokensUsed,
-          modelUsed: model,
-          tier: subscriptionTier,
-        },
-      });
-
-      // Update quota log for today
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      await prisma.quotaLog.upsert({
-        where: {
-          userId_date: {
-            userId,
-            date: today,
-          },
-        },
-        update: {
-          promptsUsed: {
-            increment: 1,
-          },
-        },
-        create: {
-          userId,
-          date: today,
-          promptsUsed: 1,
-        },
-      });
-    } catch (error) {
-      console.error('Failed to log optimization:', error);
-      // Don't throw error to avoid breaking the optimization flow
+  private getQuotaLimit(tier: string): number {
+    switch (tier.toLowerCase()) {
+      case 'pro':
+        return 1000;
+      case 'enterprise':
+        return 10000;
+      default:
+        return 50; // Free tier
     }
   }
 
-  async checkQuota(userId: string): Promise<QuotaCheck> {
+  private getCurrentQuotaPeriod(): string {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  async checkQuota(userId: string): Promise<QuotaInfo> {
     try {
-      // Get user's subscription tier
+      // Get user info
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { subscriptionTier: true },
+        select: { subscriptionTier: true }
       });
 
       if (!user) {
@@ -79,113 +47,180 @@ export class DatabaseService {
       }
 
       const tier = user.subscriptionTier;
-      
-      // Define quota limits based on tier
-      const quotaLimits: Record<SubscriptionTier, number> = {
-        [SubscriptionTier.FREE]: 50,
-        [SubscriptionTier.PRO]: 1000,
-        [SubscriptionTier.ENTERPRISE]: 10000,
-      };
+      const quotaLimit = this.getQuotaLimit(tier);
+      const quotaPeriod = this.getCurrentQuotaPeriod();
 
-      const quotaLimit = quotaLimits[tier] || 50;
-
-      // Get today's usage
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const todayUsage = await prisma.quotaLog.findUnique({
+      // Get current month's usage
+      const quotaLog = await prisma.quotaLog.findUnique({
         where: {
-          userId_date: {
+          userId_quotaPeriod: {
             userId,
-            date: today,
-          },
-        },
-        select: { promptsUsed: true },
+            quotaPeriod
+          }
+        }
       });
 
-      const usedToday = todayUsage?.promptsUsed || 0;
-      const remainingQuota = Math.max(0, quotaLimit - usedToday);
+      const promptsUsed = quotaLog?.promptsUsed || 0;
+      const remainingQuota = Math.max(0, quotaLimit - promptsUsed);
 
       return {
-        canOptimize: remainingQuota > 0,
-        remainingQuota,
         quotaLimit,
+        remainingQuota,
+        canOptimize: remainingQuota > 0,
         tier,
+        quotaPeriod
       };
     } catch (error) {
-      console.error('Failed to check quota:', error);
+      console.error('Error checking quota:', error);
       // Return safe defaults
       return {
-        canOptimize: false,
+        quotaLimit: 50,
         remainingQuota: 0,
-        quotaLimit: 0,
-        tier: SubscriptionTier.FREE,
+        canOptimize: false,
+        tier: 'FREE',
+        quotaPeriod: this.getCurrentQuotaPeriod()
       };
     }
   }
 
-  async getUserStats(userId: string) {
+  async logOptimization(logData: OptimizationLog): Promise<void> {
     try {
-      // Get total prompts optimized
-      const totalPrompts = await prisma.prompt.count({
-        where: { userId },
-      });
+      const quotaPeriod = this.getCurrentQuotaPeriod();
 
-      // Get this month's usage
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
-
-      const thisMonthPrompts = await prisma.prompt.count({
+      // Upsert quota log for current period
+      await prisma.quotaLog.upsert({
         where: {
-          userId,
-          createdAt: {
-            gte: startOfMonth,
-          },
+          userId_quotaPeriod: {
+            userId: logData.userId,
+            quotaPeriod
+          }
         },
+        update: {
+          promptsUsed: {
+            increment: 1
+          }
+        },
+        create: {
+          userId: logData.userId,
+          date: new Date(),
+          promptsUsed: 1,
+          quotaPeriod
+        }
       });
 
-      // Get recent prompts
-      const recentPrompts = await prisma.prompt.findMany({
+      // Log the optimization details
+      await prisma.prompt.create({
+        data: {
+          userId: logData.userId,
+          originalPrompt: logData.originalPrompt,
+          optimizedPrompt: logData.optimizedPrompt,
+          tokensIn: Math.floor(logData.originalPrompt.length / 4), // Rough estimate
+          tokensOut: logData.tokensUsed,
+          modelUsed: logData.model,
+          tier: logData.tier.toUpperCase() as any
+        }
+      });
+    } catch (error) {
+      console.error('Error logging optimization:', error);
+      // Don't throw - this shouldn't break the optimization flow
+    }
+  }
+
+  async getOptimizationHistory(userId: string, limit: number = 10): Promise<any[]> {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { subscriptionTier: true }
+      });
+
+      if (!user) {
+        return [];
+      }
+
+      const tier = user.subscriptionTier;
+      const historyLimit = tier === 'PRO' || tier === 'ENTERPRISE' ? limit : Math.min(limit, 5);
+
+      return await prisma.prompt.findMany({
         where: { userId },
         orderBy: { createdAt: 'desc' },
-        take: 5,
+        take: historyLimit,
         select: {
           id: true,
           originalPrompt: true,
           optimizedPrompt: true,
           modelUsed: true,
           createdAt: true,
-        },
+          tokensUsed: true
+        }
       });
-
-      return {
-        totalPrompts,
-        thisMonthPrompts,
-        recentPrompts,
-      };
     } catch (error) {
-      console.error('Failed to get user stats:', error);
-      return {
-        totalPrompts: 0,
-        thisMonthPrompts: 0,
-        recentPrompts: [],
-      };
+      console.error('Error getting optimization history:', error);
+      return [];
     }
   }
 
-  async upgradeUserTier(userId: string, newTier: SubscriptionTier): Promise<void> {
+  async getUserStats(userId: string): Promise<{
+    totalOptimizations: number;
+    thisMonthOptimizations: number;
+    averageTokensSaved: number;
+    favoriteModel: string;
+  }> {
     try {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { subscriptionTier: newTier },
+      const quotaPeriod = this.getCurrentQuotaPeriod();
+
+      // Get total optimizations
+      const totalOptimizations = await prisma.prompt.count({
+        where: { userId }
       });
+
+      // Get this month's optimizations
+      const thisMonthOptimizations = await prisma.quotaLog.findUnique({
+        where: {
+          userId_quotaPeriod: {
+            userId,
+            quotaPeriod
+          }
+        },
+        select: { promptsUsed: true }
+      });
+
+      // Get average tokens saved (rough calculation)
+      const recentPrompts = await prisma.prompt.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        take: 100,
+        select: { tokensIn: true, tokensOut: true }
+      });
+
+      const averageTokensSaved = recentPrompts.length > 0 
+        ? Math.round(recentPrompts.reduce((sum, p) => sum + (p.tokensOut - p.tokensIn), 0) / recentPrompts.length)
+        : 0;
+
+      // Get most used model
+      const modelUsage = await prisma.prompt.groupBy({
+        by: ['modelUsed'],
+        where: { userId },
+        _count: { modelUsed: true },
+        orderBy: { _count: { modelUsed: 'desc' } },
+        take: 1
+      });
+
+      return {
+        totalOptimizations,
+        thisMonthOptimizations: thisMonthOptimizations?.promptsUsed || 0,
+        averageTokensSaved,
+        favoriteModel: modelUsage[0]?.modelUsed || 'unknown'
+      };
     } catch (error) {
-      console.error('Failed to upgrade user tier:', error);
-      throw error;
+      console.error('Error getting user stats:', error);
+      return {
+        totalOptimizations: 0,
+        thisMonthOptimizations: 0,
+        averageTokensSaved: 0,
+        favoriteModel: 'unknown'
+      };
     }
   }
 }
 
-// Export singleton instance
 export const databaseService = new DatabaseService();

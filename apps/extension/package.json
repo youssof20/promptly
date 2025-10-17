@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && npm run postbuild",
-    "postbuild": "copy \"dist\\src\\popup\\index.html\" \"dist\\popup.html\"",
+    "postbuild": "node scripts/postbuild.js",
+    "build:chrome": "npm run build",
+    "build:firefox": "npm run build:firefox-manifest && npm run build",
+    "build:firefox-manifest": "node scripts/copy-firefox-manifest.js",
+    "build:edge": "npm run build",
+    "build:all": "npm run build:chrome && npm run build:firefox && npm run build:edge",
     "preview": "vite preview",
     "type-check": "tsc --noEmit"
   },
