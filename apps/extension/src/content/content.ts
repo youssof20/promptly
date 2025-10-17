@@ -178,10 +178,6 @@
     hintContent.className = 'promptly-hint-content';
     hintContent.setAttribute('data-platform', detectPlatform() || 'generic');
     
-    const icon = document.createElement('span');
-    icon.className = 'promptly-hint-icon';
-    icon.textContent = 'P';
-    
     const text = document.createElement('div');
     text.className = 'promptly-hint-text';
     text.textContent = 'Optimize prompt';
@@ -190,7 +186,6 @@
     button.className = 'promptly-hint-button';
     button.textContent = 'Optimize';
     
-    hintContent.appendChild(icon);
     hintContent.appendChild(text);
     hintContent.appendChild(button);
     hint.appendChild(hintContent);
@@ -213,25 +208,28 @@
     
     // Center horizontally relative to chatbox
     const centerX = rect.left + (rect.width / 2);
+    const hintWidth = 200; // Approximate hint width
     
-    if (spaceBelow > 50 || spaceBelow > spaceAbove) {
+    if (spaceBelow > 60 || spaceBelow > spaceAbove) {
       // Position below chatbox, centered
-      hint.style.top = `${rect.bottom + scrollTop + 6}px`;
-      hint.style.left = `${centerX + scrollLeft - 40}px`; // Center the hint
+      hint.style.top = `${rect.bottom + scrollTop + 8}px`;
+      hint.style.left = `${centerX + scrollLeft - (hintWidth / 2)}px`;
     } else {
       // Position above chatbox, centered
-      hint.style.top = `${rect.top + scrollTop - 45}px`;
-      hint.style.left = `${centerX + scrollLeft - 40}px`; // Center the hint
+      hint.style.top = `${rect.top + scrollTop - 50}px`;
+      hint.style.left = `${centerX + scrollLeft - (hintWidth / 2)}px`;
     }
     
     // Ensure hint doesn't go off-screen horizontally
-    const hintRect = hint.getBoundingClientRect();
-    if (hintRect.right > window.innerWidth) {
-      hint.style.left = `${window.innerWidth - hintRect.width - 20}px`;
-    }
-    if (hintRect.left < 0) {
-      hint.style.left = '20px';
-    }
+    setTimeout(() => {
+      const hintRect = hint.getBoundingClientRect();
+      if (hintRect.right > window.innerWidth - 10) {
+        hint.style.left = `${window.innerWidth - hintRect.width - 10}px`;
+      }
+      if (hintRect.left < 10) {
+        hint.style.left = '10px';
+      }
+    }, 0);
   };
 
   // Show optimization hint
@@ -245,14 +243,14 @@
     const hint = createOptimizationHint();
     positionHint(hint, chatbox);
     
-    // Add button click handler
-    const button = hint.querySelector('.promptly-hint-button');
-    if (button) {
-      button.addEventListener('click', (e) => {
-        e.stopPropagation();
-        optimizePrompt(chatbox);
-      });
-    }
+    // Make entire hint clickable
+    hint.addEventListener('click', (e) => {
+      e.stopPropagation();
+      optimizePrompt(chatbox);
+    });
+    
+    // Add cursor pointer to entire hint
+    hint.style.cursor = 'pointer';
     
     document.body.appendChild(hint);
     
@@ -261,17 +259,8 @@
       hint.classList.add('visible');
     }, 10);
     
-    // Auto-hide after 8 seconds
-    setTimeout(() => {
-      if (hint.parentNode) {
-        hint.classList.remove('visible');
-        setTimeout(() => {
-          if (hint.parentNode) {
-            hint.remove();
-          }
-        }, 200);
-      }
-    }, 8000);
+    // Keep hint visible while user is typing (don't auto-hide)
+    // Only hide when user clicks away or starts a new message
   };
 
   // Optimize prompt
@@ -393,26 +382,26 @@
       const now = Date.now();
       
       // Only check if enough time has passed since last activity (debounce)
-      if (now - lastActivityTime < 300) {
+      if (now - lastActivityTime < 100) {
         return;
       }
       
-      if (currentValue !== lastValue && currentValue.length > 15) {
+      if (currentValue !== lastValue) {
         lastValue = currentValue;
         lastActivityTime = now;
         
-        // Only show hint once per prompt and only for substantial content
-        if (!hintShown && currentValue.length > 15 && !isAlreadyOptimized(currentValue)) {
+        // Show hint immediately when user starts typing (after 10 characters)
+        if (currentValue.length > 10 && !isAlreadyOptimized(currentValue)) {
           // Clear existing timeout
           if (hintTimeout) {
             clearTimeout(hintTimeout);
           }
           
-          // Show hint after user stops typing
-          hintTimeout = window.setTimeout(() => {
+          // Show hint immediately
+          if (!hintShown) {
             showHint(chatbox);
             hintShown = true;
-          }, 2000);
+          }
         }
       }
       
@@ -420,6 +409,11 @@
       if (currentValue.length === 0) {
         hintShown = false;
         lastValue = '';
+        // Remove hint when prompt is cleared
+        const existingHint = document.querySelector('.promptly-hint');
+        if (existingHint) {
+          existingHint.remove();
+        }
       }
     };
     
