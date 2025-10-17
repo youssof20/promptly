@@ -1,7 +1,7 @@
 # Promptly - Open Source AI Prompt Optimizer
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/your-username/promptly)
+[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/youssof20/promptly)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 > **Transform your simple prompts into powerful, detailed instructions that get you better results from AI systems.**
@@ -44,20 +44,20 @@ Promptly is a completely free, open-source browser extension that automatically 
 
 ### 1. Install the Extension
 
-**Chrome Web Store** (Coming Soon)
-- [Install for Chrome](https://chrome.google.com/webstore/detail/promptly/your-extension-id)
-
-**Edge Add-ons** (Coming Soon)
-- [Install for Edge](https://microsoftedge.microsoft.com/addons/detail/promptly/your-extension-id)
-
 **Manual Installation** (Development)
 ```bash
-git clone https://github.com/your-username/promptly.git
+git clone https://github.com/youssof20/promptly.git
 cd promptly
 npm install
 npm run build
 # Load the extension from apps/extension/dist in Chrome/Edge
 ```
+
+**Chrome Web Store** (Coming Soon)
+- [Install for Chrome](https://chrome.google.com/webstore/detail/promptly/your-extension-id)
+
+**Edge Add-ons** (Coming Soon)
+- [Install for Edge](https://microsoftedge.microsoft.com/addons/detail/promptly/your-extension-id)
 
 ### 2. Configure Your AI Provider
 
@@ -98,30 +98,27 @@ Tone: informative yet accessible."
 ## 🛠️ Development
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 18+ 
 - npm or yarn
 - Git
 
 ### Setup
-```bash
+   ```bash
 # Clone the repository
-git clone https://github.com/your-username/promptly.git
-cd promptly
+git clone https://github.com/youssof20/promptly.git
+   cd promptly
 
 # Install dependencies
-npm install
+   npm install
 
 # Start development servers
-npm run dev
-```
+   npm run dev
+   ```
 
 ### Project Structure
 ```
 promptly/
 ├── apps/
-│   ├── web/                 # Next.js website (static)
-│   │   ├── src/app/         # Pages and components
-│   │   └── public/          # Static assets
 │   └── extension/           # Browser extension
 │       ├── src/
 │       │   ├── popup/       # Extension popup UI
@@ -129,19 +126,15 @@ promptly/
 │       │   ├── content/     # Content script
 │       │   └── lib/         # AI providers
 │       └── dist/            # Built extension
-├── docs/                    # Documentation
 └── scripts/                 # Build scripts
 ```
 
 ### Building
 ```bash
-# Build everything
+# Build extension
 npm run build
 
-# Build website only
-cd apps/web && npm run build
-
-# Build extension only
+# Or build directly
 cd apps/extension && npm run build
 ```
 
@@ -229,10 +222,10 @@ ollama serve
 - Try switching to a different provider
 
 ### Getting Help
-- 📖 Check the [documentation](https://github.com/your-username/promptly/wiki)
-- 🐛 [Report bugs](https://github.com/your-username/promptly/issues)
-- 💬 [Ask questions](https://github.com/your-username/promptly/discussions)
-- 💡 [Request features](https://github.com/your-username/promptly/issues/new?template=feature_request.md)
+- 📖 Check the [documentation](https://github.com/youssof20/promptly/wiki)
+- 🐛 [Report bugs](https://github.com/youssof20/promptly/issues)
+- 💬 [Ask questions](https://github.com/youssof20/promptly/discussions)
+- 💡 [Request features](https://github.com/youssof20/promptly/issues/new?template=feature_request.md)
 
 ## 📄 License
 
@@ -250,7 +243,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📊 Project Status
 
 - ✅ **Extension**: Fully functional
-- ✅ **Website**: Static site ready
 - ✅ **AI Providers**: 6 providers supported
 - ✅ **Platforms**: 20+ platforms supported
 - 🔄 **Chrome Store**: Submission in progress
@@ -258,10 +250,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=your-username/promptly&type=Date)](https://star-history.com/#your-username/promptly&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=youssof20/promptly&type=Date)](https://star-history.com/#youssof20/promptly&Date)
 
 ---
 
 **Made with ❤️ by the open-source community**
 
-[⭐ Star this repo](https://github.com/your-username/promptly) | [🐛 Report a bug](https://github.com/your-username/promptly/issues) | [💡 Request a feature](https://github.com/your-username/promptly/issues/new?template=feature_request.md) | [📖 Read the docs](https://github.com/your-username/promptly/wiki)
+[⭐ Star this repo](https://github.com/youssof20/promptly) | [🐛 Report a bug](https://github.com/youssof20/promptly/issues) | [💡 Request a feature](https://github.com/youssof20/promptly/issues/new?template=feature_request.md) | [📖 Read the docs](https://github.com/youssof20/promptly/wiki)

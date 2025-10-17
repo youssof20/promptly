@@ -4,19 +4,17 @@
   "description": "Open source AI prompt optimizer browser extension",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/extension"
   ],
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "type-check": "turbo run type-check"
+    "dev": "cd apps/extension && npm run dev",
+    "build": "cd apps/extension && npm run build",
+    "lint": "cd apps/extension && npm run lint",
+    "type-check": "cd apps/extension && npm run type-check"
   },
   "devDependencies": {
-    "turbo": "^1.10.12",
     "@types/node": "^20.8.0",
-    "typescript": "^5.2.2",
-    "sharp": "^0.33.0"
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": ">=18.0.0"
