@@ -1,6 +1,8 @@
 // Background script for Promptly browser extension - Open Source Version
 // Handles extension lifecycle, storage, and AI optimization
 
+import { getProvider } from '../lib/ai-providers';
+
 interface PromptlySettings {
   provider: string;
   apiKey: string;
@@ -213,10 +215,8 @@ class PromptlyBackground {
     const { provider, apiKey, localEndpoint } = this.config.settings;
 
     try {
-      // Import the AI providers dynamically
-      const { getProvider } = await import('../lib/ai-providers');
+      // Use static import instead of dynamic import
       const aiProvider = getProvider(provider);
-      
       return await aiProvider.optimize(prompt, apiKey, localEndpoint);
     } catch (error) {
       console.error('Prompt optimization failed:', error);
@@ -229,10 +229,8 @@ class PromptlyBackground {
 
   private async testConnection(provider: string, apiKey?: string, localEndpoint?: string): Promise<boolean> {
     try {
-      // Import the AI providers dynamically
-      const { getProvider } = await import('../lib/ai-providers');
+      // Use static import instead of dynamic import
       const aiProvider = getProvider(provider);
-      
       return await aiProvider.testConnection(apiKey, localEndpoint);
     } catch (error) {
       console.error('Connection test failed:', error);
@@ -248,20 +246,20 @@ class PromptlyBackground {
     if (optimized.length > 100 && 
         (optimized.includes('Please') || optimized.includes('Can you') || optimized.includes('I need')) &&
         (optimized.includes('specific') || optimized.includes('detailed') || optimized.includes('context'))) {
-      return optimized; // Already well-structured
+      return optimized;
     }
     
-    // Add structure if missing
+    // Add politeness if missing
     if (!optimized.includes('Please') && !optimized.includes('Can you') && !optimized.includes('I need')) {
       optimized = `Please ${optimized.toLowerCase()}`;
     }
     
-    // Add specificity only if really vague
+    // Add specificity for short prompts
     if (optimized.length < 30 && !optimized.includes('specific') && !optimized.includes('detailed')) {
       optimized += '. Please provide specific and detailed information.';
     }
     
-    // Add context only if missing and prompt is short
+    // Add context for medium-length prompts
     if (optimized.length < 60 && !optimized.includes('context') && !optimized.includes('background') && !optimized.includes('situation')) {
       optimized += ' Please provide context and background information.';
     }
