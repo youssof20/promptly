@@ -1,11 +1,10 @@
 {
   "name": "promptly",
-  "version": "1.0.0",
-  "description": "AI prompt optimizer browser extension",
+  "version": "2.0.0",
+  "description": "Open source AI prompt optimizer browser extension",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "dev": "turbo run dev",

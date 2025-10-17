@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Promptly</title>
+  <title>Promptly - AI Prompt Optimizer</title>
   <style>
-    /* Reset and Base Styles */
     * {
       margin: 0;
       padding: 0;
@@ -13,443 +12,354 @@
     }
 
     body {
-      width: 320px;
-      min-height: 400px;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: #f8fafc;
-      line-height: 1.5;
+      width: 380px;
+      min-height: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0D0D0D 0%, #1F1F1F 100%);
+      color: #ffffff;
       overflow-x: hidden;
     }
 
-    /* Header */
     .header {
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.02);
+      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      padding: 20px;
+      text-align: center;
+      position: relative;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .logo-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      color: white;
-    }
-
-    .logo-text {
+    .header h1 {
       font-size: 20px;
       font-weight: 700;
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .tagline {
-      font-size: 13px;
-      color: #94a3b8;
-      font-weight: 500;
-    }
-
-    /* Main Content */
-    .content {
-      padding: 20px 24px;
-    }
-
-    /* Status Section */
-    .status-section {
-      margin-bottom: 24px;
-    }
-
-    .status-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .status-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #f8fafc;
-    }
-
-    .status-badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-badge.connected {
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .status-badge.disconnected {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      margin-bottom: 16px;
-    }
-
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: white;
-    }
-
-    .user-details h3 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #f8fafc;
-      margin-bottom: 2px;
-    }
-
-    .user-details p {
-      font-size: 12px;
-      color: #94a3b8;
-    }
-
-    /* Quota Section */
-    .quota-section {
-      margin-bottom: 24px;
-    }
-
-    .quota-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .quota-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #f8fafc;
-    }
-
-    .quota-badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 500;
-      background: rgba(99, 102, 241, 0.15);
-      color: #6366f1;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    .quota-bar {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      height: 8px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .quota-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
-      border-radius: 8px;
-      transition: width 0.3s ease;
-    }
-
-    .quota-text {
-      font-size: 12px;
-      color: #94a3b8;
-      text-align: center;
-    }
-
-    /* Actions */
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 500;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.15);
-      transform: translateY(-1px);
-    }
-
-    .btn-icon {
-      font-size: 16px;
-    }
-
-    /* Upgrade Banner */
-    .upgrade-banner {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
-      border: 1px solid rgba(139, 92, 246, 0.2);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .upgrade-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #f8fafc;
       margin-bottom: 4px;
     }
 
-    .upgrade-text {
+    .header p {
       font-size: 12px;
-      color: #94a3b8;
-      margin-bottom: 12px;
+      opacity: 0.9;
     }
 
-    .upgrade-btn {
-      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .content {
+      padding: 20px;
     }
 
-    .upgrade-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-    }
-
-    /* Error State */
-    .error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      border-radius: 12px;
-      padding: 16px;
+    .tab-buttons {
+      display: flex;
       margin-bottom: 20px;
-      text-align: center;
+      background: #2A2A2A;
+      border-radius: 8px;
+      padding: 4px;
     }
 
-    .error-text {
-      font-size: 13px;
-      color: #ef4444;
+    .tab-button {
+      flex: 1;
+      padding: 8px 12px;
+      background: transparent;
+      border: none;
+      color: #9CA3AF;
+      font-size: 12px;
       font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    /* Loading State */
-    .loading {
+    .tab-button.active {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #E5E7EB;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      background: #374151;
+      border: 1px solid #4B5563;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 13px;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #3B82F6;
+    }
+
+    .form-input::placeholder {
+      color: #9CA3AF;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #374151;
+      border: 1px solid #4B5563;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #3B82F6;
+    }
+
+    .form-select option {
+      background: #374151;
+      color: #ffffff;
+    }
+
+    .test-button {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 8px;
+    }
+
+    .test-button:hover {
+      opacity: 0.9;
+    }
+
+    .test-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #1F2937;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+    }
+
+    .status-dot.error {
+      background: #EF4444;
+    }
+
+    .status-dot.warning {
+      background: #F59E0B;
+    }
+
+    .help-text {
+      font-size: 11px;
+      color: #9CA3AF;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .save-button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 20px;
+    }
+
+    .save-button:hover {
+      opacity: 0.9;
+    }
+
+    .save-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .features-list {
+      list-style: none;
+      margin: 16px 0;
+    }
+
+    .features-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      font-size: 12px;
+      color: #D1D5DB;
+    }
+
+    .features-list li::before {
+      content: "✓";
+      color: #10B981;
+      font-weight: bold;
+    }
+
+    .github-link {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 20px;
-      color: #94a3b8;
-      font-size: 14px;
+      padding: 10px;
+      background: #1F2937;
+      border: 1px solid #374151;
+      border-radius: 6px;
+      color: #D1D5DB;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+      margin-top: 16px;
     }
 
-    .spinner {
+    .github-link:hover {
+      background: #374151;
+      color: white;
+    }
+
+    .loading {
+      display: inline-block;
       width: 16px;
       height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-top: 2px solid #6366f1;
+      border: 2px solid #ffffff;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      border-top-color: transparent;
+      animation: spin 1s ease-in-out infinite;
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
-    /* Footer */
-    .footer {
-      padding: 16px 24px 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.02);
+    .error-message {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #DC2626;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-top: 8px;
     }
 
-    .footer-text {
-      font-size: 11px;
-      color: #64748b;
-      text-align: center;
-      line-height: 1.4;
-    }
-
-    /* Responsive */
-    @media (max-width: 320px) {
-      body {
-        width: 280px;
-      }
-      
-      .content {
-        padding: 16px 20px;
-      }
+    .success-message {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: #059669;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="header">
-    <div class="logo">
-      <div class="logo-icon">⚡</div>
-      <div class="logo-text">Promptly</div>
-    </div>
-    <div class="tagline">AI Prompt Optimizer</div>
+    <h1>Promptly</h1>
+    <p>Open Source AI Prompt Optimizer</p>
   </div>
 
-  <!-- Main Content -->
   <div class="content">
-    <!-- Loading State -->
-    <div id="loading" class="loading">
-      <div class="spinner"></div>
-      <span>Loading...</span>
+    <div class="tab-buttons">
+      <button class="tab-button active" data-tab="settings">Settings</button>
+      <button class="tab-button" data-tab="about">About</button>
     </div>
 
-    <!-- Error State -->
-    <div id="error" class="error" style="display: none;">
-      <div class="error-text" id="error-text">Something went wrong</div>
+    <!-- Settings Tab -->
+    <div class="tab-content active" id="settings">
+      <div class="status-indicator">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">Ready to optimize prompts</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="ai-provider">AI Provider</label>
+        <select class="form-select" id="ai-provider">
+          <option value="openai">OpenAI (GPT-4, GPT-3.5)</option>
+          <option value="anthropic">Anthropic (Claude)</option>
+          <option value="google">Google (Gemini)</option>
+          <option value="deepseek">DeepSeek</option>
+          <option value="ollama">Ollama (Local)</option>
+          <option value="lmstudio">LM Studio (Local)</option>
+        </select>
+        <div class="help-text">Choose your preferred AI provider for optimization</div>
+      </div>
+
+      <div class="form-group" id="api-key-group">
+        <label class="form-label" for="api-key">API Key</label>
+        <input type="password" class="form-input" id="api-key" placeholder="Enter your API key">
+        <div class="help-text" id="api-key-help">Your API key is stored locally and never sent to our servers</div>
+      </div>
+
+      <div class="form-group" id="local-endpoint-group" style="display: none;">
+        <label class="form-label" for="local-endpoint">Local Endpoint</label>
+        <input type="text" class="form-input" id="local-endpoint" placeholder="http://localhost:11434">
+        <div class="help-text">URL of your local AI server (Ollama: 11434, LM Studio: 1234)</div>
+      </div>
+
+      <button class="test-button" id="test-connection">Test Connection</button>
+
+      <div id="test-result"></div>
+
+      <button class="save-button" id="save-settings">Save Settings</button>
     </div>
 
-    <!-- Not Logged In State -->
-    <div id="not-logged-in" style="display: none;">
-      <div class="welcome-section">
-        <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px; text-align: center;">
-          Sign in to start optimizing your AI prompts across all platforms.
-        </p>
-      </div>
+    <!-- About Tab -->
+    <div class="tab-content" id="about">
+      <h3 style="font-size: 16px; margin-bottom: 12px; color: #E5E7EB;">About Promptly</h3>
+      
+      <p style="font-size: 12px; color: #9CA3AF; line-height: 1.5; margin-bottom: 16px;">
+        Promptly is an open-source browser extension that automatically optimizes your prompts 
+        before sending them to AI systems like ChatGPT, Claude, and Gemini.
+      </p>
 
-      <div class="actions">
-        <button id="signin-btn" class="btn btn-primary">
-          <span class="btn-icon">🔑</span>
-          <span>Sign In</span>
-        </button>
-        <button id="refresh-btn" class="btn btn-secondary">
-          <span class="btn-icon">🔄</span>
-          <span>Check Website</span>
-        </button>
-        <a href="#" id="signup-link" class="btn btn-secondary">
-          <span class="btn-icon">✨</span>
-          <span>Sign Up</span>
-        </a>
-      </div>
-    </div>
+      <ul class="features-list">
+        <li>Works with 20+ AI platforms</li>
+        <li>Uses your own API keys</li>
+        <li>Supports local AI models</li>
+        <li>100% privacy-focused</li>
+        <li>No data collection</li>
+        <li>Completely free and open source</li>
+      </ul>
 
-    <!-- Logged In State -->
-    <div id="logged-in" style="display: none;">
-      <!-- User Info -->
-      <div class="user-info">
-        <div class="user-avatar" id="user-avatar">U</div>
-        <div class="user-details">
-          <h3 id="user-name">User</h3>
-          <p id="user-email">user@example.com</p>
-        </div>
-      </div>
-
-      <!-- Quota Section -->
-      <div class="quota-section">
-        <div class="quota-header">
-          <div class="quota-title">Usage</div>
-          <div class="quota-badge" id="quota-badge">Free</div>
-        </div>
-        <div class="quota-bar">
-          <div class="quota-fill" id="quota-fill" style="width: 0%"></div>
-        </div>
-        <div class="quota-text" id="quota-text">0 / 50 prompts used</div>
-      </div>
-
-      <!-- Status Badge (hidden, used by JavaScript) -->
-      <div id="status-badge" style="display: none;"></div>
-
-      <!-- Upgrade Banner (shown when approaching limit) -->
-      <div id="upgrade-banner" class="upgrade-banner" style="display: none;">
-        <div class="upgrade-title">Upgrade to Pro</div>
-        <div class="upgrade-text">Get 1,000 optimizations per month and advanced features</div>
-        <button id="upgrade-btn" class="upgrade-btn">Upgrade Now</button>
-      </div>
-
-      <!-- Actions -->
-      <div class="actions">
-        <button id="settings-btn" class="btn btn-secondary">
-          <span class="btn-icon">⚙️</span>
-          <span>Dashboard</span>
-        </button>
-        <button id="signout-btn" class="btn btn-secondary" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;">
-          <span class="btn-icon">🚪</span>
-          <span>Sign Out</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <div class="footer-text">
-      Optimize your AI prompts instantly<br>
-      <span style="color: #6366f1;">✨ Powered by AI</span>
+      <a href="https://github.com/your-username/promptly" target="_blank" class="github-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        View on GitHub
+      </a>
     </div>
   </div>
 

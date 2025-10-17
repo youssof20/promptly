@@ -1,45 +1,70 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Header from '@/components/Header';
-import { useEffect } from 'react';
 
 export default function Home() {
-  const { data: session } = useSession();
-  const router = useRouter();
-  
-  
   return (
     <div className="min-h-screen bg-gradient-to-br from-rich-black via-charcoal-gray to-rich-black">
-      <Header />
+      {/* Header */}
+      <header className="border-b border-slate-800/30 bg-rich-black/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 relative">
+                <Image
+                  src="/icon-500.png"
+                  alt="Promptly Logo"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-electric-blue to-vibrant-purple bg-clip-text text-transparent">
+                Promptly
+              </h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <a
+                href="https://github.com/your-username/promptly"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                <span>GitHub</span>
+              </a>
+              <a
+                href="#install"
+                className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-6 py-2 rounded-lg font-semibold hover:shadow-glow transition-all duration-200"
+              >
+                Get Extension
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* Hero Section */}
       <main className="relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-electric-blue/3 via-vibrant-purple/3 to-cyan-teal/3"></div>
         
-        {/* Abstract floating elements inspired by winning SaaS sites */}
+        {/* Abstract floating elements */}
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-electric-blue/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-vibrant-purple/5 rounded-full blur-3xl"></div>
-        
-        {/* Additional abstract elements */}
-        <div className="absolute top-40 right-1/3 w-32 h-32 bg-cyan-teal/10 rounded-full blur-2xl animate-float"></div>
-        <div className="absolute bottom-40 left-1/3 w-24 h-24 bg-lime-green/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/6 w-16 h-16 bg-amber/10 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/3 right-1/6 w-20 h-20 bg-vibrant-purple/10 rounded-full blur-xl animate-float" style={{ animationDelay: '0.5s' }}></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-32">
           <div className="text-center">
             {/* Badge */}
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-800/40 border border-slate-700/40 backdrop-blur-sm mb-8">
               <div className="w-2 h-2 bg-lime-green rounded-full mr-3 animate-pulse"></div>
-              <span className="text-slate-300 text-sm font-medium">Now Available for Chrome & Edge</span>
+              <span className="text-slate-300 text-sm font-medium">Open Source • Free • Privacy-First</span>
             </div>
             
-            {/* Main Heading - Transformational messaging */}
+            {/* Main Heading */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight tracking-tight" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
               <span className="block">Write Once.</span>
               <span className="block bg-gradient-to-r from-electric-blue via-vibrant-purple to-cyan-teal bg-clip-text text-transparent">
@@ -53,92 +78,38 @@ export default function Home() {
             {/* Subheading */}
             <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-4xl mx-auto leading-relaxed px-4" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
               Transform your simple prompts into powerful, detailed instructions that get you better results from AI. 
-              <span className="text-white font-medium block mt-3" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>No prompt engineering skills required.</span>
+              <span className="text-white font-medium block mt-3" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>No prompt engineering skills required. Use your own API keys. Completely free.</span>
             </p>
             
-            {/* CTA Buttons - Clean extension-style */}
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20 px-4">
-              <Link href="/install" className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+              <a 
+                href="#install" 
+                className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1" 
+                style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
+              >
                 <span className="flex items-center justify-center">
                   <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                   Install Extension
                 </span>
-              </Link>
+              </a>
               
-              <button 
-                onClick={() => router.push('/pricing')}
+              <a 
+                href="https://github.com/your-username/promptly"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border-2 border-white/30 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:border-white/50 hover:bg-white/10 transition-all duration-200 transform hover:-translate-y-1"
                 style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
               >
                 <span className="flex items-center justify-center">
-                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
-                  View Pricing
+                  View on GitHub
                 </span>
-              </button>
-            </div>
-
-            {/* Real Testimonials */}
-            <div className="mb-20">
-              <p className="text-slate-400 text-sm mb-8 font-medium">What users are saying</p>
-              <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30 hover:border-electric-blue/30 transition-all duration-300 group">
-                  <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-electric-blue to-vibrant-purple rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white font-semibold text-sm">SJ</span>
-                    </div>
-                    <div>
-                      <p className="text-white font-medium">Sarah Johnson</p>
-                      <p className="text-slate-400 text-sm">Content Creator</p>
-                    </div>
-                  </div>
-                  <p className="text-slate-300 text-sm leading-relaxed">
-                    "Promptly has completely transformed how I interact with AI. My prompts are now 10x more effective, and I get exactly what I need every time."
-                  </p>
-                  <div className="mt-3 flex text-electric-blue">
-                    ⭐⭐⭐⭐⭐
-                  </div>
-                </div>
-                
-                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30 hover:border-vibrant-purple/30 transition-all duration-300 group">
-                  <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-vibrant-purple to-cyan-teal rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white font-semibold text-sm">MR</span>
-                    </div>
-                    <div>
-                      <p className="text-white font-medium">Mike Rodriguez</p>
-                      <p className="text-slate-400 text-sm">Product Manager</p>
-                    </div>
-                  </div>
-                  <p className="text-slate-300 text-sm leading-relaxed">
-                    "As someone who uses AI daily for work, Promptly saves me hours every week. The optimization suggestions are spot-on."
-                  </p>
-                  <div className="mt-3 flex text-electric-blue">
-                    ⭐⭐⭐⭐⭐
-                  </div>
-                </div>
-                
-                <div className="bg-slate-800/30 rounded-lg p-6 border border-slate-700/30 hover:border-cyan-teal/30 transition-all duration-300 group">
-                  <div className="flex items-center mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-cyan-teal to-lime-green rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white font-semibold text-sm">AL</span>
-                    </div>
-                    <div>
-                      <p className="text-white font-medium">Alex Liu</p>
-                      <p className="text-slate-400 text-sm">Developer</p>
-                    </div>
-                  </div>
-                  <p className="text-slate-300 text-sm leading-relaxed">
-                    "Finally, a tool that makes AI actually useful for complex tasks. Promptly turns my rough ideas into precise, actionable prompts."
-                  </p>
-                  <div className="mt-3 flex text-electric-blue">
-                    ⭐⭐⭐⭐⭐
-                  </div>
-                </div>
-              </div>
+              </a>
             </div>
           </div>
         </div>
@@ -152,7 +123,7 @@ export default function Home() {
               Why Choose Promptly?
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-              Built for modern AI workflows with enterprise-grade security and performance
+              Built for modern AI workflows with privacy-first design and open-source transparency
             </p>
           </div>
 
@@ -179,7 +150,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <h3 className="text-3xl font-bold text-white mb-6 group-hover:text-vibrant-purple transition-colors duration-300" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Private</h3>
-                <p className="text-slate-300 text-lg leading-relaxed">PII redaction, minimal storage, and optional local-only mode to keep your data secure.</p>
+                <p className="text-slate-300 text-lg leading-relaxed">Uses your own API keys, supports local AI models, and never sends your data to our servers.</p>
               </div>
             </div>
 
@@ -188,18 +159,18 @@ export default function Home() {
               <div className="relative z-10">
                 <div className="w-20 h-20 bg-gradient-to-br from-cyan-teal to-cyan-teal/80 rounded-2xl mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-glow">
                   <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-3xl font-bold text-white mb-6 group-hover:text-cyan-teal transition-colors duration-300" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Fast & Efficient</h3>
-                <p className="text-slate-300 text-lg leading-relaxed">Low-latency processing with smart caching and controlled AI API usage for optimal performance.</p>
+                <h3 className="text-3xl font-bold text-white mb-6 group-hover:text-cyan-teal transition-colors duration-300" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>Open Source</h3>
+                <p className="text-slate-300 text-lg leading-relaxed">Completely free, open source, and transparent. No hidden costs, no data collection, no vendor lock-in.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Interactive Demo Section */}
+      {/* Demo Section */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative bg-slate-800/20 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-slate-700/30 overflow-hidden">
@@ -214,7 +185,7 @@ export default function Home() {
                 </p>
               </div>
               
-              {/* Static Example */}
+              {/* Demo Example */}
               <div className="max-w-4xl mx-auto">
                 <div className="grid lg:grid-cols-2 gap-8 items-start">
                   {/* Before */}
@@ -263,36 +234,136 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Supported Platforms */}
+      <section className="py-24 bg-slate-900/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+              Works Everywhere
+            </h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+              Promptly works on all major AI platforms and writing tools
+            </p>
+          </div>
 
-      {/* CTA Section */}
-      <section className="py-24">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            {[
+              'ChatGPT', 'Claude', 'Gemini', 'DeepSeek', 'Poe', 'Perplexity',
+              'You.com', 'Hugging Face', 'Together AI', 'LM Studio', 'Ollama', 'Cursor'
+            ].map((platform) => (
+              <div key={platform} className="bg-slate-800/30 rounded-lg p-4 text-center border border-slate-700/30 hover:border-electric-blue/30 transition-all duration-300">
+                <div className="text-slate-300 font-medium text-sm">{platform}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Installation Section */}
+      <section id="install" className="py-24">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-            Ready to Transform Your AI Workflow?
+            Ready to Get Started?
           </h2>
           <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
-            Join thousands of professionals who've already optimized their AI interactions. 
-            Start free, upgrade anytime.
+            Install the extension, configure your AI provider, and start getting better results from AI.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              onClick={() => router.push('/pricing')}
-              className="group border-2 border-slate-600 text-white px-8 py-4 rounded-xl font-medium text-lg hover:border-slate-500 hover:bg-slate-800/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
-              style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
-            >
-              <span className="flex items-center justify-center">
-                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-                View Pricing
-              </span>
-            </button>
+          <div className="bg-slate-800/30 rounded-2xl p-8 border border-slate-700/30 mb-8">
+            <h3 className="text-2xl font-bold text-white mb-6">Installation Steps</h3>
+            <div className="space-y-4 text-left max-w-2xl mx-auto">
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-electric-blue rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                <div>
+                  <p className="text-white font-medium">Download the extension</p>
+                  <p className="text-slate-400 text-sm">Get it from Chrome Web Store or Edge Add-ons</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-vibrant-purple rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                <div>
+                  <p className="text-white font-medium">Configure your AI provider</p>
+                  <p className="text-slate-400 text-sm">Add your API key or local AI endpoint in settings</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-cyan-teal rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                <div>
+                  <p className="text-white font-medium">Start optimizing prompts</p>
+                  <p className="text-slate-400 text-sm">Visit any AI platform and watch the magic happen</p>
+                </div>
+              </div>
+            </div>
           </div>
-          
-          <p className="text-slate-400 text-sm mt-6">
-            Free forever • No credit card required • 30-day money-back guarantee
-          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://chrome.google.com/webstore/detail/promptly/your-extension-id"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gradient-to-r from-electric-blue to-vibrant-purple text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1"
+            >
+              Install for Chrome
+            </a>
+            <a
+              href="https://microsoftedge.microsoft.com/addons/detail/promptly/your-extension-id"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-2 border-white/30 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:border-white/50 hover:bg-white/10 transition-all duration-200 transform hover:-translate-y-1"
+            >
+              Install for Edge
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-slate-900/20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-white text-center mb-12" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-8">
+            <div className="bg-slate-800/30 rounded-xl p-6">
+              <h3 className="text-xl font-semibold text-white mb-3">
+                Is Promptly really free?
+              </h3>
+              <p className="text-slate-300">
+                Yes! Promptly is completely free and open source. You only pay for your own AI API usage, 
+                which is typically very affordable. We don't charge anything and never will.
+              </p>
+            </div>
+
+            <div className="bg-slate-800/30 rounded-xl p-6">
+              <h3 className="text-xl font-semibold text-white mb-3">
+                What AI providers are supported?
+              </h3>
+              <p className="text-slate-300">
+                We support OpenAI (GPT-4, GPT-3.5), Anthropic (Claude), Google (Gemini), DeepSeek, 
+                and local models via Ollama and LM Studio. You can use any or all of these providers.
+              </p>
+            </div>
+
+            <div className="bg-slate-800/30 rounded-xl p-6">
+              <h3 className="text-xl font-semibold text-white mb-3">
+                Is my data private?
+              </h3>
+              <p className="text-slate-300">
+                Absolutely! We never see your prompts or data. Everything is processed using your own API keys 
+                or local AI models. Your data never leaves your control.
+              </p>
+            </div>
+
+            <div className="bg-slate-800/30 rounded-xl p-6">
+              <h3 className="text-xl font-semibold text-white mb-3">
+                Can I contribute to the project?
+              </h3>
+              <p className="text-slate-300">
+                Yes! Promptly is open source and we welcome contributions. Check out our GitHub repository 
+                for ways to contribute, report issues, or suggest new features.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -316,28 +387,28 @@ export default function Home() {
             </div>
             
             <p className="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">
-              The AI prompt optimizer that makes you more productive. 
+              The open-source AI prompt optimizer that makes you more productive. 
               <span className="text-white font-medium block mt-2">Transform your AI interactions today.</span>
             </p>
             
             <div className="flex flex-wrap justify-center gap-6 mb-8">
-              <a href="#" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
+              <a href="/privacy" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
                 Privacy Policy
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
+              <a href="/terms" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
                 Terms of Service
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
-                Support
+              <a href="https://github.com/your-username/promptly" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
+                GitHub
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
-                Contact
+              <a href="https://github.com/your-username/promptly/issues" className="text-slate-400 hover:text-white transition-colors duration-200 font-medium">
+                Support
               </a>
             </div>
             
             <div className="border-t border-slate-800/30 pt-6">
               <p className="text-slate-500 text-sm">
-                © 2024 Promptly. All rights reserved. Made with ❤️ for AI enthusiasts.
+                © 2024 Promptly. Open source under MIT License. Made with ❤️ for the AI community.
               </p>
             </div>
           </div>

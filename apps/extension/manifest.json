@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Promptly",
-  "version": "1.0.0",
-  "description": "AI prompt optimizer that automatically improves your prompts before sending to AI systems",
+  "name": "Promptly - Open Source AI Prompt Optimizer",
+  "version": "2.0.0",
+  "description": "Open source AI prompt optimizer that automatically improves your prompts before sending to AI systems. Works with your own API keys, supports local AI models, and is completely free.",
   "permissions": [
     "activeTab",
     "storage",
@@ -16,7 +16,13 @@
     "https://chatgpt.com/*",
     "https://deepseek.com/*",
     "https://x.com/*",
-    "https://twitter.com/*"
+    "https://twitter.com/*",
+    "https://api.openai.com/*",
+    "https://api.anthropic.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.deepseek.com/*",
+    "http://localhost:11434/*",
+    "http://localhost:1234/*"
   ],
   "background": {
     "service_worker": "dist/background.js"
@@ -40,7 +46,7 @@
   ],
   "action": {
     "default_popup": "dist/popup.html",
-    "default_title": "Promptly - AI Prompt Optimizer"
+    "default_title": "Promptly - Open Source AI Prompt Optimizer"
   },
   "icons": {
     "16": "icons/icon-16.png",

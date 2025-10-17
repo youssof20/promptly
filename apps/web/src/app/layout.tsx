@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
-import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -10,19 +9,19 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Promptly - AI Prompt Optimizer",
-  description: "Automatically improve your prompts before sending to ChatGPT, Claude, and other AI systems. Get better results without learning prompt engineering.",
-  keywords: ["AI", "prompt optimization", "ChatGPT", "Claude", "browser extension", "productivity"],
+  title: "Promptly - Open Source AI Prompt Optimizer",
+  description: "Open source AI prompt optimizer that automatically improves your prompts before sending to AI systems. Works with your own API keys, supports local AI models, and is completely free.",
+  keywords: ["AI", "prompt optimization", "ChatGPT", "Claude", "browser extension", "open source", "free", "privacy"],
   authors: [{ name: "Promptly Team" }],
   openGraph: {
-    title: "Promptly - AI Prompt Optimizer",
-    description: "Automatically improve your prompts before sending to AI systems. Get better results without learning prompt engineering.",
+    title: "Promptly - Open Source AI Prompt Optimizer",
+    description: "Open source AI prompt optimizer that automatically improves your prompts before sending to AI systems. Works with your own API keys and is completely free.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Promptly - AI Prompt Optimizer",
-    description: "Automatically improve your prompts before sending to AI systems.",
+    title: "Promptly - Open Source AI Prompt Optimizer",
+    description: "Open source AI prompt optimizer that automatically improves your prompts before sending to AI systems.",
   },
 };
 
@@ -36,9 +35,7 @@ export default function RootLayout({
       <body
         className={`${jetbrainsMono.variable} antialiased`}
       >
-        <Providers>
-          {children}
-        </Providers>
+        {children}
       </body>
     </html>
   );
