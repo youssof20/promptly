@@ -1,209 +1,197 @@
-/* Promptly Extension Styles - Professional Design System */
+/* Promptly Content Script Styles - Clean Minimalistic Design */
 
-/* Optimization Hint */
 .promptly-hint {
-  position: absolute;
-  z-index: 10000;
-  animation: promptly-fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 13px;
+    color: #000000;
+    z-index: 10000;
+    max-width: 300px;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    pointer-events: none;
 }
 
-        .promptly-hint-content {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          background: rgba(15, 23, 42, 0.95);
-          color: #f8fafc;
-          padding: 6px 10px;
-          border-radius: 8px;
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          font-size: 11px;
-          font-weight: 500;
-          cursor: pointer;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          min-width: 120px;
-          white-space: nowrap;
-          border: 1px solid rgba(99, 102, 241, 0.2);
-          backdrop-filter: blur(12px);
-          letter-spacing: 0.025em;
-        }
+.promptly-hint.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
 
-.promptly-hint:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.15);
-  border-color: rgba(99, 102, 241, 0.4);
-  background: rgba(15, 23, 42, 0.98);
+.promptly-hint-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .promptly-hint-icon {
-  font-size: 12px;
-  line-height: 1;
-  opacity: 1;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    width: 16px;
+    height: 16px;
+    background: #000000;
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
 }
 
 .promptly-hint-text {
-  flex: 1;
-  font-weight: 500;
+    flex: 1;
+    color: #495057;
 }
 
-.promptly-hint-title {
-  font-weight: 600;
-  margin-bottom: 2px;
+.promptly-hint-button {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-left: 8px;
 }
 
-.promptly-hint-subtitle {
-  font-size: 11px;
-  opacity: 0.9;
-  font-weight: 400;
+.promptly-hint-button:hover {
+    background: #333333;
 }
 
-/* Feedback Messages */
-.promptly-feedback {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 10001;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  animation: promptly-slide-in 0.3s ease-out;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.promptly-hint-button:active {
+    background: #000000;
 }
 
-.promptly-success {
-  background: rgba(16, 185, 129, 0.9);
-  color: white;
-  border-color: rgba(16, 185, 129, 0.3);
+.promptly-hint-button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
 }
 
-.promptly-error {
-  background: rgba(239, 68, 68, 0.9);
-  color: white;
-  border-color: rgba(239, 68, 68, 0.3);
+.promptly-hint-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #ffffff;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-/* Animations */
-@keyframes promptly-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.promptly-hint-arrow::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid #e9ecef;
+    bottom: 1px;
+    left: -7px;
 }
 
-@keyframes promptly-slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+/* Loading state */
+.promptly-hint.loading .promptly-hint-button {
+    background: #6c757d;
+    cursor: not-allowed;
 }
 
-@keyframes promptly-bounce-in {
-  0% {
-    transform: translateX(100%) scale(0.8);
-    opacity: 0;
-  }
-  50% {
-    transform: translateX(-10px) scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
+.promptly-hint.loading .promptly-hint-button::after {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: promptly-spin 1s linear infinite;
+    margin-left: 6px;
 }
 
-@keyframes promptly-fade-out {
-  from {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%) scale(0.8);
-    opacity: 0;
-  }
+@keyframes promptly-spin {
+    to { transform: rotate(360deg); }
 }
 
-/* Enhanced focus and active states */
-.promptly-hint:active {
-  transform: translateY(-1px) scale(1.01);
-  transition: all 0.1s ease;
+/* Success state */
+.promptly-hint.success {
+    background: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.promptly-hint.success .promptly-hint-icon {
+    background: #28a745;
+}
+
+.promptly-hint.success .promptly-hint-text {
+    color: #155724;
+}
+
+/* Error state */
+.promptly-hint.error {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.promptly-hint.error .promptly-hint-icon {
+    background: #dc3545;
+}
+
+.promptly-hint.error .promptly-hint-text {
+    color: #721c24;
 }
 
 /* Platform-specific adjustments */
-.promptly-hint-content[data-platform="chatgpt"] {
-  border-color: rgba(16, 185, 129, 0.3);
+.chatgpt .promptly-hint,
+.claude .promptly-hint,
+.gemini .promptly-hint,
+.deepseek .promptly-hint {
+    /* Ensure visibility on various backgrounds */
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.promptly-hint-content[data-platform="claude"] {
-  border-color: rgba(245, 158, 11, 0.3);
-}
-
-.promptly-hint-content[data-platform="gemini"] {
-  border-color: rgba(6, 182, 212, 0.3);
-}
-
-/* Ensure hints don't interfere with page layout */
-.promptly-hint {
-  pointer-events: auto;
-}
-
-/* Accessibility improvements */
-@media (prefers-reduced-motion: reduce) {
-  .promptly-hint {
-    animation: none;
-  }
-  
-  .promptly-hint-content {
-    transition: none;
-  }
-  
-  .promptly-hint:hover {
-    transform: none;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .promptly-hint-content {
-    background: rgba(0, 0, 0, 0.95);
-    border: 2px solid #ffffff;
-    color: #ffffff;
-  }
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .promptly-hint {
+        background: #1a1a1a;
+        border-color: #404040;
+        color: #ffffff;
+    }
+    
+    .promptly-hint-text {
+        color: #d1d5db;
+    }
+    
+    .promptly-hint-arrow {
+        border-top-color: #1a1a1a;
+    }
+    
+    .promptly-hint-arrow::before {
+        border-top-color: #404040;
+    }
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .promptly-hint-content {
-    min-width: 160px;
-    font-size: 12px;
-    padding: 8px 12px;
-  }
-  
-  .promptly-hint-title {
-    font-size: 12px;
-  }
-  
-  .promptly-hint-subtitle {
-    font-size: 10px;
-  }
-  
-  .promptly-feedback {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    text-align: center;
-  }
+    .promptly-hint {
+        max-width: 280px;
+        font-size: 12px;
+        padding: 10px 14px;
+    }
+    
+    .promptly-hint-button {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
 }

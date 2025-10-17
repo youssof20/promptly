@@ -180,23 +180,19 @@
     
     const icon = document.createElement('span');
     icon.className = 'promptly-hint-icon';
-    icon.textContent = '⚡';
+    icon.textContent = 'P';
     
     const text = document.createElement('div');
     text.className = 'promptly-hint-text';
+    text.textContent = 'Optimize prompt';
     
-    const title = document.createElement('div');
-    title.className = 'promptly-hint-title';
-    title.textContent = 'Optimize with AI';
+    const button = document.createElement('button');
+    button.className = 'promptly-hint-button';
+    button.textContent = 'Optimize';
     
-    const subtitle = document.createElement('div');
-    subtitle.className = 'promptly-hint-subtitle';
-    subtitle.textContent = 'Click to enhance your prompt';
-    
-    text.appendChild(title);
-    text.appendChild(subtitle);
     hintContent.appendChild(icon);
     hintContent.appendChild(text);
+    hintContent.appendChild(button);
     hint.appendChild(hintContent);
     
     return hint;
@@ -249,22 +245,31 @@
     const hint = createOptimizationHint();
     positionHint(hint, chatbox);
     
-    // Add click handler
-    hint.addEventListener('click', () => {
-      optimizePrompt(chatbox);
-    });
+    // Add button click handler
+    const button = hint.querySelector('.promptly-hint-button');
+    if (button) {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        optimizePrompt(chatbox);
+      });
+    }
     
     document.body.appendChild(hint);
+    
+    // Show with animation
+    setTimeout(() => {
+      hint.classList.add('visible');
+    }, 10);
     
     // Auto-hide after 8 seconds
     setTimeout(() => {
       if (hint.parentNode) {
-        hint.style.animation = 'promptly-fade-out 0.3s ease-in';
+        hint.classList.remove('visible');
         setTimeout(() => {
           if (hint.parentNode) {
             hint.remove();
           }
-        }, 300);
+        }, 200);
       }
     }, 8000);
   };
@@ -275,6 +280,17 @@
     
     if (!text.trim()) {
       return;
+    }
+    
+    // Find the current hint and show loading state
+    const hint = document.querySelector('.promptly-hint');
+    if (hint) {
+      hint.classList.add('loading');
+      const button = hint.querySelector('.promptly-hint-button') as HTMLButtonElement;
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Optimizing...';
+      }
     }
     
     console.log('Optimizing prompt:', text);
@@ -300,96 +316,69 @@
           chatbox.dispatchEvent(new Event('input', { bubbles: true }));
         }
         
-        // Show success feedback
-        showSuccessFeedback();
+        // Show success state
+        if (hint) {
+          hint.classList.remove('loading');
+          hint.classList.add('success');
+          const button = hint.querySelector('.promptly-hint-button') as HTMLButtonElement;
+          if (button) {
+            button.textContent = 'Optimized!';
+            button.disabled = true;
+          }
+          const text = hint.querySelector('.promptly-hint-text');
+          if (text) {
+            text.textContent = 'Prompt optimized successfully';
+          }
+        }
+        
+        // Hide hint after success
+        setTimeout(() => {
+          if (hint && hint.parentNode) {
+            hint.classList.remove('visible');
+            setTimeout(() => {
+              if (hint.parentNode) {
+                hint.remove();
+              }
+            }, 200);
+          }
+        }, 2000);
       } else {
         console.error('Optimization failed:', response);
-        showErrorFeedback(response?.error || 'Optimization failed');
+        showErrorState(hint, response?.error || 'Optimization failed');
       }
     } catch (error) {
       console.error('Optimization failed:', error);
-      showErrorFeedback('Please configure your AI provider in the extension settings');
+      showErrorState(hint, 'Please configure your AI provider in the extension settings');
     }
   };
 
-  // Show success feedback
-  const showSuccessFeedback = (): void => {
-    const feedback = document.createElement('div');
-    feedback.className = 'promptly-feedback promptly-success';
-    feedback.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 18px;">✨</span>
-        <div>
-          <div style="font-weight: 600; margin-bottom: 2px;">Prompt optimized!</div>
-          <div style="font-size: 12px; opacity: 0.9;">Clearer, more specific. You'll get a sharper response.</div>
-        </div>
-      </div>
-    `;
-    feedback.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
-      color: white;
-      padding: 16px 20px;
-      border-radius: 12px;
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 10001;
-      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
-      animation: promptly-bounce-in 0.4s ease-out;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    `;
-    
-    document.body.appendChild(feedback);
-    
-    setTimeout(() => {
-      feedback.style.animation = 'promptly-fade-out 0.3s ease-in';
+  // Show error state
+  const showErrorState = (hint: Element | null, message: string): void => {
+    if (hint) {
+      hint.classList.remove('loading');
+      hint.classList.add('error');
+      const button = hint.querySelector('.promptly-hint-button') as HTMLButtonElement;
+      if (button) {
+        button.textContent = 'Error';
+        button.disabled = true;
+      }
+      const text = hint.querySelector('.promptly-hint-text');
+      if (text) {
+        text.textContent = message;
+      }
+      
+      // Hide hint after error
       setTimeout(() => {
-        feedback.remove();
-      }, 300);
-    }, 4000);
-  };
-
-  // Show error feedback
-  const showErrorFeedback = (message: string = 'Optimization failed'): void => {
-    const feedback = document.createElement('div');
-    feedback.className = 'promptly-feedback promptly-error';
-    feedback.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 18px;">⚠️</span>
-        <div>
-          <div style="font-weight: 600; margin-bottom: 2px;">${message}</div>
-          <div style="font-size: 12px; opacity: 0.9;">Click the extension icon to configure settings</div>
-        </div>
-      </div>
-    `;
-    feedback.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-      color: white;
-      padding: 16px 20px;
-      border-radius: 12px;
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 10001;
-      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
-      animation: promptly-bounce-in 0.4s ease-out;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    `;
-    
-    document.body.appendChild(feedback);
-    
-    setTimeout(() => {
-      feedback.style.animation = 'promptly-fade-out 0.3s ease-in';
-      setTimeout(() => {
-        feedback.remove();
-      }, 300);
-    }, 5000);
+        if (hint.parentNode) {
+          hint.classList.remove('visible');
+          setTimeout(() => {
+            if (hint.parentNode) {
+              hint.remove();
+            }
+          }, 200);
+        }
+      }, 3000);
+    }
   };
 
   // Monitor chatbox for changes with improved logic

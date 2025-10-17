@@ -3,44 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promptly - Open Source AI Prompt Optimizer</title>
-    <link rel="stylesheet" href="../content/content.css">
+    <title>Promptly - AI Prompt Optimizer</title>
     <style>
-        /* Popup-specific styles */
-        body {
-            width: 380px;
-            min-height: 500px;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 100%);
-            color: #E2E8F0;
+        * {
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 360px;
+            min-height: 480px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.5;
         }
 
         .header {
-            background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
+            background: #000000;
+            color: #ffffff;
             padding: 20px;
             text-align: center;
-            color: white;
         }
 
         .header h1 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
         .header p {
-            margin: 5px 0 0 0;
             font-size: 12px;
-            opacity: 0.9;
+            opacity: 0.8;
         }
 
         .tabs {
             display: flex;
-            background: #1E293B;
-            border-bottom: 1px solid #334155;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .tab-button {
@@ -48,7 +49,7 @@
             padding: 12px 16px;
             background: none;
             border: none;
-            color: #94A3B8;
+            color: #6c757d;
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
@@ -57,19 +58,19 @@
         }
 
         .tab-button:hover {
-            color: #E2E8F0;
-            background: #334155;
+            color: #000000;
+            background: #ffffff;
         }
 
         .tab-button.active {
-            color: #00D4FF;
-            border-bottom-color: #00D4FF;
-            background: #1E293B;
+            color: #000000;
+            border-bottom-color: #000000;
+            background: #ffffff;
         }
 
         .tab-content {
             display: none;
-            padding: 20px;
+            padding: 24px;
         }
 
         .tab-content.active {
@@ -77,112 +78,109 @@
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-size: 13px;
             font-weight: 500;
-            color: #CBD5E1;
+            color: #000000;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #475569;
-            border-radius: 8px;
-            background: #1E293B;
-            color: #E2E8F0;
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #000000;
             font-size: 13px;
             transition: border-color 0.2s ease;
-            box-sizing: border-box;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #00D4FF;
-            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1);
+            border-color: #000000;
         }
 
         .form-group input::placeholder {
-            color: #64748B;
+            color: #6c757d;
         }
 
         .help-text {
             font-size: 11px;
-            color: #64748B;
-            margin-top: 4px;
+            color: #6c757d;
+            margin-top: 6px;
             line-height: 1.4;
         }
 
         .button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
-            color: white;
+            background: #000000;
+            color: #ffffff;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
             margin-bottom: 8px;
         }
 
         .button:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+            background: #333333;
         }
 
         .button:disabled {
-            opacity: 0.6;
+            background: #6c757d;
             cursor: not-allowed;
-            transform: none;
         }
 
         .button.secondary {
-            background: #334155;
-            color: #E2E8F0;
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #dee2e6;
         }
 
         .button.secondary:hover {
-            background: #475569;
+            background: #f8f9fa;
         }
 
         .status {
             display: flex;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             padding: 12px;
-            background: #1E293B;
-            border-radius: 8px;
-            border: 1px solid #334155;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #10B981;
-            margin-right: 8px;
+            background: #28a745;
+            margin-right: 10px;
             flex-shrink: 0;
         }
 
         .status-dot.error {
-            background: #EF4444;
+            background: #dc3545;
         }
 
         .status-dot.warning {
-            background: #F59E0B;
+            background: #ffc107;
         }
 
         .status-text {
             font-size: 12px;
-            color: #CBD5E1;
+            color: #495057;
         }
 
         .test-result {
@@ -191,21 +189,21 @@
         }
 
         .success-message {
-            color: #10B981;
+            color: #28a745;
             font-size: 12px;
             padding: 8px 12px;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 6px;
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: #d4edda;
+            border-radius: 4px;
+            border: 1px solid #c3e6cb;
         }
 
         .error-message {
-            color: #EF4444;
+            color: #dc3545;
             font-size: 12px;
             padding: 8px 12px;
-            background: rgba(239, 68, 68, 0.1);
-            border-radius: 6px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background: #f8d7da;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
         }
 
         .loading {
@@ -224,16 +222,17 @@
         }
 
         .footer {
-            padding: 16px 20px;
-            background: #0F172A;
-            border-top: 1px solid #334155;
+            padding: 16px 24px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
             text-align: center;
         }
 
         .footer a {
-            color: #00D4FF;
+            color: #000000;
             text-decoration: none;
             font-size: 11px;
+            font-weight: 500;
         }
 
         .footer a:hover {
@@ -242,16 +241,43 @@
 
         .privacy-note {
             font-size: 10px;
-            color: #64748B;
+            color: #6c757d;
             margin-top: 8px;
             line-height: 1.3;
+        }
+
+        .about-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #000000;
+        }
+
+        .about-section h4 {
+            font-size: 14px;
+            margin: 16px 0 8px 0;
+            color: #000000;
+        }
+
+        .about-section ul {
+            margin: 0 0 16px 0;
+            padding-left: 16px;
+            color: #495057;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .about-section p {
+            color: #495057;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Promptly</h1>
-        <p>Open Source AI Prompt Optimizer</p>
+        <p>AI Prompt Optimizer</p>
     </div>
 
     <div class="tabs">
@@ -300,33 +326,27 @@
     </div>
 
     <div id="about" class="tab-content">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <h3 style="margin: 0 0 8px 0; color: #E2E8F0;">Promptly</h3>
-            <p style="margin: 0; color: #94A3B8; font-size: 12px;">Open Source AI Prompt Optimizer</p>
-        </div>
+        <div class="about-section">
+            <h3>Promptly</h3>
+            <p>Open source AI prompt optimizer that works across all major AI platforms.</p>
 
-        <div style="margin-bottom: 16px;">
-            <h4 style="margin: 0 0 8px 0; color: #E2E8F0; font-size: 13px;">Features</h4>
-            <ul style="margin: 0; padding-left: 16px; color: #CBD5E1; font-size: 12px; line-height: 1.5;">
+            <h4>Features</h4>
+            <ul>
                 <li>Works with 6 AI providers</li>
                 <li>Supports local AI models</li>
                 <li>100% privacy-focused</li>
                 <li>No data collection</li>
                 <li>Completely free</li>
             </ul>
-        </div>
 
-        <div style="margin-bottom: 16px;">
-            <h4 style="margin: 0 0 8px 0; color: #E2E8F0; font-size: 13px;">Supported Platforms</h4>
-            <p style="margin: 0; color: #CBD5E1; font-size: 12px; line-height: 1.5;">
-                ChatGPT, Claude, Gemini, DeepSeek, and 20+ other AI platforms
-            </p>
-        </div>
+            <h4>Supported Platforms</h4>
+            <p>ChatGPT, Claude, Gemini, DeepSeek, and 20+ other AI platforms</p>
 
-        <div style="text-align: center;">
-            <a href="https://github.com/youssof20/promptly" target="_blank" style="color: #00D4FF; text-decoration: none; font-size: 12px;">
-                View on GitHub →
-            </a>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://github.com/youssof20/promptly" target="_blank">
+                    View on GitHub →
+                </a>
+            </div>
         </div>
     </div>
 
