@@ -1,104 +1,55 @@
-# Promptly - Open Source AI Prompt Optimizer
+# Promptly
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/youssof20/promptly)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+Browser extension that rewrites your prompts to make them better before sending to ChatGPT/Claude/etc.
 
-Promptly is a completely free, open-source browser extension that automatically optimizes your prompts before sending them to ChatGPT, Claude, Gemini, and other AI platforms. No account required, no data collection, works with your own API keys.
+## What it does
 
-## Start
+You type a lazy prompt like "help me write a blog post about ai" and it expands it into something way more detailed and useful. Works on ChatGPT, Claude, Gemini, and any other AI chat interface.
 
-### 1. Install the Extension
+## Setup
 
-**Manual Installation** (Development)
 ```bash
 git clone https://github.com/youssof20/promptly.git
 cd promptly
 npm install
 npm run build
-# Load the extension from apps/extension/dist in Chrome/Edge
 ```
 
-### 2. Configure Your AI Provider
+Then load `apps/extension/dist` as an unpacked extension in Chrome.
 
-1. Click the Promptly extension icon
-2. Go to the Settings tab
-3. Choose your preferred AI provider:
-   - **OpenAI**: Enter your API key from [platform.openai.com](https://platform.openai.com/api-keys)
-   - **Anthropic**: Enter your API key from [console.anthropic.com](https://console.anthropic.com/)
-   - **Google**: Enter your API key from [makersuite.google.com](https://makersuite.google.com/app/apikey)
-   - **DeepSeek**: Enter your API key from [platform.deepseek.com](https://platform.deepseek.com/api_keys)
-   - **Local AI**: Enter your Ollama (`http://localhost:11434`) or LM Studio (`http://localhost:1234`) endpoint
-4. Test the connection
-5. Save settings
+## How to use
 
-### 3. Start Optimizing
+1. Click the extension icon and add your API key (OpenAI, Anthropic, Google, or DeepSeek)
+2. Go to ChatGPT or Claude
+3. Start typing a prompt
+4. Click the hint that pops up to optimize it
+5. Your prompt gets rewritten with more detail
 
-1. Visit any supported AI platform (ChatGPT, Claude, etc.)
-2. Start typing your prompt
-3. Click the optimization hint when it appears
-4. Watch your prompt transform automatically!
+## Example
 
-## 📖 How It Works
+**Before:** "help me write a blog post about ai"
 
-### Before Optimization
-```
-"help me write a blog post about ai"
-```
+**After:** "Write a comprehensive 1,500-word blog post about artificial intelligence, focusing on its current applications in healthcare, business automation, and creative industries. Include real-world examples, potential challenges, and future outlook. Target audience: general business professionals. Tone: informative yet accessible."
 
-### After Optimization
-```
-"Write a comprehensive 1,500-word blog post about artificial intelligence, 
-focusing on its current applications in healthcare, business automation, 
-and creative industries. Include real-world examples, potential challenges, 
-and future outlook. Target audience: general business professionals. 
-Tone: informative yet accessible."
-```
+## Local AI support
 
-### Setup
-   ```bash
-# Clone the repository
-git clone https://github.com/youssof20/promptly.git
-   cd promptly
+Works with Ollama or LM Studio if you don't want to use API keys:
 
-# Install dependencies
-   npm install
-
-# Start development servers
-   npm run dev
-   ```
-
-### Local AI Models
-- Ollama (any model)
-- LM Studio (any model)
-- Any OpenAI-compatible API
-
-## 🔧 Configuration
-
-### Local AI Setup
-
-**Ollama**
 ```bash
-# Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
-
-# Pull a model
+# Ollama
 ollama pull llama3.2
-
-# Start Ollama (runs on http://localhost:11434)
 ollama serve
+
+# Then set endpoint to http://localhost:11434 in settings
 ```
 
-**LM Studio**
-1. Download from [lmstudio.ai](https://lmstudio.ai)
-2. Install and start the server
-3. Load any model
-4. Server runs on `http://localhost:1234`
+## Tech
 
-## License
+- TypeScript
+- Chrome Extension Manifest V3
+- Works with OpenAI, Anthropic, Google, DeepSeek APIs
+- Also works with local models via Ollama/LM Studio
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Privacy
 
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=youssof20/promptly&type=Date)](https://star-history.com/#youssof20/promptly&Date)
+Everything runs locally in your browser. Your prompts only go to whatever AI provider you configure. No tracking, no accounts, no BS.
